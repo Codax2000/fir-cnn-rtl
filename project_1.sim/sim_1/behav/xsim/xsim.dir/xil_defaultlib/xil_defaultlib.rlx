@@ -1,0 +1,8 @@
+0.7
+2020.2
+Nov 18 2020
+09:47:47
+C:/Users/alexk/Documents/Projects/fir-cnn-rtl/project_1.sim/sim_1/behav/xsim/glbl.v,1605673889,verilog,,,,glbl,,uvm,,,,,,
+C:/Users/alexk/Documents/Projects/fir-cnn-rtl/project_1.srcs/sim_1/new/blk_mem_gen_0_tb.sv,1675396835,systemVerilog,,,,blk_mem_gen_0_tb,,uvm,,,,,,
+C:/Users/alexk/Documents/Projects/fir-cnn-rtl/project_1.srcs/sim_1/new/conv_node_tb.sv,1675461164,systemVerilog,,,,conv_node_tb,,uvm,,,,,,
+C:/Users/alexk/Documents/Projects/fir-cnn-rtl/project_1.srcs/sources_1/new/conv_node.sv,1675460987,systemVerilog,C:/Users/alexk/Documents/Projects/fir-cnn-rtl/project_1.srcs/sim_1/new/conv_node_tb.sv,C:/Users/alexk/Documents/Projects/fir-cnn-rtl/project_1.srcs/sim_1/new/conv_node_tb.sv,,$unit_conv_node_sv;conv_node,,uvm,,,,,,
