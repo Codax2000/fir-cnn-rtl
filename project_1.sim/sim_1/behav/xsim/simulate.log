@@ -1,6 +1,5 @@
 Vivado Simulator 2020.2
 Time resolution is 1 ps
-Testing Case 1
-Testing Case 2
-Testing Case 3
-$stop called at time : 700 ns : File "C:/Users/alexk/Documents/Projects/fir-cnn-rtl/project_1.srcs/sim_1/new/conv_node_tb.sv" Line 68
+200: Assertion Error. Expected 1, received 0
+400: Assertion Error. Expected 0, received 1
+$stop called at time : 700 ns : File "C:/Users/alexk/Documents/Projects/fir-cnn-rtl/project_1.srcs/sim_1/new/fc_node_tb.sv" Line 43

@@ -1,23 +1,6 @@
 `timescale 1ns / 1ps
-//////////////////////////////////////////////////////////////////////////////////
-// Company: 
-// Engineer: 
-// 
-// Create Date: 02/03/2023 10:52:32 AM
-// Design Name: 
-// Module Name: fc_node_tb
-// Project Name: 
-// Target Devices: 
-// Tool Versions: 
-// Description: 
-// 
-// Dependencies: 
-// 
-// Revision:
-// Revision 0.01 - File Created
-// Additional Comments:
-// 
-//////////////////////////////////////////////////////////////////////////////////
+
+
 function void assert_equals(expected, actual);
     assert(expected == actual)
         else $display("%3d: Assertion Error. Expected %h, received %h", $time, expected, actual);
