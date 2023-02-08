@@ -1,0 +1,4 @@
+Vivado Simulator 2020.2
+Time resolution is 1 ps
+200: Assertion Error. Expected 1, received 0
+$stop called at time : 500 ns : File "C:/Users/alexk/Documents/Projects/fir-cnn-rtl/project_1.srcs/layer_level_sim/new/fc_layer_tb.sv" Line 78

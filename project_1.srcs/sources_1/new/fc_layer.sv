@@ -23,10 +23,13 @@ module fc_layer # (
     genvar i;
     generate
         for (i = 0; i < OUTPUT_LAYER_HEIGHT; i = i + 1) begin
-            fc_node node (
+            fc_node #(
+                .WORD_SIZE(WORD_SIZE),
+                .INPUT_LAYER_HEIGHT(INPUT_LAYER_HEIGHT)
+            ) node (
                 .clk_i,
                 .reset_i,
-                .data_i(data_i[i]),
+                .data_i(data_i),
                 .bias_i(bias_i[i]),
                 .weights_i(weights_i[i]),
                 .data_o(data_o[i])

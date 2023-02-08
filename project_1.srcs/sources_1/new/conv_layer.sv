@@ -10,6 +10,8 @@ NOTE: Kernel width and data width must be the same, so we are assuming a 1-wide 
 Also, data height must be greater than or equal to kernel height or the computation will fail
 */
 
+
+
 module conv_layer #(
     parameter WORD_SIZE=16,
     parameter KERNEL_HEIGHT=3,
@@ -26,7 +28,11 @@ module conv_layer #(
     genvar i;
     generate
         for (i = 0; i < DATA_HEIGHT - KERNEL_HEIGHT + 1; i = i + 1) begin
-            conv_node node (
+            conv_node #(
+                .KERNEL_HEIGHT(KERNEL_HEIGHT),
+                .KERNEL_WIDTH(KERNEL_WIDTH),
+                .WORD_SIZE(WORD_SIZE)
+            ) node (
                 .clk_i,
                 .reset_i,
                 .kernel_i,
