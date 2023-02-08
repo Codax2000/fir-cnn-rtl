@@ -108,6 +108,16 @@ module simple_cnn (
     
     logic [1:0][15:0] intermediate_2;
     
+    logic [2:0][1:0][15:0] intermediate_1_transpose;
+
+    always_comb begin
+        for (integer i = 0; i < 2; i = i + 1) begin
+            for (integer j = 0; j < 3; j = j + 1) begin
+                assign intermediate_1_transpose[j][i] = intermediate_1[i][j]
+            end
+        end
+    end
+
     conv_layer #(
         .KERNEL_HEIGHT(2),
         .KERNEL_WIDTH(2),
@@ -117,7 +127,7 @@ module simple_cnn (
         .reset_i,
         .kernel_i(kernel_li),
         .bias_i(bias_conv_layer_li),
-        .data_i(intermediate_1),
+        .data_i(intermediate_1_transpose),
         .data_o(intermediate_2)
     );
     
