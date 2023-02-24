@@ -1,7 +1,0 @@
-Running: xsim.dir/fc_layer_tb_behav/xsimk.exe -simmode gui -wdb fc_layer_tb_behav.wdb -simrunnum 0 -socket 12678
-Design successfully loaded
-Design Loading Memory Usage: 6000 KB (Peak: 6000 KB)
-Design Loading CPU Usage: 46 ms
-Simulation completed
-Simulation Memory Usage: 6664 KB (Peak: 6664 KB)
-Simulation CPU Usage: 62 ms
