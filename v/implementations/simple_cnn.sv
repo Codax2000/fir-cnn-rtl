@@ -7,6 +7,8 @@ Alex Knowlton
 Simple convolutional neural network
 structure: 2 parallel fully-connected layers, followed by 1 convolutional layer, followed by 1 convolutional node
 Note the design at the layer level and what needs to go into each layer
+
+Update 2/24/22: No longer functional. Wait for rewritten neural nodes and redo
 */
 
 
