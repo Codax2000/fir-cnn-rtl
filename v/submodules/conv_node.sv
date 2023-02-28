@@ -31,8 +31,8 @@ module conv_node #(
     input logic [KERNEL_HEIGHT-1:0][KERNEL_WIDTH-1:0][WORD_SIZE-1:0] data_i,
     input logic [WORD_SIZE-1:0] kernel_i,
     input logic [WORD_SIZE-1:0] bias_i,
-    input logic [$clog2(KERNEL_HEIGHT)-1:0] row_i,
-    input logic [$clog2(KERNEL_WIDTH)-1:0] col_i,
+    input logic [$clog2(KERNEL_HEIGHT + 1)-1:0] row_i,
+    input logic [$clog2(KERNEL_WIDTH + 1)-1:0] col_i,
     input logic bias_en_i,
     input logic add_en_i,
     input logic done_en_i,
@@ -55,8 +55,8 @@ module conv_node #(
         if (reset_i)
             sum_r <= '0;
         else if (overflow)
-            sum_r <= {1'b0, '1};
-        else if (add_en_i)
+            sum_r <= {1'b0, (WORD_SIZE-2)'b1)};
+        else if (add_en_i || bias_en_i)
             sum_r <= sum_n;
         else
             sum_r <= sum_r;
