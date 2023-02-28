@@ -25,169 +25,52 @@ done_o  :   done signal for handshaking with control logic
 */
 
 module conv_node #(
-    parameter KERNEL_WIDTH=2,
+    parameter WORD_SIZE=16,
     parameter KERNEL_HEIGHT=3,
-    parameter WORD_SIZE=16) (
+    parameter KERNEL_WIDTH=2) (
     input logic [KERNEL_HEIGHT-1:0][KERNEL_WIDTH-1:0][WORD_SIZE-1:0] data_i,
-    input logic [KERNEL_HEIGHT-1:0][KERNEL_WIDTH-1:0][WORD_SIZE-1:0] kernel_i,
+    input logic [WORD_SIZE-1:0] kernel_i,
     input logic [WORD_SIZE-1:0] bias_i,
-    input logic start_i,
+    input logic [$clog2(KERNEL_HEIGHT)-1:0] row_i,
+    input logic [$clog2(KERNEL_WIDTH)-1:0] col_i,
+    input logic bias_en_i,
+    input logic add_en_i,
+    input logic done_en_i,
     input logic clk_i,
     input logic reset_i,
-    output logic [WORD_SIZE-1:0] data_o,
-    output logic done_o);
+    output logic [WORD_SIZE-1:0] data_o);
     
-    logic sum_bias_li, sum_done_li;
-    
-    conv_node_datapath #(
-        .KERNEL_WIDTH(KERNEL_WIDTH), 
-        .KERNEL_HEIGHT(KERNEL_HEIGHT),
-        .WORD_SIZE(WORD_SIZE)) data (
-        .data_i,
-        .kernel_i,
-        .bias_i,
-        .done_i(done_o),
-        .start_i,
-        .clk_i,
-        .reset_i,
-        .sum_bias_i(sum_bias_li),
-        .sum_done_o(sum_done_li),
-        .data_o   
-    );
-    
-    conv_node_control control (
-        .clk_i,
-        .reset_i,
-        .start_i,
-        .sum_done_i(sum_done_li),
-        .sub_bias_o(sum_bias_li),
-        .done_o
-    );
+    logic [WORD_SIZE * 2 - 1:0] mult_out;
+    logic [WORD_SIZE-1:0] add_to_sum, sum_n, sum_r;
 
-endmodule
+    logic overflow; // always set to 0 for now but there if we need it
+    assign overflow = 1'b0;
 
-module conv_node_datapath #(
-    parameter KERNEL_WIDTH=2,
-    parameter KERNEL_HEIGHT=3,
-    parameter WORD_SIZE=16) (
-    input logic [KERNEL_HEIGHT-1:0][KERNEL_WIDTH-1:0][WORD_SIZE-1:0] data_i,
-    input logic [KERNEL_HEIGHT-1:0][KERNEL_WIDTH-1:0][WORD_SIZE-1:0] kernel_i,
-    input logic [WORD_SIZE-1:0] bias_i,
-    input logic done_i,
-    input logic start_i,
-    input logic clk_i,
-    input logic reset_i,
-    input logic sum_bias_i,
-    output logic sum_done_o,
-    output logic [WORD_SIZE-1:0] data_o
-);
+    assign mult_out = kernel_i * data_i[row_i][col_i];
+    assign add_to_sum = add_en_i ? mult_out[WORD_SIZE-1:0] : bias_in;
+    assign sum_n = add_to_sum + sum_r;
 
-    logic [11:0] row, col;
-
-    always_ff @(posedge clk_i) begin
-        if (start_i) begin
-            row <= '0;
-            col <= '0;
-        end else if (sum_done_o) begin
-            row <= row;
-            col <= col;
-        end else if (col == KERNEL_WIDTH - 1) begin
-            row <= row + 1;
-            col <= '0;
-        end else begin
-            row <= row;
-            col <= col + 1;
-        end
-    end
-
-    assign sum_done_o = (row == KERNEL_HEIGHT - 1) && (col == KERNEL_WIDTH - 1);
-
-    // running sum logic with overflow
-    logic [WORD_SIZE*2-1:0] current_sum_r, current_sum_n;
-    // flag only used for output, not for sum
-    logic overflow, overflow_flag; // overflow combinational, flag persistent
-    
-    // transition logic, reset at start
-    always_ff @(posedge clk_i) begin
-        if (start_i)
-            current_sum_r <= '0;
-        else
-            current_sum_r <= current_sum_n;
-    end
-    
-    always_comb begin
-        if (done_i)
-            current_sum_n = current_sum_r;
-        else if (sum_bias_i)
-            current_sum_n = current_sum_r - bias_i;
-        else
-            current_sum_n = current_sum_r + kernel_i[row][col] * data_i[row][col];
-    end
-    
-    // overflow logic
-    assign overflow = current_sum_n[WORD_SIZE*2-1:WORD_SIZE-2] != 0;
-    
-    always_ff @(posedge clk_i) begin
-        if (start_i)
-            overflow_flag <= 1'b0;
-        else if (overflow)
-            overflow_flag <= 1'b1;
-        else
-            overflow_flag <= overflow_flag;
-    end
-    
-    // output logic
-    always_ff @(posedge clk_i) begin
-        if (start_i & overflow_flag) begin
-            data_o[WORD_SIZE-2:0] = '1;
-            data_o[WORD_SIZE-1] = 1'b0;
-        end else if (start_i & current_sum_r[WORD_SIZE-1]) begin // ReLU function
-            data_o <= '0;
-        end else if (start_i) begin
-            data_o <= current_sum_r[WORD_SIZE-1:0];
-        end else
-            data_o <= data_o;
-    end
-    
-endmodule
-
-module conv_node_control (
-    input logic clk_i,
-    input logic reset_i,
-    input logic start_i,
-    input logic sum_done_i,
-    output logic sub_bias_o,
-    output logic done_o
-);
-
-    enum {READY, SUMMING, BIAS} ps, ns;
-    
-    always_comb begin
-        case (ps)
-            READY:
-                if (start_i)
-                    ns = SUMMING;
-                else
-                    ns = READY;
-            SUMMING:
-                if (sum_done_i)
-                    ns = BIAS;
-                else
-                    ns = SUMMING;
-            BIAS: 
-                ns = READY;
-        endcase
-    end
-    
+    // set sum value
     always_ff @(posedge clk_i) begin
         if (reset_i)
-            ps <= READY;
+            sum_r <= '0;
+        else if (overflow)
+            sum_r <= {1'b0, '1};
+        else if (add_en_i)
+            sum_r <= sum_n;
         else
-            ps <= ns;
+            sum_r <= sum_r;
     end
-    
-    // assign outputs
-    assign done_o = ps == READY;
-    assign sub_bias_o = ps == BIAS;
+
+    // set output value
+    always_ff @(posedge clk_i) begin
+        if (reset_i)
+            data_o <= '0;
+        else if (done_en_i)
+            data_o <= sum_r;
+        else
+            data_o <= data_o;
+    end
 
 endmodule
+
