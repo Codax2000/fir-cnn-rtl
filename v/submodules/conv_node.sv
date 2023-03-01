@@ -66,9 +66,12 @@ module conv_node #(
     always_ff @(posedge clk_i) begin
         if (reset_i)
             data_o <= '0;
-        else if (done_en_i)
-            data_o <= sum_r;
-        else
+        else if (done_en_i) begin
+            if (sum_r > 0)
+                data_o <= sum_r;
+            else
+                data_o <= '0;
+        end else
             data_o <= data_o;
     end
 
