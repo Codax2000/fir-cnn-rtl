@@ -6,7 +6,7 @@ module fc_node #(
     input logic [INPUT_HEIGHT-1:0][WORD_SIZE-1:0] data_i,
     input logic clk_i,
     input logic reset_i,
-    input logic start_i,
+    input logic start_i, 
     output logic [WORD_SIZE-1:0] data_o,
     output logic done_o
 );
