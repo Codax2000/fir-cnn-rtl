@@ -3,20 +3,28 @@
 `include "test_regression/include.v"
 `include "test_regression/Weight_memory.v"
 `include "test_regression/relu.v"
+`include "test_regression/regression.v"
 
-module neuron #(parameter layerNo=0,neuronNo=0,numWeight=784,dataWidth=16,sigmoidSize=10,weightIntWidth=4,actType="relu",biasFile="",weightFile="")(
+// q2dec('myinputd',0,15,"bin") -> 16'b with 1 bit int
+// q2dec('mul',1,30,"bin")      -> {16'b with 1 bit int} * {16'b with 1 bit int} = 32'b with 2 bit int
+// q2dec('sum',1,30,"bin")      -> sum has the same form as mul (they are added together). 32'b with 2 bit int
+// q2dec('comboAdd',0,31,"bin") -> {32'b with 2 bit int} + {32'b with 2 bit int} = 32'b with 2 bit int
+// q2dec('bias',1,30,"bin")     -> bias needs to have the same form as sum (they are added together). 32'b with 2 bit int
+// q2dec('out',0,15,"bin") -> 16'b with 1 bit int (output is trimmed)
+
+module neuron #(parameter layerNo=0,neuronNo=0,numWeight=5,dataWidth=16,sigmoidSize=10,weightIntWidth=4,actType="relu",biasFile="test_regression/biases/b_1_0.mif",weightFile="test_regression/weights/w_1_0.mif")(
     input           clk,
     input           rst,
     input [dataWidth-1:0]    myinput,
     input           myinputValid,
     input           weightValid,
     input           biasValid,
-    input [31:0]    weightValue,
-    input [31:0]    biasValue,
+    input [`weightValWidth-1:0]    weightValue,
+    input [`biasValWidth-1:0]    biasValue,
     input [31:0]    config_layer_num,
     input [31:0]    config_neuron_num,
     output[dataWidth-1:0]    out,
-    output reg      outvalid   
+    output reg      outvalid
     );
     
     parameter addressWidth = $clog2(numWeight);
@@ -24,13 +32,13 @@ module neuron #(parameter layerNo=0,neuronNo=0,numWeight=784,dataWidth=16,sigmoi
     reg         wen;
     wire        ren;
     reg [addressWidth-1:0] w_addr;
-    reg [addressWidth-1:0]   r_addr;//read address has to reach until numWeight hence width is 1 bit more
+    reg [addressWidth-1:0] r_addr;//read address has to reach until numWeight hence width is 1 bit more
     reg [dataWidth-1:0]  w_in;
     wire [dataWidth-1:0] w_out;
     reg [2*dataWidth-1:0]  mul; 
     reg [2*dataWidth-1:0]  sum;
     reg [2*dataWidth-1:0]  bias;
-    reg [31:0]    biasReg[0:0];
+    reg [`biasValWidth:0]    biasReg[`numNeuronLayer1-1:0];
     reg         weight_valid;
     reg         mult_valid;
     wire        mux_valid;
@@ -71,14 +79,18 @@ module neuron #(parameter layerNo=0,neuronNo=0,numWeight=784,dataWidth=16,sigmoi
 		end
 		always @(posedge clk)
 		begin
-            bias <= {biasReg[addr][dataWidth-1:0],{dataWidth{1'b0}}};
+            // bias <= {biasReg[addr][dataWidth-1:0],{dataWidth{1'b0}}}; // ORIGINAL (can't add q2dec('bias',0,31,"bin") with q2dec('sum',1,30,"bin"))
+            bias <= {1'b0,biasReg[addr][dataWidth-1:0],{(dataWidth-1){1'b0}}};
+            // bias <= {biasReg[addr][dataWidth-1],biasReg[addr][dataWidth-1:0],{(dataWidth-1){1'b0}}};
         end
 	`else
 		always @(posedge clk)
 		begin
 			if(biasValid & (config_layer_num==layerNo) & (config_neuron_num==neuronNo))
 			begin
-				bias <= {biasValue[dataWidth-1:0],{dataWidth{1'b0}}};
+                // bias <= {biasValue[dataWidth-1:0],{dataWidth{1'b0}}}; // ORIGINAL
+                bias <= {1'b0,biasValue[dataWidth-1:0],{dataWidth{1'b0}}}; 
+                // bias <= {biasReg[addr][dataWidth-1],biasValue[dataWidth-1:0],{dataWidth{1'b0}}}; 
 			end
 		end
 	`endif
@@ -86,17 +98,18 @@ module neuron #(parameter layerNo=0,neuronNo=0,numWeight=784,dataWidth=16,sigmoi
     
     always @(posedge clk)
     begin
-        if(rst|outvalid)
+        if(rst|outvalid)begin
             r_addr <= 0;
-        else if(myinputValid)
+        end
+        else if(myinputValid)begin
             r_addr <= r_addr + 1;
+        end
     end
     
     always @(posedge clk)
     begin
-        mul  <= $signed(myinputd) * $signed(w_out);
+        mul  <= $signed(myinputd) * $signed(w_out); // for 1 bit int part of weights and inputs we only need mul[30:15]
     end
-    
     
     always @(posedge clk)
     begin
@@ -132,6 +145,7 @@ module neuron #(parameter layerNo=0,neuronNo=0,numWeight=784,dataWidth=16,sigmoi
             else
                 sum <= comboAdd; 
         end
+        // if(sum!=0)$display("&&&&&&&&&&&  sum = %b",sum);
     end
     
     always @(posedge clk)
@@ -167,6 +181,14 @@ module neuron #(parameter layerNo=0,neuronNo=0,numWeight=784,dataWidth=16,sigmoi
             .out(out)
         );
         end
+        else if(actType == "regression")
+        begin:regrinst
+            Regression #(.dataWidth(dataWidth),.weightIntWidth(weightIntWidth)) s1 (
+            .clk(clk),
+            .x(sum),
+            .out(out)
+        );
+        end
         else
         begin:ReLUinst
             ReLU #(.dataWidth(dataWidth),.weightIntWidth(weightIntWidth)) s1 (
@@ -181,7 +203,21 @@ module neuron #(parameter layerNo=0,neuronNo=0,numWeight=784,dataWidth=16,sigmoi
     always @(posedge clk)
     begin
         if(outvalid)
-            $display(neuronNo,,,,"%b",out);
+            $display(neuronNo,,,,"%b ================================",out);
     end
     `endif
+
+    // write .csv file
+    integer waves;
+    initial begin 
+        waves = $fopen("test_regression/output_files/waves.csv");
+        forever #1 $fwrite(waves,"%b,%b,%b,%b,%b,%b,%b\n", bias, BiasAdd, myinputd, w_out, mul, comboAdd, sum);
+    end
+
+    initial begin 
+    $dumpfile("test_regression/output_files/dump_neuron.vcd");
+    $dumpvars(outvalid);
+    #30000
+    $finish;
+    end
 endmodule

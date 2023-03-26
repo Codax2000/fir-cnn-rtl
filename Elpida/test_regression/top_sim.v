@@ -3,15 +3,14 @@
 `include "test_regression/include.v"
 `include "test_regression/zynet.v"
 
-`define MaxTestSamples 100
-
 module top_sim();
     reg reset;
     reg clock;
     reg [`dataWidth-1:0] in;
     reg in_valid;
-    reg [`dataWidth-1:0] in_mem [784:0];
-    reg [7:0] fileName[23:0];
+    reg [`dataWidth-1:0] in_mem [`numData-1:0];
+    reg [`dataWidth-1:0] res_mem [`numNeuronLayer1-1:0];
+    reg [7:0] fileName[33:0];
     reg s_axi_awvalid;
     reg [31:0] s_axi_awaddr;
     wire s_axi_awready;
@@ -33,24 +32,17 @@ module top_sim();
     wire [31:0] numNeurons[31:1];
     wire [31:0] numWeights[31:1];
     
-    assign numNeurons[1] = 30;
-    assign numNeurons[2] = 30;
-    assign numNeurons[3] = 10;
-    assign numNeurons[4] = 10;
+    assign numNeurons[1] = `numNeuronLayer1;
     
-    assign numWeights[1] = 784;
-    assign numWeights[2] = 30;
-    assign numWeights[3] = 30;
-    assign numWeights[4] = 10;
+    assign numWeights[1] = `numWeightLayer1;
     
     integer right=0;
-    integer wrong=0;
     
     zyNet dut(
     .s_axi_aclk(clock),
     .s_axi_aresetn(reset),
     .s_axi_awaddr(s_axi_awaddr),
-    .s_axi_awprot(0),
+    .s_axi_awprot(3'b000),
     .s_axi_awvalid(s_axi_awvalid),
     .s_axi_awready(s_axi_awready),
     .s_axi_wdata(s_axi_wdata),
@@ -61,7 +53,7 @@ module top_sim();
     .s_axi_bvalid(s_axi_bvalid),
     .s_axi_bready(s_axi_bready),
     .s_axi_araddr(s_axi_araddr),
-    .s_axi_arprot(0),
+    .s_axi_arprot(3'b000),
     .s_axi_arvalid(s_axi_arvalid),
     .s_axi_arready(s_axi_arready),
     .s_axi_rdata(s_axi_rdata),
@@ -73,8 +65,7 @@ module top_sim();
     .axis_in_data_ready(),
     .intr(intr)
     );
-    
-            
+                
     initial
     begin
         clock = 1'b0;
@@ -86,12 +77,12 @@ module top_sim();
         
     always
         #5 clock = ~clock;
-    
+
     function [7:0] to_ascii;
-      input integer a;
-      begin
+        input integer a;
+        begin
         to_ascii = a+48;
-      end
+        end
     endfunction
     
     always @(posedge clock)
@@ -101,172 +92,126 @@ module top_sim();
     end
     
     task writeAxi(
-    input [31:0] address,
-    input [31:0] data
-    );
-    begin
-        @(posedge clock);
-        s_axi_awvalid <= 1'b1;
-        s_axi_awaddr <= address;
-        s_axi_wdata <= data;
-        s_axi_wvalid <= 1'b1;
-        wait(s_axi_wready);
-        @(posedge clock);
-        s_axi_awvalid <= 1'b0;
-        s_axi_wvalid <= 1'b0;
-        @(posedge clock);
-    end
+        input [31:0] address,
+        input [31:0] data
+        );
+        begin
+            @(posedge clock);
+            s_axi_awvalid <= 1'b1;
+            s_axi_awaddr <= address;
+            s_axi_wdata <= data;
+            s_axi_wvalid <= 1'b1;
+            wait(s_axi_wready);
+            @(posedge clock);
+            s_axi_awvalid <= 1'b0;
+            s_axi_wvalid <= 1'b0;
+            @(posedge clock);
+        end
     endtask
     
     task readAxi(
-    input [31:0] address
-    );
-    begin
-        @(posedge clock);
-        s_axi_arvalid <= 1'b1;
-        s_axi_araddr <= address;
-        wait(s_axi_arready);
-        @(posedge clock);
-        s_axi_arvalid <= 1'b0;
-        wait(s_axi_rvalid);
-        @(posedge clock);
-        axiRdData <= s_axi_rdata;
-        @(posedge clock);
-    end
+        input [31:0] address
+        );
+        begin
+            @(posedge clock);
+            s_axi_arvalid <= 1'b1;
+            s_axi_araddr <= address;
+            wait(s_axi_arready);
+            @(posedge clock);
+            s_axi_arvalid <= 1'b0;
+            wait(s_axi_rvalid);
+            @(posedge clock);
+            axiRdData <= s_axi_rdata;
+            @(posedge clock);
+        end
     endtask
     
     task configWeights();
-    integer i,j,k,t;
-    integer neuronNo_int;
-    reg [`dataWidth:0] config_mem [783:0];
-    begin
-        @(posedge clock);
-        for(k=1;k<=`numLayers;k=k+1)
+        integer i,j,k,t;
+        integer neuronNo_int;
+        reg [`dataWidth-1:0] config_mem [`numWeightLayer1-1:0];
         begin
-            writeAxi(12,k);//Write layer number
-            for(j=0;j<numNeurons[k];j=j+1)
+            @(posedge clock);
+            for(k=1;k<=`numLayers;k=k+1)
             begin
-                neuronNo_int = j;
-                fileName[0] = "f";
-                fileName[1] = "i";
-                fileName[2] = "m";
-                fileName[3] = ".";
-                if(j > 9)
+                writeAxi(12,k);//Write layer number
+                for(j=0;j<numNeurons[k];j=j+1)
                 begin
-                    fileName[4] = 48;
-                    fileName[5] = 48;
-                    i=0;
-                    while(neuronNo_int != 0)
-                    begin
-                        fileName[i+4] = to_ascii(neuronNo_int%10);
-                        neuronNo_int = neuronNo_int/10;
-                        i=i+1;
+                    $display("%s",{"Loading weights w_",to_ascii(k),"_",to_ascii(j),".mif"});
+                    $readmemb({"test_regression/weights/w_",to_ascii(k),"_",to_ascii(j),".mif"}, config_mem);
+                    writeAxi(16,j);//Write neuron number
+                    for (t=0; t<numWeights[k]; t=t+1) begin
+                        // $display("%s",{"Loading weight ",to_ascii(t)," out of ",to_ascii(numWeights[k]-1)});
+                        // $display("%b",{15'd0,config_mem[t]});
+                        writeAxi(0,{15'd0,config_mem[t]});
                     end 
-                    fileName[6] = "_";
-                    fileName[7] = to_ascii(k);
-                    fileName[8] = "_";
-                    fileName[9] = "w";
                 end
-                else
-                begin
-                    fileName[4] = 48;
-                    i=0;
-                    while(neuronNo_int != 0)
-                    begin
-                        fileName[i+4] = to_ascii(neuronNo_int%10);
-                        neuronNo_int = neuronNo_int/10;
-                        i=i+1;
-                    end 
-                    fileName[5] = "_";
-                    fileName[6] = to_ascii(k);
-                    fileName[7] = "_";
-                    fileName[8] = "w";
-                end
-                $readmemb(fileName, config_mem);
-                writeAxi(16,j);//Write neuron number
-                for (t=0; t<numWeights[k]; t=t+1) begin
-                    writeAxi(0,{15'd0,config_mem[t]});
-                end 
             end
         end
-    end
     endtask
     
     task configBias();
-    integer i,j,k,t;
-    integer neuronNo_int;
-    reg [31:0] bias[0:0];
-    begin
-        @(posedge clock);
-        for(k=1;k<=`numLayers;k=k+1)
+        integer i,j,k,t;
+        integer neuronNo_int;
+        reg [31:0] bias[0:0];
         begin
-            writeAxi(12,k);//Write layer number
-            for(j=0;j<numNeurons[k];j=j+1)
+            @(posedge clock);
+            for(k=1;k<=`numLayers;k=k+1)
             begin
-                neuronNo_int = j;
-                fileName[0] = "f";
-                fileName[1] = "i";
-                fileName[2] = "m";
-                fileName[3] = ".";
-                if(j>9)
+                writeAxi(12,k);//Write layer number
+                for(j=0;j<numNeurons[k];j=j+1)
                 begin
-                    fileName[4] = 48;
-                    fileName[5] = 48;
-                    i=0;
-                    while(neuronNo_int != 0)
-                    begin
-                        fileName[i+4] = to_ascii(neuronNo_int%10);
-                        neuronNo_int = neuronNo_int/10;
-                        i=i+1;
-                    end 
-                    fileName[6] = "_";
-                    fileName[7] = to_ascii(k);
-                    fileName[8] = "_";
-                    fileName[9] = "b";
-                end
-                else
-                begin
-                    fileName[4] = 48;
-                    i=0;
-                    while(neuronNo_int != 0)
-                    begin
-                        fileName[i+4] = to_ascii(neuronNo_int%10);
-                        neuronNo_int = neuronNo_int/10;
-                        i=i+1;
-                    end 
-                    fileName[5] = "_";
-                    fileName[6] = to_ascii(k);
-                    fileName[7] = "_";
-                    fileName[8] = "b";               
-                end
-                $readmemb(fileName, bias);
-                writeAxi(16,j);//Write neuron number
-                writeAxi(4,{15'd0,bias[0]});
+                    $display("%s",{"Loading bias b_",to_ascii(k),"_",to_ascii(j),".mif"});
+                    $readmemb({"test_regression/biases/b_",to_ascii(k),"_",to_ascii(j),".mif"}, bias);
+                    writeAxi(16,j);//Write neuron number
+                    // $display("%b",{15'd0,bias[0]});
+                    writeAxi(4,{15'd0,bias[0]});
+                end                
             end
         end
-    end
     endtask
     
-    
-    task sendData();
-    //input [25*7:0] fileName;
-    integer t;
-    begin
-        $readmemb(fileName, in_mem);
-        @(posedge clock);
-        @(posedge clock);
-        @(posedge clock);
-        for (t=0; t <784; t=t+1) begin
+    task sendData(input integer testDataCount);
+        integer t;
+        begin
+            if(testDataCount<10) begin
+                // $display("--- %s %s",{"test_regression/test_data/test_data_000",to_ascii(testDataCount),".txt"},{"loaded successfully!"});
+                $readmemb({"test_regression/test_data/test_data_000",to_ascii(testDataCount),".txt"}, in_mem);
+                // $display("--- %s %s",{"test_regression/results/results_000",to_ascii(testDataCount),".txt"},{"loaded successfully!"});
+                $readmemb({"test_regression/results/results_000",to_ascii(testDataCount),".txt"}, res_mem);
+            end
+            else if(testDataCount<100) begin
+                // $display("--- %s %s",{"test_regression/test_data/test_data_00",to_ascii(testDataCount),".txt"},{"loaded successfully!"});
+                $readmemb({"test_regression/test_data/test_data_00",to_ascii(testDataCount),".txt"}, in_mem);
+                // $display("--- %s %s",{"test_regression/results/results_00",to_ascii(testDataCount),".txt"},{"loaded successfully!"});
+                $readmemb({"test_regression/results/results_00",to_ascii(testDataCount),".txt"}, res_mem);
+            end
+            else if(testDataCount<1000) begin
+                // $display("--- %s %s",{"test_regression/test_data/test_data_0",to_ascii(testDataCount),".txt"},{"loaded successfully!"});
+                $readmemb({"test_regression/test_data/test_data_0",to_ascii(testDataCount),".txt"}, in_mem);
+                // $display("--- %s %s",{"test_regression/results/results_0",to_ascii(testDataCount),".txt"},{"loaded successfully!"});
+                $readmemb({"test_regression/results/results_0",to_ascii(testDataCount),".txt"}, res_mem);
+            end
+            else begin
+                // $display("--- %s %s",{"test_regression/test_data/test_data_",to_ascii(testDataCount),".txt"},{"loaded successfully!"});
+                $readmemb({"test_regression/test_data/test_data_",to_ascii(testDataCount),".txt"}, in_mem);
+                // $display("--- %s %s",{"test_regression/results/results_",to_ascii(testDataCount),".txt"},{"loaded successfully!"});
+                $readmemb({"test_regression/results/results_",to_ascii(testDataCount),".txt"}, res_mem);
+            end
             @(posedge clock);
-            in <= in_mem[t];
-            in_valid <= 1;
-            //@(posedge clock);
-            //in_valid <= 0;
-        end 
-        @(posedge clock);
-        in_valid <= 0;
-        expected = in_mem[t];
-    end
+            @(posedge clock);
+            @(posedge clock);
+            for (t=0; t <`numData; t=t+1) begin
+                @(posedge clock)begin
+                    in <= in_mem[t]; // in == data going into the NN serially (from test_data_0000 each line of the 784 lines at a time)
+                    in_valid <= 1;
+                end
+                // @(negedge clock)in_valid <= 0;
+            end 
+            @(posedge clock);
+            in_valid <= 0;
+            expected = res_mem[0];
+        end
     endtask
    
     integer i,j,layerNo=1,k;
@@ -277,53 +222,39 @@ module top_sim();
     begin
         reset = 0;
         in_valid = 0;
-        #100;
+        #50;
         reset = 1;
         #100
-        writeAxi(28,0);//clear soft reset
+        writeAxi(28,0); //clear soft reset
         start = $time;
-        `ifndef pretrained
+        if(`pretrained==1)begin
+            // $display("--- Pretrained... Fetching weights and biases... Configuring NN...");
             configWeights();
             configBias();
-        `endif
-        $display("Configuration completed",,,,$time-start,,"ns");
+        end
+        // $display("--- Configuration completed",,,,$time-start,,"ns");
+
+        // $display("--- Feeding data in NN...");
         start = $time;
         for(testDataCount=0;testDataCount<`MaxTestSamples;testDataCount=testDataCount+1)
         begin
-            testDataCount_int = testDataCount;
-            fileName[0] = "t";
-            fileName[1] = "x";
-            fileName[2] = "t";
-            fileName[3] = ".";
-            fileName[4] = "0";
-            fileName[5] = "0";
-            fileName[6] = "0";
-            fileName[7] = "0";
-            i=0;
-            while(testDataCount_int != 0)
-            begin
-                fileName[i+4] = to_ascii(testDataCount_int%10);
-                testDataCount_int = testDataCount_int/10;
-                i=i+1;
-            end 
-            fileName[8] = "_";
-            fileName[9] = "a";
-            fileName[10] = "t";
-            fileName[11] = "a";
-            fileName[12] = "d";
-            fileName[13] = "_";
-            fileName[14] = "t";
-            fileName[15] = "s";
-            fileName[16] = "e";
-            fileName[17] = "t";
-            sendData();
+            sendData(testDataCount);
             @(posedge intr);
-            //readAxi(24);
-            //$display("Status: %0x",axiRdData);
+            // readAxi(24);
+            // $display("Status: %0x",axiRdData);
             readAxi(8);
+
             if(axiRdData==expected)
                 right = right+1;
-            $display("%0d. Accuracy: %f, Detected number: %0x, Expected: %x",testDataCount+1,right*100.0/(testDataCount+1),axiRdData,expected);
+            $display("%0d. Accuracy: %f, Detected number: %0b, Expected: %b",testDataCount+1,right*100.0/(testDataCount+1),axiRdData,expected);
+            
+            //                             ==============
+            // I want to consider correct also the results that are very close to the expected.
+            // using PYTHON to achieve this :) 
+            // I am writing all the results in a csv file.
+            $fwrite(waves,"%b,%b\n", expected, axiRdData[`dataWidth-1:0]);
+            //                             ==============
+
             /*$display("Total execution time",,,,$time-start,,"ns");
             j=0;
             repeat(10)
@@ -333,9 +264,24 @@ module top_sim();
                 j=j+1;
             end*/
         end
-        $display("Accuracy: %f",right*100.0/testDataCount);
-        $stop;
+        // $display("--- Accuracy: %f",right*100.0/testDataCount);
+        // $stop;
+        $finish;
     end
 
+
+
+// write .csv file
+integer waves;
+initial begin 
+    waves = $fopen("test_regression/output_files/results.csv");
+    // forever #1 $fwrite(waves,"%b,%b\n", expected, axiRdData);
+end
+
+// dump waveforms
+initial begin 
+    $dumpfile("test_regression/output_files/dump.vcd");
+    $dumpvars(1);
+end
 
 endmodule

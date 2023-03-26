@@ -1,7 +1,8 @@
 `timescale 1ns / 1ps
 
 `include "test_regression/include.v"
-`include "test_regression/Layer_1.v"
+`include "test_regression/neuron.v"
+
 
 module test();
     reg clk;
@@ -10,12 +11,13 @@ module test();
     reg in_valid;
     reg wvalid;
     reg bvalid;
-    reg [`dataWidth:0] wdata;
-    reg [`dataWidth:0] bdata;
-    reg [`dataWidth:0] layer_num;
-    reg [`dataWidth:0] neuron_num;
+    reg [`dataWidth-1:0] wdata;
+    reg [`dataWidth-1:0] bdata;
+    reg [`dataWidth-1:0] layer_num;
+    reg [`dataWidth-1:0] neuron_num;
     wire [`numNeuronLayer1*`dataWidth-1:0] out;
     wire [`numNeuronLayer1-1:0] outvalid;
+    wire [2:0] r_addr;
 
     // generate the clock
     initial begin
@@ -26,49 +28,49 @@ module test();
     // Generate the reset
     initial begin
         rst = 1'b1;
+        in_valid = 0;
+        wvalid=0;
         #10
         rst = 1'b0;
+        wvalid=1;
+        in_valid=1;
+        wdata = 16'b0000_1100_1100_1100;
+        in = 16'b0000_1100_1100_1100;
+        #2
+        wdata = 16'b1110_0110_0110_0110;
+        in = 16'b1110_0110_0110_0110;
+        #2
+        wdata = 16'b0010_0110_0110_0110;
+        in = 16'b0010_0110_0110_0110;
+        #2
+        wdata = 16'b1100_1100_1100_1100;
+        in = 16'b1100_1100_1100_1100;
+        #2
+        wdata = 16'b0100_0000_0000_0000;
+        in = 16'b0100_0000_0000_0000;
     end
 
-    // monitor 
-    initial begin
-        $monitor("time=%3d, in_valid=%b, wvalid=%b \n",$time, in_valid, wvalid);
-        in_valid = 1'b0;
-        wvalid = 1'b0;
-        #20
-        in_valid = 1'b1;
-        #20
-        wvalid = 1'b1;
-    end
-
-    Layer_1 #(.NN(`numNeuronLayer1),.numWeight(`numWeightLayer1),.dataWidth(`dataWidth),.layerNum(1),.sigmoidSize(10),.weightIntWidth(`weightIntWidth),.actType("regression")) L1
-    (.clk(clk),
-    .rst(rst),
-    .weightValid(wvalid),
-    .biasValid(bvalid),
-    .weightValue(wdata),
-    .biasValue(bdata),
-    .config_layer_num(layer_num),
-    .config_neuron_num(neuron_num),
-    .x_valid(in_valid),
-    .x_in(in),
-    .o_valid(outvalid),
-    .x_out(out)
+    neuron #(.numWeight(5),.weightIntWidth(1),.actType("regression"))N1(
+        .clk(clk),
+        .rst(rst),
+        .myinput(in),
+        .myinputValid(in_valid),
+        .weightValid(wvalid),
+        .biasValid(1'b1),
+        .weightValue(wdata),
+        .biasValue(16'b0000_1100_1100_1100),
+        .config_layer_num(0),
+        .config_neuron_num(0),
+        .out(out),
+        .outvalid(outvalid),
+        .r_addr(r_addr)  // REMOVE
     );
 
-integer waves;
-
-// write .csv file
-initial begin 
-    waves = $fopen("test_regression/output_files/waves.csv");
-    forever #1 $fwrite(waves,"%d,%d,%d,%d\n", clk, rst, in_valid, wvalid);
-end
-
-// dump waveforms
-initial begin 
-    $dumpfile("test_regression/output_files/dump.vcd");
-    $dumpvars(1);
-    #240 $finish;
-end
+    // dump waveforms
+    initial begin 
+        $dumpfile("test_regression/output_files/dump.vcd");
+        $dumpvars(1);
+        #240 $finish;
+    end
 
 endmodule

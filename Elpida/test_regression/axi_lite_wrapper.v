@@ -1,5 +1,6 @@
-
 `timescale 1 ns / 1 ps
+
+`include "test_regression/include.v"
 
 	module axi_lite_wrapper #
 	(
@@ -84,9 +85,9 @@
         output wire     [31:0]  neuronNumber,
         output reg              weightValid,
         output reg              biasValid,
-        output          [31:0]  weightValue,
-        output          [31:0]  biasValue,
-        input           [31:0]  nnOut,
+        output          [`weightValWidth-1:0]  weightValue,
+        output          [`biasValWidth-1:0]  biasValue,
+        input           [`numNeuronLayer1*`dataWidth-1:0]  nnOut,
         input                   nnOut_valid,
         output reg              axi_rd_en,
         input           [31:0]  axi_rd_data,
@@ -256,23 +257,25 @@
 		weightValid <= 1'b0;
 		biasValid <= 1'b0;
 		if (slv_reg_wren)
-		begin
-			case ( axi_awaddr[ADDR_LSB+OPT_MEM_ADDR_BITS:ADDR_LSB] )
-			3'h0:begin
-					weightReg <= S_AXI_WDATA;
+		begin // axi_awaddr enables writes to registers
+			case ( axi_awaddr[ADDR_LSB+OPT_MEM_ADDR_BITS:ADDR_LSB] )// ADDR_LSB=2 for 32'b , OPT_MEM_ADDR_BITS = 2
+		    // axi_araddr has 32 bits. the bits [4:2] of axi_araddr will determine what value I am reading and placing it to a reggister
+			3'h0:begin								// axi_awaddr[xxx...xxx000xx]
+					weightReg <= S_AXI_WDATA;		// --- && reg_data_out <= weightReg;
 					weightValid <= 1'b1;
 			end
-			3'h1:begin
-					biasReg <= S_AXI_WDATA; 
+			3'h1:begin								// axi_awaddr[xxx...xxx001xx]
+					biasReg <= S_AXI_WDATA; 		// --- && reg_data_out <= biasReg;
 					biasValid <= 1'b1;
 			end
-			3'h3:
-					layerReg <= S_AXI_WDATA;
-			3'h4:
-					neuronReg <= S_AXI_WDATA;
-			3'h7:
-					controlReg <= S_AXI_WDATA;
+			3'h3:									// axi_awaddr[xxx...xxx011xx]
+					layerReg <= S_AXI_WDATA;		// --- && reg_data_out <= layerReg;
+			3'h4:									// axi_awaddr[xxx...xxx100xx]
+					neuronReg <= S_AXI_WDATA;		// --- && reg_data_out <= neuronReg;
+			3'h7:									// axi_awaddr[xxx...xxx111xx]
+					controlReg <= S_AXI_WDATA;		// --- && reg_data_out <= controlReg;
 			endcase
+
 		end
 	end
 	end    
@@ -281,8 +284,9 @@
     begin
         if ( S_AXI_ARESETN == 1'b0 )
             outputReg <= 0;
-        else if(nnOut_valid)
+        else if(nnOut_valid)begin
             outputReg <= nnOut;
+		end
     end
 
 	// Implement write response logic generation
@@ -385,16 +389,18 @@
 	assign slv_reg_rden = axi_arready & S_AXI_ARVALID & ~axi_rvalid;
 	always @(*)
 	begin
-	      // Address decoding for reading registers
-	      case ( axi_araddr[ADDR_LSB+OPT_MEM_ADDR_BITS:ADDR_LSB] )
-	        3'h0   : reg_data_out <= weightReg;
-	        3'h1   : reg_data_out <= biasReg;
-	        3'h2   : reg_data_out <= outputReg;
-	        3'h3   : reg_data_out <= layerReg;
-	        3'h4   : reg_data_out <= neuronReg;
-	        3'h5   : reg_data_out <= axi_rd_data;
-	        3'h6   : reg_data_out <= statReg;
-	        3'h7   : reg_data_out <= controlReg;
+	        // Address decoding for reading registers
+			// axi_araddr enables read (write to reg_data_out) from registers
+	        case ( axi_araddr[ADDR_LSB+OPT_MEM_ADDR_BITS:ADDR_LSB] ) // ADDR_LSB=2 for 32'b , OPT_MEM_ADDR_BITS = 2
+		    // axi_araddr has 32 bits. the bits [4:2] of axi_araddr will determine what value I am going to pass to reg_data_out
+	        3'h0   : reg_data_out <= weightReg; // if axi_araddr[4:2] = {3 bits equal to 0} // axi_araddr[xxx...xxx000xx]
+	        3'h1   : reg_data_out <= biasReg;		// axi_araddr[xxx...xxx001xx]
+	        3'h2   : reg_data_out <= outputReg;		// axi_araddr[xxx...xxx010xx]
+	        3'h3   : reg_data_out <= layerReg;		// axi_araddr[xxx...xxx011xx]
+	        3'h4   : reg_data_out <= neuronReg;		// axi_araddr[xxx...xxx100xx]
+	        3'h5   : reg_data_out <= axi_rd_data;	// axi_araddr[xxx...xxx101xx]
+	        3'h6   : reg_data_out <= statReg;		// axi_araddr[xxx...xxx110xx]
+	        3'h7   : reg_data_out <= controlReg;	// axi_araddr[xxx...xxx111xx]
 	        default : reg_data_out <= 0;
 	      endcase
 	end

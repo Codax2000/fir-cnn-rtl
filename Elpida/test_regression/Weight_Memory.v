@@ -36,4 +36,10 @@ module Weight_Memory #(parameter numWeight = 3, neuronNo=5,layerNo=1,addressWidt
             wout <= mem[radd];
         end
     end 
+    initial begin 
+    $dumpfile("test_regression/output_files/dump_neuron.vcd");
+    $dumpvars(1);
+    #30000
+    $finish;
+    end
 endmodule
