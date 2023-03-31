@@ -22,7 +22,7 @@ module conv_layer #(
     input logic [INPUT_LAYER_HEIGHT-1:0][KERNEL_WIDTH-1:0][WORD_SIZE-1:0] data_i,
     
     output logic done_o,
-    output logic [INPUT_LAYER_HEIGHT - KERNEL_HEIGHT - 1:0][WORD_SIZE-1:0] data_o);
+    output logic [INPUT_LAYER_HEIGHT - KERNEL_HEIGHT:0][WORD_SIZE-1:0] data_o);
     
     // control logic variables
     localparam num_iterations = KERNEL_HEIGHT * KERNEL_WIDTH + 1;
@@ -77,6 +77,26 @@ module conv_layer #(
           );
 
     // TODO: generate nodes
+    /**genvar i;
+    generate
+        for (i = 0; i < INPUT_LAYER_HEIGHT - KERNEL_HEIGHT + 1; i = i + 1) begin
+            conv_node #(
+                .WORD_SIZE(WORD_SIZE),
+                .KERNEL_HEIGHT(KERNEL_HEIGHT),
+                .KERNEL_WIDTH(KERNEL_WIDTH)
+            ) node (
+                .clk_i,
+                .reset_i,
+                .start_i,
+                .ps,
+                .data_i(data_i[INPUT_LAYER_HEIGHT - KERNEL_HEIGHT + i:i]),
+                .weight_i(mem_lo),
+                .input_index(rd_addr),
+                .add_bias,
+                .data_o(data_o[i])
+            );
+        end
+    endgenerate*/
 
     // output done signal after add bias is finished
     assign done_o = ps == eDONE;
