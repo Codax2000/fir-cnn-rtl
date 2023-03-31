@@ -32,7 +32,9 @@ module conv_layer_tb ();
         reset_i <= 1'b1;            @(posedge clk_i);
         reset_i <= 1'b0;            @(posedge clk_i);
         start_i <= 1'b1;            @(posedge clk_i);
-        start_i <= 1'b0; repeat(15)  @(posedge clk_i);
+        start_i <= 1'b0; repeat(15) @(posedge clk_i);
+        start_i <= 1'b1;            @(posedge clk_i);
+        start_i <= 1'b0; repeat(15) @(posedge clk_i);
         $stop;
     end
 

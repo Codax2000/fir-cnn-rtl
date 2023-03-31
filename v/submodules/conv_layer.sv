@@ -30,8 +30,7 @@ module conv_layer #(
     logic [$clog2(num_iterations)-1:0] rd_addr; // used as memory address, common loop
     logic [WORD_SIZE-1:0] mem_lo;
     logic add_bias;
-    always_ff @(posedge clk_i)
-        add_bias <= rd_addr == num_iterations - 1;
+    assign add_bias = rd_addr == num_iterations;
 
     enum {eDONE=1'b0, eBUSY=1'b1} ps, ns; // present state, next state
 
