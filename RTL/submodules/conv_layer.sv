@@ -30,7 +30,7 @@ module conv_layer #(
     logic [$clog2(num_iterations)-1:0] rd_addr; // used as memory address, common loop
     logic [WORD_SIZE-1:0] mem_lo;
     logic add_bias;
-    assign add_bias = rd_addr == num_iterations;
+    assign add_bias = rd_addr == num_iterations - 1;
 
     enum {eDONE=1'b0, eBUSY=1'b1} ps, ns; // present state, next state
 
@@ -76,8 +76,7 @@ module conv_layer #(
           .data_o(mem_lo)
           );
 
-    // TODO: generate nodes
-    /**genvar i;
+    genvar i;
     generate
         for (i = 0; i < INPUT_LAYER_HEIGHT - KERNEL_HEIGHT + 1; i = i + 1) begin
             conv_node #(
@@ -89,14 +88,14 @@ module conv_layer #(
                 .reset_i,
                 .start_i,
                 .ps,
-                .data_i(data_i[INPUT_LAYER_HEIGHT - KERNEL_HEIGHT + i:i]),
+                .data_i(data_i[INPUT_LAYER_HEIGHT - KERNEL_HEIGHT + 1 + i:i]),
                 .weight_i(mem_lo),
                 .input_index(rd_addr),
                 .add_bias,
                 .data_o(data_o[i])
             );
         end
-    endgenerate*/
+    endgenerate
 
     // output done signal after add bias is finished
     assign done_o = ps == eDONE;

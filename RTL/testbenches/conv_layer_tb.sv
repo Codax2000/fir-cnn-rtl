@@ -35,7 +35,7 @@ module conv_layer_tb ();
 
     // goal: to ensure memory and control signals are iterating properly
     initial begin
-        data_i  <= 128'h03_01_01_01_02_02_01_02; // output should be 2d_2f
+        data_i  <= 128'h0003_0001_0001_0001_0002_0002_0001_0002; // output should be 2d_2f
         reset_i <= 1'b1;            @(posedge clk_i);
         reset_i <= 1'b0;            @(posedge clk_i);
         start_i <= 1'b1;            @(posedge clk_i);
