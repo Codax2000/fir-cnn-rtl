@@ -27,10 +27,10 @@ module conv_layer #(
     // control logic variables
     localparam num_iterations = KERNEL_HEIGHT * KERNEL_WIDTH + 1;
 
-    logic [$clog2(num_iterations)-1:0] rd_addr; // used as memory address, common loop
+    logic [$clog2(num_iterations)-1:0] rd_addr, rd_addr_lo; // used as memory address, common loop
     logic [WORD_SIZE-1:0] mem_lo;
     logic add_bias;
-    assign add_bias = rd_addr == num_iterations - 1;
+    assign add_bias = rd_addr == num_iterations;
 
     enum {eDONE=1'b0, eBUSY=1'b1} ps, ns; // present state, next state
 
@@ -62,7 +62,8 @@ module conv_layer #(
 
     // counter with memory access
     always_ff @(posedge clk_i) begin
-        if (add_bias || reset_i || ps == eDONE)
+        rd_addr_lo <= rd_addr;
+        if (reset_i || (~start_i && done_o))
             rd_addr <= '0;
         else
             rd_addr <= rd_addr + 1;
@@ -90,7 +91,7 @@ module conv_layer #(
                 .ps,
                 .data_i(data_i[INPUT_LAYER_HEIGHT - KERNEL_HEIGHT + 1 + i:i]),
                 .weight_i(mem_lo),
-                .input_index(rd_addr),
+                .input_index(rd_addr_lo),
                 .add_bias,
                 .data_o(data_o[i])
             );

@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wave_config>
+   <wave_state>
+   </wave_state>
+   <db_ref_list>
+      <db_ref path="conv_layer_tb_behav.wdb" id="1">
+         <top_modules>
+            <top_module name="conv_layer_tb" />
+            <top_module name="glbl" />
+         </top_modules>
+      </db_ref>
+   </db_ref_list>
+   <zoom_setting>
+      <ZoomStartTime time="0fs"></ZoomStartTime>
+      <ZoomEndTime time="2100001fs"></ZoomEndTime>
+      <Cursor1Time time="446351fs"></Cursor1Time>
+   </zoom_setting>
+   <column_width_setting>
+      <NameColumnWidth column_width="167"></NameColumnWidth>
+      <ValueColumnWidth column_width="80"></ValueColumnWidth>
+   </column_width_setting>
+   <WVObjectSize size="12" />
+   <wvobject fp_name="/conv_layer_tb/clk_i" type="logic">
+      <obj_property name="ElementShortName">clk_i</obj_property>
+      <obj_property name="ObjectShortName">clk_i</obj_property>
+   </wvobject>
+   <wvobject fp_name="/conv_layer_tb/reset_i" type="logic">
+      <obj_property name="ElementShortName">reset_i</obj_property>
+      <obj_property name="ObjectShortName">reset_i</obj_property>
+   </wvobject>
+   <wvobject fp_name="/conv_layer_tb/start_i" type="logic">
+      <obj_property name="ElementShortName">start_i</obj_property>
+      <obj_property name="ObjectShortName">start_i</obj_property>
+   </wvobject>
+   <wvobject fp_name="/conv_layer_tb/data_i" type="array">
+      <obj_property name="ElementShortName">data_i[3:0][1:0][7:0]</obj_property>
+      <obj_property name="ObjectShortName">data_i[3:0][1:0][7:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/conv_layer_tb/done_o" type="logic">
+      <obj_property name="ElementShortName">done_o</obj_property>
+      <obj_property name="ObjectShortName">done_o</obj_property>
+   </wvobject>
+   <wvobject fp_name="/conv_layer_tb/DUT/conv_layer_mem/addr_i" type="array">
+      <obj_property name="ElementShortName">addr_i[2:0]</obj_property>
+      <obj_property name="ObjectShortName">addr_i[2:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/conv_layer_tb/DUT/mem_lo" type="array">
+      <obj_property name="ElementShortName">mem_lo[7:0]</obj_property>
+      <obj_property name="ObjectShortName">mem_lo[7:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/conv_layer_tb/DUT/rd_addr_lo" type="array">
+      <obj_property name="ElementShortName">rd_addr_lo[2:0]</obj_property>
+      <obj_property name="ObjectShortName">rd_addr_lo[2:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/conv_layer_tb/data_o" type="array">
+      <obj_property name="ElementShortName">data_o[1:0][7:0]</obj_property>
+      <obj_property name="ObjectShortName">data_o[1:0][7:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/conv_layer_tb/DUT/add_bias" type="logic">
+      <obj_property name="ElementShortName">add_bias</obj_property>
+      <obj_property name="ObjectShortName">add_bias</obj_property>
+   </wvobject>
+   <wvobject fp_name="/conv_layer_tb/DUT/ps" type="array">
+      <obj_property name="ElementShortName">ps[31:0]</obj_property>
+      <obj_property name="ObjectShortName">ps[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="group21" type="group">
+      <obj_property name="label">Convolutional Node 0</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="isExpanded"></obj_property>
+      <wvobject fp_name="/conv_layer_tb/DUT/\genblk1[0].node /data_i" type="array">
+         <obj_property name="ElementShortName">data_i[2:0][1:0][7:0]</obj_property>
+         <obj_property name="ObjectShortName">data_i[2:0][1:0][7:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/conv_layer_tb/DUT/\genblk1[0].node /data_transpose" type="array">
+         <obj_property name="ElementShortName">data_transpose[5:0][7:0]</obj_property>
+         <obj_property name="ObjectShortName">data_transpose[5:0][7:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/conv_layer_tb/DUT/\genblk1[0].node /extra_bit" type="logic">
+         <obj_property name="ElementShortName">extra_bit</obj_property>
+         <obj_property name="ObjectShortName">extra_bit</obj_property>
+      </wvobject>
+      <wvobject fp_name="/conv_layer_tb/DUT/\genblk1[0].node /weight_i" type="array">
+         <obj_property name="ElementShortName">weight_i[7:0]</obj_property>
+         <obj_property name="ObjectShortName">weight_i[7:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/conv_layer_tb/DUT/\genblk1[0].node /mult_result" type="array">
+         <obj_property name="ElementShortName">mult_result[15:0]</obj_property>
+         <obj_property name="ObjectShortName">mult_result[15:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/conv_layer_tb/DUT/\genblk1[0].node /sum_n" type="array">
+         <obj_property name="ElementShortName">sum_n[7:0]</obj_property>
+         <obj_property name="ObjectShortName">sum_n[7:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/conv_layer_tb/DUT/\genblk1[0].node /sum_r" type="array">
+         <obj_property name="ElementShortName">sum_r[7:0]</obj_property>
+         <obj_property name="ObjectShortName">sum_r[7:0]</obj_property>
+         <obj_property name="Radix">HEXRADIX</obj_property>
+      </wvobject>
+      <wvobject fp_name="/conv_layer_tb/DUT/\genblk1[0].node /adder_in" type="array">
+         <obj_property name="ElementShortName">adder_in[7:0]</obj_property>
+         <obj_property name="ObjectShortName">adder_in[7:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/conv_layer_tb/DUT/\genblk1[0].node /input_index_cond" type="array">
+         <obj_property name="ElementShortName">input_index_cond[2:0]</obj_property>
+         <obj_property name="ObjectShortName">input_index_cond[2:0]</obj_property>
+      </wvobject>
+   </wvobject>
+</wave_config>

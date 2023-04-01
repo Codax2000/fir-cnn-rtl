@@ -26,10 +26,6 @@ module conv_node #(
     output logic [WORD_SIZE-1:0] data_o
     );
     
-    // delay index to line up weights with input data
-    logic [$clog2(KERNEL_HEIGHT * KERNEL_WIDTH + 1)-1:0] add_index;
-    assign add_index = input_index - 1;
-    
     // transpose input data into one vector
     logic [KERNEL_HEIGHT * KERNEL_WIDTH - 1:0][WORD_SIZE-1:0] data_transpose;
     
@@ -45,16 +41,25 @@ module conv_node #(
     logic extra_bit;
     logic [WORD_SIZE * 2 - 1:0] mult_result;
     logic [WORD_SIZE - 1:0] sum_n, sum_r, adder_in;
+    logic [$clog2(KERNEL_HEIGHT * KERNEL_WIDTH + 1)-1:0] input_index_cond;
     
-    assign adder_in = add_bias ? mult_result[WORD_SIZE-1:0] : weight_i;
-    assign mult_result = weight_i * data_transpose[add_index];
+    assign adder_in = add_bias ? weight_i : mult_result[WORD_SIZE-1:0];
+    assign input_index_cond = add_bias ? '0 : input_index;
+    assign mult_result = weight_i * data_transpose[input_index_cond];
     assign {extra_bit, sum_n} = adder_in + sum_r;
 
     always_ff @(posedge clk_i) begin
-        if (reset_i | add_bias)
+        if (reset_i | start_i)
             sum_r <= '0;
+        else if (ps == 1'b0)
+            sum_r <= sum_r;
         else
             sum_r <= sum_n;
+        
+        if (start_i)
+            data_o <= sum_r;
+        else
+            data_o <= data_o;
     end
 endmodule
 
