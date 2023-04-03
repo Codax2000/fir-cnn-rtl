@@ -25,30 +25,30 @@ module conv_layer #(
     output logic [INPUT_LAYER_HEIGHT - KERNEL_HEIGHT:0][WORD_SIZE-1:0] data_o);
     
     // control logic variables
-    localparam num_iterations = KERNEL_HEIGHT * KERNEL_WIDTH + 1;
+    localparam num_iterations = KERNEL_HEIGHT * KERNEL_WIDTH;
 
-    logic [$clog2(num_iterations)-1:0] rd_addr, rd_addr_lo; // used as memory address, common loop
+    logic [$clog2(num_iterations)-1:0] rd_addr, rd_addr_lo; // used as memory address
     logic [WORD_SIZE-1:0] mem_lo;
-    logic add_bias;
-    assign add_bias = rd_addr == num_iterations;
 
+    // control signal to send to neurons
+    logic add_bias;
+    assign add_bias = rd_addr_lo == num_iterations;
+
+    // FSM control logic
     enum {eDONE=1'b0, eBUSY=1'b1} ps, ns; // present state, next state
 
-    // control logic next state
     always_comb begin
         case (ps)
-            eBUSY: begin
+            eBUSY:
                 if (add_bias)
                     ns = eDONE;
                 else
                     ns = eBUSY;
-            end
-            eDONE: begin
+            eDONE:
                 if (start_i)
                     ns = eBUSY;
                 else
                     ns = eDONE;
-            end
         endcase
     end
 
@@ -58,16 +58,20 @@ module conv_layer #(
         else
             ps <= ns;
     end
-    // end control logic
+    // end FSM control logic
 
-    // counter with memory access
-    always_ff @(posedge clk_i) begin
+    up_counter #(
+        .WORD_SIZE($clog2(num_iterations)),
+        .INPUT_MAX(num_iterations)
+    ) mem_address_counter (
+        .reset_i,
+        .clk_i,
+        .start_i,
+        .data_o(rd_addr)
+    );
+
+    always_ff @(posedge clk_i) // delay read address so that memory and address reach neurons at the same time
         rd_addr_lo <= rd_addr;
-        if (reset_i || (~start_i && done_o))
-            rd_addr <= '0;
-        else
-            rd_addr <= rd_addr + 1;
-    end
 
     ROM #(.depth($clog2(num_iterations)),
           .width(WORD_SIZE),
