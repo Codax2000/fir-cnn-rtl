@@ -1,3 +1,0 @@
-Vivado Simulator 2020.2
-Time resolution is 1 ps
-$stop called at time : 2100 ns : File "C:/Users/alexk/Documents/Projects/fir-cnn-rtl/RTL/testbenches/conv_layer_tb.sv" Line 48
