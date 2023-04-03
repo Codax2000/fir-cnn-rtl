@@ -1,0 +1,12 @@
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/alexk/Documents/Projects/fir-cnn-rtl/RTL/submodules/ROM.sv" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module ROM
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/alexk/Documents/Projects/fir-cnn-rtl/RTL/submodules/conv_layer.sv" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module conv_layer
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/alexk/Documents/Projects/fir-cnn-rtl/RTL/submodules/conv_node.sv" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module conv_node
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/alexk/Documents/Projects/fir-cnn-rtl/RTL/submodules/up_counter.sv" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module up_counter
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/alexk/Documents/Projects/fir-cnn-rtl/RTL/testbenches/conv_layer_tb.sv" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module conv_layer_tb
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Users/alexk/Documents/Projects/fir-cnn-rtl/fir-cnn-rtl/fir-cnn-rtl.sim/sim_1/behav/xsim/glbl.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module glbl

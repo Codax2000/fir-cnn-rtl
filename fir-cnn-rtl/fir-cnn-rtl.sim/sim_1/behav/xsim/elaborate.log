@@ -1,0 +1,23 @@
+Vivado Simulator 2020.2
+Copyright 1986-1999, 2001-2020 Xilinx, Inc. All Rights Reserved.
+Running: D:/Programs/Xilinx/Vivado/2020.2/bin/unwrapped/win64.o/xelab.exe -wto 8624854f315c451b8bc6759aaa242c1a --incr --debug typical --relax --mt 2 -L xil_defaultlib -L uvm -L unisims_ver -L unimacro_ver -L secureip --snapshot conv_layer_tb_behav xil_defaultlib.conv_layer_tb xil_defaultlib.glbl -log elaborate.log 
+Using 2 slave threads.
+Starting static elaboration
+Pass Through NonSizing Optimizer
+WARNING: [VRFC 10-3291] enum literal 'eDONE' width (1) must match enum width (32) [C:/Users/alexk/Documents/Projects/fir-cnn-rtl/RTL/submodules/conv_layer.sv:38]
+WARNING: [VRFC 10-3291] enum literal 'eCOUNTING' width (1) must match enum width (32) [C:/Users/alexk/Documents/Projects/fir-cnn-rtl/RTL/submodules/up_counter.sv:13]
+WARNING: [VRFC 10-3091] actual bit length 32 differs from formal bit length 1 for port 'ps' [C:/Users/alexk/Documents/Projects/fir-cnn-rtl/RTL/submodules/conv_layer.sv:95]
+WARNING: [VRFC 10-3823] variable 'data_i' might have multiple concurrent drivers [C:/Users/alexk/Documents/Projects/fir-cnn-rtl/RTL/testbenches/conv_layer_tb.sv:39]
+Completed static elaboration
+Starting simulation data flow analysis
+WARNING: [XSIM 43-4100] "C:/Users/alexk/Documents/Projects/fir-cnn-rtl/fir-cnn-rtl/fir-cnn-rtl.sim/sim_1/behav/xsim/glbl.v" Line 6. Module glbl has a timescale but at least one module in design doesn't have timescale.
+WARNING: [XSIM 43-4100] "C:/Users/alexk/Documents/Projects/fir-cnn-rtl/fir-cnn-rtl/fir-cnn-rtl.sim/sim_1/behav/xsim/glbl.v" Line 6. Module glbl has a timescale but at least one module in design doesn't have timescale.
+Completed simulation data flow analysis
+Time Resolution for simulation is 1ps
+Compiling module xil_defaultlib.up_counter(WORD_SIZE=3,INPUT_MAX...
+Compiling module xil_defaultlib.ROM(init_file="conv_node_test.mi...
+Compiling module xil_defaultlib.conv_node(WORD_SIZE=8)
+Compiling module xil_defaultlib.conv_layer(WORD_SIZE=8)
+Compiling module xil_defaultlib.conv_layer_tb
+Compiling module xil_defaultlib.glbl
+Built simulation snapshot conv_layer_tb_behav
