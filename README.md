@@ -20,5 +20,7 @@ To set this project up in Vivado:
 When using git, please use the following convention to document code changes. When you are working on something,
 1. Please raise an [issue](https://github.com/Codax2000/fir-cnn-rtl/issues) to document the high-level version of what you are working on. Pictures can be added here
 2. On the right side, assign yourself under "assignees" and create a new branch under "development". Name it whatever you like, but descriptive branch names help
-3. On the GitHub desktop app, switch to the branch you just made
-4. When you are finished with your changes, create a [pull request](https://github.com/Codax2000/fir-cnn-rtl/pulls) to merge your branch back with main
+3. On the GitHub desktop app, switch to the branch you just made and make your changes
+4. In Vivado, select "File > Project > Write Tcl" and replace the "zyNet.tcl" script in the local directory
+5. Commit your changes and push to your branch
+6. When you are finished with your changes, create a [pull request](https://github.com/Codax2000/fir-cnn-rtl/pulls) to merge your branch back with main
