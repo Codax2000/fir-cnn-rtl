@@ -35,7 +35,7 @@ module fc_output_layer #(
                 else
                     ns = eREADY;
             eBUSY:
-                if (output_addr == LAYER_HEIGHT && wen_o)
+                if ((output_addr == LAYER_HEIGHT - 1) && wen_o)
                     ns = eREADY;
                 else
                     ns = eBUSY;
@@ -47,16 +47,20 @@ module fc_output_layer #(
             ps <= eREADY;
         else
             ps <= ns;
+        if (ps == eREADY && valid_i)
+            current_data <= data_i;
+        else
+            current_data <= current_data;
     end
 
     // output logic
-    assign data_o = current_data[output_addr];
+    assign data_o = ready_o ? '0 : current_data[output_addr];
     assign ready_o = ps == eREADY;
     assign wen_o = ps == eBUSY && ~full_i;
 
     up_counter_enabled #(
         .WORD_SIZE($clog2(LAYER_HEIGHT+1)),
-        .INPUT_MAX(LAYER_HEIGHT)
+        .INPUT_MAX(LAYER_HEIGHT-1)
     ) counter (
         .start_i(ready_o && valid_i),
         .clk_i,

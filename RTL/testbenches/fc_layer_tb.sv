@@ -34,11 +34,14 @@ module fc_layer_tb ();
     initial begin
         data_i <= 64'h00af_0010_0514_0136;
         reset_i <= 1'b1; @(posedge clk_i);
+        reset_i <= 1'b0; 
         valid_i <= 1'b1; @(posedge clk_i);
         valid_i <= 1'b0; @(posedge clk_i);
-        ren_i <= 1'b1; repeat(2) @(posedge clk_i);
-        ren_i <= 1'b0; @(posedge clk_i);
+        ren_i <= 1'b1; @(posedge clk_i);
+        ren_i <= 1'b0; repeat(2) @(posedge clk_i);
         ren_i <= 1'b1; repeat(4) @(posedge clk_i);
+        
+        $stop;
     end
 
 endmodule

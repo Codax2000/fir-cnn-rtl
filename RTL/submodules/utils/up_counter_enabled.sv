@@ -22,7 +22,7 @@ module up_counter_enabled #(
     always_comb begin
         case (ps)
             eCOUNTING:
-                if (data_o == INPUT_MAX - 1)
+                if (data_o == INPUT_MAX)
                     ns = eDONE;
                 else
                     ns = eCOUNTING;
