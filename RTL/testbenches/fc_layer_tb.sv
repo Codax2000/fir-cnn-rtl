@@ -1,27 +1,33 @@
 module fc_layer_tb ();
 
-    logic clk_i, reset_i, valid_i, ready_o;
-    logic [3:0][15:0] data_i;
+    fc_output_layer #(
 
-    logic wen_o, full_i;
-    logic [15:0] data_o, data_oo;
-    logic empty_o, ren_i;
+    ) input_layer (
+
+    );
+
+    double_fifo #(
+
+    ) input_fifo (
+
+    );
+
+    fc_layer #(
+
+    ) DUT (
+
+    );
 
     fc_output_layer #(
-        .WORD_SIZE(16),
-        .LAYER_HEIGHT(4)
-    ) DUT (.*);
-    
-    double_fifo fifo (
-        .clk_i,
-        .reset_i,
-        .wen_i(wen_o),
-        .ren_i,
-        .data_i(data_o),
 
-        .full_o(full_i),
-        .empty_o(empty_o),
-        .data_o(data_oo)
+    ) output_layer (
+
+    );
+
+    double_fifo #(
+
+    ) output_fifo (
+
     );
 
     parameter CLOCK_PERIOD = 100;
@@ -32,15 +38,10 @@ module fc_layer_tb ();
 
     // manipulate ren_i, data_i, valid_i,
     initial begin
-        data_i <= 64'h00af_0010_0514_0136;
+        data_i <= 32'haf_10_14_36; // test case 1
         reset_i <= 1'b1; @(posedge clk_i);
-        reset_i <= 1'b0; 
-        valid_i <= 1'b1; @(posedge clk_i);
-        valid_i <= 1'b0; @(posedge clk_i);
-        ren_i <= 1'b1; @(posedge clk_i);
-        ren_i <= 1'b0; repeat(2) @(posedge clk_i);
-        ren_i <= 1'b1; repeat(4) @(posedge clk_i);
-        
+
+        data_i <= 32'h11_01_a1_11; // test case 2
         $stop;
     end
 
