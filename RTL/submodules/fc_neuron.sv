@@ -21,7 +21,7 @@ module fc_neuron #(
     input logic reset_i,
     input logic clk_i,
 
-    output logic [WORD_SIZE-1:0] data_o;
+    output logic [WORD_SIZE-1:0] data_o
 );
 
     logic [WORD_SIZE*2-1:0] mult_result;
@@ -35,7 +35,7 @@ module fc_neuron #(
     assign data_o = sum_r[WORD_SIZE-1] ? '0 : sum_r;
 
     always_ff @(posedge clk_i) begin
-        if (reset_i || (ps == eDONE && ns == eBUSY))
+        if (reset_i)
             sum_r <= '0;
         else if (sum_en)
             sum_r <= sum_n;

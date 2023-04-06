@@ -91,7 +91,7 @@ module fc_layer #(
             fc_neuron #( 
                 .WORD_SIZE(WORD_SIZE),
                 .PREVIOUS_LAYER_HEIGHT(PREVIOUS_LAYER_HEIGHT),
-                .MEM_INIT_FILE={"fc_node_",LAYER_NUMBER, "_",i ,".mif"} // concatenate init file name together, not sure if this works
+                .MEM_INIT_FILE("fc_node_test.mif") // concatenate init file name together, not sure if this works
             ) neuron (
                 .data_i,
 
@@ -100,10 +100,10 @@ module fc_layer #(
                 .sum_en,
                 .add_bias,
 
-                .reset_i,
+                .reset_i(reset_i || (ps == eDONE && ns == eDONE)),
                 .clk_i,
 
-                .data_o(data_o[i]);
+                .data_o(data_o[i])
             );
         end
     endgenerate
