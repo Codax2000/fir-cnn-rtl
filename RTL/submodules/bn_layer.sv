@@ -2,7 +2,31 @@
 Eugene Liu
 4/4/2023
 
-Batch normalization layer. Normalizes inputs.
+Batch normalization layer. Sequentially applies normalization to inputs.
+
+Interface: Uses a valid-ready handshakes. Is a helpful producer and consumer. The data_r_i is expected to come directly from a register, and data_r_o comes directly from a register.
+Implementation: An internal counter tracks which mean/variance/scale/offset is applied to which data_r_i, and the counter automatically resets properly.
+
+parameters:
+  INPUT_SIZE        : number of inputs (the output size of the previous layer)
+  WORD_SIZE         : the number of bits of inputs/outputs
+  MEM_INIT_MEAN     : .mif file for the mean mem
+  MEM_INIT_VARIANCE : .mif file for the variance mem
+  MEM_INIT_SCALE    : .mif file for the scale mem
+  MEM_INIT_OFFSET   : .mif file for the offset mem
+
+input-outputs:
+  clk_i    : input clock
+  reset_i  : reset signal. Resets counter, controller, and data_r_o
+
+  ready_o  : handshake to prev layer. Indicates this layer is ready to recieve
+  valid_i  : handshake to prev layer. Indicates prev layer has valid data
+  data_r_i : handshake to prev layer. The data from the prev layer to this layer
+
+  valid_o  : handshake to next layer. Indicates this layer has valid data
+  ready_i  : handshake to next layer. Indicates next layer is ready to receive
+  data_r_o : handshake to next layer. The data from this layer to the next layer
+
 */
 
 module bn_layer #(
@@ -21,12 +45,12 @@ module bn_layer #(
   // handshake to prev layer
   output logic ready_o,
   input logic valid_i,
-  input signed logic [WORD_SIZE-1:0] data_i,
+  input signed logic [WORD_SIZE-1:0] data_r_i,
 
   // handshake to next layer
   output logic valid_o,
   input logic ready_i,
-  output signed logic [WORD_SIZE-1:0] data_o);
+  output signed logic [WORD_SIZE-1:0] data_r_o);
 
 
 
@@ -67,7 +91,7 @@ module bn_layer #(
 // BN_LAYER DATAPATH
 
   // up counter with enable
-  logic [$clog2(INPUT_SIZE)-1:0] count_r;
+  logic [$clog2(INPUT_SIZE)-1:0] count_r,count_n;
   always_ff @(posedge clk_i)
     count_r <= count_n;
 
@@ -90,7 +114,7 @@ module bn_layer #(
         .init_file(MEM_INIT_MEAN)) mean_mem (
     .clk_i,
     .addr_i(count_n),
-    .data_o(mean_lo)
+    .data_r_o(mean_lo)
   );
 
   // variance rom
@@ -100,7 +124,7 @@ module bn_layer #(
         .init_file(MEM_INIT_VARIANCE)) variance_mem (
     .clk_i,
     .addr_i(count_n),
-    .data_o(variance_lo)
+    .data_r_o(variance_lo)
   );
 
   // scale rom
@@ -110,7 +134,7 @@ module bn_layer #(
         .init_file(MEM_INIT_SCALE)) scale_mem (
     .clk_i,
     .addr_i(count_n),
-    .data_o(scale_lo)
+    .data_r_o(scale_lo)
   );
 
   // offset rom
@@ -120,15 +144,15 @@ module bn_layer #(
         .init_file(MEM_INIT_OFFSET)) offset_mem (
     .clk_i,
     .addr_i(count_n),
-    .data_o(offset_lo)
+    .data_r_o(offset_lo)
   );
 
   // forward computation logic
   always_ff @(posedge clk_i) begin
     if (en_li)
-      data_o <= ((data_i - mean_lo) * variance_lo * scale_lo) + offset_lo;
+      data_r_o <= ((data_r_i - mean_lo) * variance_lo * scale_lo) + offset_lo;
     else
-      data_o <= data_o;
+      data_r_o <= data_r_o;
   end
 
 endmodule
