@@ -24,3 +24,9 @@ When using git, please use the following convention to document code changes. Wh
 4. In Vivado, select "File > Project > Write Tcl" and replace the "zyNet.tcl" script in the local directory
 5. Commit your changes and push to your branch
 6. When you are finished with your changes, create a [pull request](https://github.com/Codax2000/fir-cnn-rtl/pulls) to merge your branch back with main
+
+## Suggested Vivado Project Setup
+1. Keep the same directory structure as this directory
+2. Write all verilog in one directory and link to it from the project, don't store verilog files in the Vivado project directory.
+3. For each testbench, create a separate simulation set, just for that testbench, so that we can easily switch back to it
+4. Use calls to `assert_equals` instead of inspecting waveforms visually
