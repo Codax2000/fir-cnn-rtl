@@ -1,3 +1,4 @@
+`timescale 1ns / 1ps
 /**
 Alex Knowlton
 4/4/2023
@@ -26,7 +27,7 @@ module fc_output_layer #(
     logic [LAYER_HEIGHT-1:0][WORD_SIZE-1:0] current_data;
 
     // control logic
-    enum {eREADY=1'b1, eBUSY=1'b0} ps, ns;
+    enum logic {eREADY=1'b1, eBUSY=1'b0} ps, ns;
     always_comb begin
         case (ps)
             eREADY:

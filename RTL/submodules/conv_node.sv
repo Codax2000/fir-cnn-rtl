@@ -1,3 +1,4 @@
+`timescale 1ns / 1ps
 /**
 Alex Knowlton
 2/18/2023

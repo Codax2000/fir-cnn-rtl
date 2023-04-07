@@ -1,3 +1,4 @@
+`timescale 1ns / 1ps
 /**
 on start, counts up from 0 to INPUT_MAX, inclusive. starts counting up immediately, so will
 output 1 a cycle after start_i is asserted, and so on.

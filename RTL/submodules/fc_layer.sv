@@ -1,3 +1,4 @@
+`timescale 1ns / 1ps
 /**
 Alex Knowlton
 4/3/2023
@@ -6,20 +7,21 @@ Rewritten fully-connected layer for readability and functionality, since this su
 layers of differing sizes. Assumes FIFO on both input and output.
 */
 
+
 module fc_layer #(
     parameter WORD_SIZE=16,
-    parameter LAYER_HEIGHT=5,
+    parameter LAYER_HEIGHT=2,
     parameter PREVIOUS_LAYER_HEIGHT=4,
     parameter LAYER_NUMBER=1 ) (
     
-    // demanding interface
-    input logic [WORD_SIZE-1:0] data_i,
+    // helpful input interface
+    input logic signed [WORD_SIZE-1:0] data_i,
     input logic empty_i,
-    output logic ren_o,
+    output logic ren_o, // also yumi_o, but not using that convention here
     
-    // demanding interface
-    output logic valid_i,
-    input logic ready_o,
+    // helpful output interface
+    output logic valid_o,
+    input logic ready_i,
     output logic [LAYER_HEIGHT-1:0][WORD_SIZE-1:0] data_o,
 
     input logic reset_i,
@@ -32,7 +34,7 @@ module fc_layer #(
 
     // manage inputs internally and pass them to neurons
     // send neurons control signals, they are just a datapath
-    logic add_bias, sum_en;
+    logic add_bias, add_bias_delay, sum_en; // delay add bias to give neuron memory time to read
     logic [$clog2(PREVIOUS_LAYER_HEIGHT+1)-1:0] mem_addr;
 
     // FSM for control signals
@@ -42,13 +44,13 @@ module fc_layer #(
     always_comb begin
         case (ps)
             eBUSY:
-                if (mem_addr == (LAYER_HEIGHT + 1)) // computation is done
+                if (add_bias_delay) // computation is done
                     ns = eDONE;
                 else
                     ns = eBUSY;
             eDONE:
-                // if handshake happens, then go back to busy
-                if (valid_i && ready_o)
+                // if output handshake happens, then go back to busy
+                if (valid_o && ready_i)
                     ns = eBUSY;
                 else
                     ns = eDONE;
@@ -63,49 +65,56 @@ module fc_layer #(
             ps <= ns;
     end
 
-    // internal control logic
-    assign add_bias = (mem_addr == LAYER_HEIGHT + 1) && !empty_i;
-    assign sum_en = (ps == eBUSY) && !empty_i;
-
-    // memory address counter with enable signal
-    // start on first cycle of busy cycle
-    logic start_mem_counter;
-    always_ff @(posedge clk_i)
-        start_mem_counter <= (ps == eDONE) && (ns == eBUSY);
-
+    // output logic
+    assign ren_o = (ps == eBUSY) && !empty_i;
+    assign valid_o = ps == eDONE;
+    
+    // up counter for memory addressing
+    logic en_count;
+    assign en_count = ren_o || add_bias;
     up_counter_enabled #(
         .WORD_SIZE($clog2(PREVIOUS_LAYER_HEIGHT+1)),
-        .INPUT_MAX(LAYER_HEIGHT + 1)
+        .INPUT_MAX(PREVIOUS_LAYER_HEIGHT)
     ) mem_addr_counter (
-        .start_i(start_mem_counter),
+        .start_i(1'b1), // tentative, but appears not to need a start signal, since it is enabled
         .clk_i,
         .reset_i,
-        .en_i(!empty_i && ps == eBUSY),
+        .en_i(en_count),
         .data_o(mem_addr)
     );
 
-    // TODO: Generate neurons
+    // control signals for neurons
+    logic signed [WORD_SIZE-1:0] data_to_neurons;
+    assign add_bias = mem_addr == PREVIOUS_LAYER_HEIGHT;
+    always_ff @(posedge clk_i) begin
+        add_bias_delay <= add_bias;
+        sum_en <= en_count; // strange coincidence, but it works
+        data_to_neurons <= data_i;
+    end
+
+    // generate neurons
     genvar i;
     generate
         for (i = 0; i < LAYER_HEIGHT; i = i + 1) begin
-            fc_neuron #( 
+            fc_neuron #(
                 .WORD_SIZE(WORD_SIZE),
                 .PREVIOUS_LAYER_HEIGHT(PREVIOUS_LAYER_HEIGHT),
-                .MEM_INIT_FILE("fc_node_test.mif") // concatenate init file name together, not sure if this works
+                .LAYER_NUMBER(LAYER_NUMBER),
+                .NEURON_NUMBER(i)
             ) neuron (
-                .data_i,
+                .data_i(data_to_neurons),
 
                 // control signals
                 .mem_addr_i(mem_addr),
                 .sum_en,
-                .add_bias,
+                .add_bias(add_bias_delay),
 
-                .reset_i(reset_i || (ps == eDONE && ns == eDONE)),
+                .reset_i(reset_i || (valid_o && ready_i)),
                 .clk_i,
 
                 .data_o(data_o[i])
             );
         end
     endgenerate
-
+    
 endmodule

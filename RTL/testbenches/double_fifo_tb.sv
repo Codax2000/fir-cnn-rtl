@@ -1,3 +1,5 @@
+`timescale 1ns / 1ps
+
 module double_fifo_tb ();
 
     logic clk_i, reset_i, wen_i, ren_i;

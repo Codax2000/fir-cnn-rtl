@@ -1,4 +1,4 @@
-
+`timescale 1ns / 1ps
 
 module conv_layer_tb ();
 

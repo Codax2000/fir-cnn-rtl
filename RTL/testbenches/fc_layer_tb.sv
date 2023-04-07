@@ -1,7 +1,5 @@
 `timescale 1ns / 1ps
 
-`include "utility_functions.sv"
-
 module fc_layer_tb ();
 
     localparam WORD_SIZE = 8;
@@ -67,7 +65,7 @@ module fc_layer_tb ();
     fc_layer #(
         .WORD_SIZE(WORD_SIZE),
         .LAYER_HEIGHT(TEST_LAYER_HEIGHT),
-        .PREVIOUS_LAYER_HEIGHT(PREVIOUS_LAYER_HEIGHT),
+        .PREVIOUS_LAYER_HEIGHT(INPUT_LAYER_HEIGHT),
         .LAYER_NUMBER(1)
     ) DUT (
         // demanding interface
@@ -76,8 +74,8 @@ module fc_layer_tb ();
         .ren_o(ren_dut),
 
         // demanding interface
-        .valid_i(valid_output_layer),
-        .ready_o(ready_output_layer),
+        .valid_o(valid_output_layer),
+        .ready_i(ready_output_layer),
         .data_o(val_out),
 
         .reset_i(reset),
@@ -111,7 +109,7 @@ module fc_layer_tb ();
         .reset_i(reset),
 
         .wen_i(wen_output_fifo),
-        .ren_i(ren_output),
+        .ren_i(ren_out),
         .data_i(output_layer_out),
 
         .full_o(full_output_fifo),
@@ -127,11 +125,31 @@ module fc_layer_tb ();
 
     // manipulate ren_i, data_i, valid_i,
     initial begin
-        data_i <= 32'haf_10_14_36; // test case 1
-        ren_output <= 1'b1; // just leave on for now
-        reset_i <= 1'b1; @(posedge clk);
-
-        data_i <= 32'h11_01_a1_11; // test case 2
+        val_in <= 32'h04_01_03_02; // test case 1
+        ren_out <= 1'b0; // just leave off for now
+        reset <= 1'b1;          @(posedge clk);
+        reset <= 1'b0;
+        valid_input <= 1'b1;    @(posedge clk);
+        valid_input <= 1'b0;    @(negedge empty_out);
+        ren_out <= 1'b1;        @(posedge clk);
+        val_in <= 32'h18_21_15_11; // test case 2, something that will definitely cause overflow on at least one input
+        assert(8'h53 == output_fifo_out)
+            else $display("Assertion Error 1: Expected %h, Received %h", 8'h53, output_fifo_out);
+        ren_out <= 1'b0;        @(posedge clk);
+        valid_input <= 1'b1;
+        ren_out <= 1'b1;        @(posedge clk);
+        assert(8'hd9 == output_fifo_out)
+            else $display("Assertion Error 2: Expected %h, Received %h", 8'hd9, output_fifo_out);
+        valid_input <= 1'b0;
+        ren_out <= 1'b0;        @(negedge empty_out);
+        ren_out <= 1'b1;        @(posedge clk);
+        assert(8'h7f == output_fifo_out)
+            else $display("Assertion Error 3: Overflow should have occurred");
+        ren_out <= 1'b0;        @(posedge clk);
+        ren_out <= 1'b1;        @(posedge clk);
+        assert(8'h7f == output_fifo_out)
+            else $display("Assertion Error 3: Overflow should have occurred");
+                                @(posedge clk);
         $stop;
     end
 
