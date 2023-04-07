@@ -144,11 +144,11 @@ module fc_layer_tb ();
         ren_out <= 1'b0;        @(negedge empty_out);
         ren_out <= 1'b1;        @(posedge clk);
         assert(8'h7f == output_fifo_out)
-            else $display("Assertion Error 3: Overflow should have occurred");
+            else $display("Assertion Error 3: Expected %h, Received %h", 8'h7f, output_fifo_out);
         ren_out <= 1'b0;        @(posedge clk);
         ren_out <= 1'b1;        @(posedge clk);
         assert(8'h7f == output_fifo_out)
-            else $display("Assertion Error 3: Overflow should have occurred");
+            else $display("Assertion Error 4: Expected %h, Received %h", 8'h7f, output_fifo_out);
                                 @(posedge clk);
         $stop;
     end

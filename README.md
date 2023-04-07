@@ -28,8 +28,22 @@ When using git, please use the following convention to document code changes. Wh
 5. Commit your changes and push to your branch
 6. When you are finished with your changes, create a [pull request](https://github.com/Codax2000/fir-cnn-rtl/pulls) to merge your branch back with main
 
-## Suggested Vivado Project Setup
+## Vivado Tips and Tricks
 1. Keep the same directory structure as this directory
-2. Write all verilog in one directory and link to it from the project, don't store verilog files in the Vivado project directory.
+2. Write all verilog in one directory and link to it from the project, don't store verilog files in the Vivado project directory. File structure should look like this:
+```
+zyNet
+   | mem
+   | RTL
+      | submodules
+      | testbenches
+   | Waveform Configurations
+   | zyNet // this folder ignored by .gitignore file
+      | zyNet.cache
+      | zyNet.hw
+      | zyNet.ip_user_files
+      | zyNet.sim
+   | zyNet.tcl // run this file in tcl terminal to recreate project
+```
 3. For each testbench, create a separate simulation set, just for that testbench, so that we can easily switch back to it
 4. Use calls to `assert_equals` instead of inspecting waveforms visually
