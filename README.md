@@ -1,7 +1,7 @@
-# fir-cnn-rtl
+# FAST Lab ZyNet
 SystemVerilog for implementing MATLAB neural net onto Xilinx RFSoC.
 
-#### Alex Knowlton, Ahmed Arefaat, Elpida Karepepera, Eugene Liu
+#### Xichen Li Ahmed Arefaat, Elpida Karepepera, Eugene Liu, Alex Knowlton
 
 ## Setting things up in Vivado
 To set this project up in Vivado:
@@ -13,11 +13,6 @@ To set this project up in Vivado:
 4. In Vivado, under "Tools", select "Run Tcl Script"
 5. Run the "zyNet.tcl" script
 6. To confirm that the script ran properly, click "Simulation", then "Run behavioral simulation", and the testbench for the convolutional layer should pop up.
-
-## Helpful Links
-- About [SVA Assertions](https://www.systemverilog.io/verification/sva-basics/#:~:text=SystemVerilog%20Assertions%20%28SVA%29%20is%20essentially%20a%20language%20construct,in%20a%20SystemVerilog%20format%20which%20tools%20can%20understand.)
-- YouTube tutorial on [fully-connected neural nets](https://www.youtube.com/watch?v=rw_JITpbh3k&list=PLJePd8QU_LYKZwJnByZ8FHDg5l1rXtcIq)
-- [Xilinx documentation on testbenches](https://www.xilinx.com/content/dam/xilinx/support/documents/university/Vivado-Teaching/HDL-Design/2015x/Verilog/docs-pdf/lab4.pdf)
 
 ## Using Version Control
 When using git, please use the following convention to document code changes. When you are working on something,
@@ -45,5 +40,10 @@ zyNet
       | zyNet.sim
    | zyNet.tcl // run this file in tcl terminal to recreate project
 ```
-3. For each testbench, create a separate simulation set, just for that testbench, so that we can easily switch back to it
-4. Use calls to `assert_equals` instead of inspecting waveforms visually
+3. For each testbench, create a separate simulation set, just for that testbench, so that we can easily switch back to it if we need
+4. Use calls to `assert` instead of inspecting waveforms visually, makes for easier re-testing after some time or after a change
+
+## Helpful Links
+- YouTube tutorial on [fully-connected neural nets](https://www.youtube.com/watch?v=rw_JITpbh3k&list=PLJePd8QU_LYKZwJnByZ8FHDg5l1rXtcIq)
+- About [SVA Assertions](https://www.systemverilog.io/verification/sva-basics/#:~:text=SystemVerilog%20Assertions%20%28SVA%29%20is%20essentially%20a%20language%20construct,in%20a%20SystemVerilog%20format%20which%20tools%20can%20understand.)
+- Xilinx [documentation on testbenches](https://www.xilinx.com/content/dam/xilinx/support/documents/university/Vivado-Teaching/HDL-Design/2015x/Verilog/docs-pdf/lab4.pdf)
