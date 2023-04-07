@@ -15,7 +15,7 @@ module fc_layer #(
     // demanding interface
     input logic [WORD_SIZE-1:0] data_i,
     input logic empty_i,
-    output logic wen_o,
+    output logic ren_o,
     
     // demanding interface
     output logic valid_i,
