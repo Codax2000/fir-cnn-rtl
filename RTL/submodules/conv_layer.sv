@@ -20,10 +20,14 @@ module conv_layer #(
     input logic clk_i,
     input logic reset_i,
     
-    input logic start_i,
+    // helpful input interface
+    input logic valid_i,
+    output logic ready_o,
     input logic [INPUT_LAYER_HEIGHT-1:0][KERNEL_WIDTH-1:0][WORD_SIZE-1:0] data_i,
     
-    output logic done_o,
+    // helpful output interface
+    output logic valid_o,
+    input logic yumi_i,
     output logic [INPUT_LAYER_HEIGHT - KERNEL_HEIGHT:0][WORD_SIZE-1:0] data_o);
     
     // control logic variables
