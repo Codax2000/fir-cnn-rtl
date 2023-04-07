@@ -114,7 +114,7 @@ module bn_layer #(
         .init_file(MEM_INIT_MEAN)) mean_mem (
     .clk_i,
     .addr_i(count_n),
-    .data_r_o(mean_lo)
+    .data_o(mean_lo)
   );
 
   // variance rom
@@ -124,7 +124,7 @@ module bn_layer #(
         .init_file(MEM_INIT_VARIANCE)) variance_mem (
     .clk_i,
     .addr_i(count_n),
-    .data_r_o(variance_lo)
+    .data_o(variance_lo)
   );
 
   // scale rom
@@ -134,7 +134,7 @@ module bn_layer #(
         .init_file(MEM_INIT_SCALE)) scale_mem (
     .clk_i,
     .addr_i(count_n),
-    .data_r_o(scale_lo)
+    .data_o(scale_lo)
   );
 
   // offset rom
@@ -144,7 +144,7 @@ module bn_layer #(
         .init_file(MEM_INIT_OFFSET)) offset_mem (
     .clk_i,
     .addr_i(count_n),
-    .data_r_o(offset_lo)
+    .data_o(offset_lo)
   );
 
   // forward computation logic
