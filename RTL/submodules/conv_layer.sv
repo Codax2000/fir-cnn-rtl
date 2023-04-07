@@ -1,3 +1,4 @@
+`timescale 1ns / 1ps
 /**
 Alex Knowlton
 2/28/2023
@@ -13,7 +14,8 @@ module conv_layer #(
     parameter KERNEL_HEIGHT=3,
     parameter KERNEL_WIDTH=2,
     parameter WORD_SIZE=16,
-    parameter MEM_INIT="conv_node_test.mif") (
+    parameter LAYER_NUMBER=1,
+    parameter CONVOLUTION_NUMBER=0) (
     
     input logic clk_i,
     input logic reset_i,
@@ -35,7 +37,7 @@ module conv_layer #(
     assign add_bias = rd_addr_lo == num_iterations;
 
     // FSM control logic
-    enum {eDONE=1'b0, eBUSY=1'b1} ps, ns; // present state, next state
+    enum logic {eDONE=1'b0, eBUSY=1'b1} ps, ns; // present state, next state
 
     always_comb begin
         case (ps)
@@ -75,7 +77,10 @@ module conv_layer #(
 
     ROM #(.depth($clog2(num_iterations)),
           .width(WORD_SIZE),
-          .init_file(MEM_INIT)) conv_layer_mem (
+          .neuron_type(0),
+          .layer_number(LAYER_NUMBER),
+          .neuron_number(CONVOLUTION_NUMBER) // always 0 for convolutional
+    ) conv_layer_mem (
           .clk_i,
           .addr_i(rd_addr),
           .data_o(mem_lo)

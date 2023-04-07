@@ -1,3 +1,5 @@
+`timescale 1ns / 1ps
+
 module ROM_tb ();
 
     logic clk_i;
