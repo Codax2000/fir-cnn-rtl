@@ -45,12 +45,12 @@ module bn_layer #(
   // handshake to prev layer
   output logic ready_o,
   input logic valid_i,
-  input signed logic [WORD_SIZE-1:0] data_r_i,
+  input logic signed [WORD_SIZE-1:0] data_r_i,
 
   // handshake to next layer
   output logic valid_o,
   input logic ready_i,
-  output signed logic [WORD_SIZE-1:0] data_r_o);
+  output logic signed [WORD_SIZE-1:0] data_r_o);
 
 
 

@@ -1,9 +1,9 @@
 /**
-on start, counts up from 0 to INPUT_MAX, inclusive. starts counting up immediately, so will
+on start, counts up from 0 to INPUT_MAX, inclusive, when en_i is high. starts counting up immediately, so will
 output 1 a cycle after start_i is asserted, and so on.
 */
 
-module up_counter #(
+module up_counter_enabled #(
     
     parameter WORD_SIZE = 16,
     parameter INPUT_MAX = 10) (
@@ -11,6 +11,7 @@ module up_counter #(
     input logic start_i,
     input logic clk_i,
     input logic reset_i,
+    input logic en_i,
 
     output logic [WORD_SIZE-1:0] data_o
     );
@@ -21,7 +22,7 @@ module up_counter #(
     always_comb begin
         case (ps)
             eCOUNTING:
-                if (data_o == INPUT_MAX - 1)
+                if (data_o == INPUT_MAX)
                     ns = eDONE;
                 else
                     ns = eCOUNTING;
@@ -42,8 +43,10 @@ module up_counter #(
 
     // counting logic
     always_ff @(posedge clk_i) begin
-        if (ps == eCOUNTING || start_i) // start counting on the next clock cycle
+        if ((ps == eCOUNTING || start_i) && en_i) // start counting on the next clock cycle
             data_o <= data_o + 1;
+        else if ((ps == eCOUNTING || start_i) && ~en_i)
+            data_o <= data_o;
         else
             data_o <= '0;
     end
