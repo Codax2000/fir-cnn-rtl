@@ -11,15 +11,19 @@
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="1266667fs"></ZoomStartTime>
-      <ZoomEndTime time="3466667fs"></ZoomEndTime>
+      <ZoomStartTime time="0fs"></ZoomStartTime>
+      <ZoomEndTime time="3100001fs"></ZoomEndTime>
       <Cursor1Time time="3100000fs"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
       <NameColumnWidth column_width="167"></NameColumnWidth>
       <ValueColumnWidth column_width="60"></ValueColumnWidth>
    </column_width_setting>
-   <WVObjectSize size="4" />
+   <WVObjectSize size="7" />
+   <wvobject fp_name="/conv_layer_tb/start_i" type="logic">
+      <obj_property name="ElementShortName">start_i</obj_property>
+      <obj_property name="ObjectShortName">start_i</obj_property>
+   </wvobject>
    <wvobject fp_name="group221" type="group">
       <obj_property name="label">Shift Register</obj_property>
       <obj_property name="DisplayName">label</obj_property>
@@ -31,13 +35,11 @@
       <wvobject fp_name="/conv_layer_tb/DUT/input_shift_reg/data_o" type="array">
          <obj_property name="ElementShortName">data_o[5:0][7:0]</obj_property>
          <obj_property name="ObjectShortName">data_o[5:0][7:0]</obj_property>
-         <obj_property name="isExpanded"></obj_property>
       </wvobject>
    </wvobject>
    <wvobject fp_name="group230" type="group">
       <obj_property name="label">DUT Signals</obj_property>
       <obj_property name="DisplayName">label</obj_property>
-      <obj_property name="isExpanded"></obj_property>
       <wvobject fp_name="/conv_layer_tb/DUT/start_i" type="logic">
          <obj_property name="ElementShortName">start_i</obj_property>
          <obj_property name="ObjectShortName">start_i</obj_property>
@@ -90,7 +92,6 @@
    <wvobject fp_name="group245" type="group">
       <obj_property name="label">LU 0</obj_property>
       <obj_property name="DisplayName">label</obj_property>
-      <obj_property name="isExpanded"></obj_property>
       <wvobject fp_name="/conv_layer_tb/DUT/\genblk1[0].LU /mem_i" type="array">
          <obj_property name="ElementShortName">mem_i[7:0]</obj_property>
          <obj_property name="ObjectShortName">mem_i[7:0]</obj_property>
@@ -114,7 +115,6 @@
       <wvobject fp_name="group251" type="group">
          <obj_property name="label">Sub-signals</obj_property>
          <obj_property name="DisplayName">label</obj_property>
-         <obj_property name="isExpanded"></obj_property>
          <wvobject fp_name="/conv_layer_tb/DUT/\genblk1[0].LU /mult_result" type="array">
             <obj_property name="ElementShortName">mult_result[15:0]</obj_property>
             <obj_property name="ObjectShortName">mult_result[15:0]</obj_property>
@@ -139,7 +139,6 @@
       <wvobject fp_name="group257" type="group">
          <obj_property name="label">Overflow</obj_property>
          <obj_property name="DisplayName">label</obj_property>
-         <obj_property name="isExpanded"></obj_property>
          <wvobject fp_name="/conv_layer_tb/DUT/\genblk1[0].LU /overflow_tracker/mult_result" type="array">
             <obj_property name="ElementShortName">mult_result[15:0]</obj_property>
             <obj_property name="ObjectShortName">mult_result[15:0]</obj_property>
@@ -253,5 +252,13 @@
             <obj_property name="ObjectShortName">underflow_flag</obj_property>
          </wvobject>
       </wvobject>
+   </wvobject>
+   <wvobject fp_name="/conv_layer_tb/reset_i" type="logic">
+      <obj_property name="ElementShortName">reset_i</obj_property>
+      <obj_property name="ObjectShortName">reset_i</obj_property>
+   </wvobject>
+   <wvobject fp_name="/conv_layer_tb/clk_i" type="logic">
+      <obj_property name="ElementShortName">clk_i</obj_property>
+      <obj_property name="ObjectShortName">clk_i</obj_property>
    </wvobject>
 </wave_config>
