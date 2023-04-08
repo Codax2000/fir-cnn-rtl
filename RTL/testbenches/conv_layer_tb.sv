@@ -82,6 +82,7 @@ module conv_layer_tb ();
         data_i <= 8'h01;    @(posedge clk_i);
         data_i <= '0;       @(posedge clk_i);
                             @(posedge valid_o);
+                            @(posedge clk_i);
         assert (data_o == 16'h43_5c)
             else $display("Assertion Error 1: Expected %h, Received %h", 16'h43_5c, data_o);
         yumi_i <= 1'b1;     @(posedge clk_i);
@@ -100,6 +101,7 @@ module conv_layer_tb ();
         data_i <= 8'h06;    @(posedge clk_i);
         data_i <= '0;       @(posedge clk_i);
                             @(posedge valid_o);
+                            @(posedge clk_i);
         assert (data_o == 16'h7f_6e)
             else $display("Assertion Error 2: Expected %h, Received %h", 16'h7f_6e, data_o);
         yumi_i <= 1'b1;     @(posedge clk_i);
