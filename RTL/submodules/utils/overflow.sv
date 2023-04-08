@@ -7,6 +7,7 @@ Overflow module.
 
 parameters
     WORD_SIZE:  number of bits in data
+    INT_BITS :  number of bits in int
 inputs:
     mult_result     : result of multiplier
     extra_add_bit   : carry out of sum
@@ -21,10 +22,11 @@ outputs:
 */
 
 module overflow #(
-    parameter WORD_SIZE=16 ) (
+    parameter WORD_SIZE=16,
+    parameter INT_BITS=8 ) (
     
     input logic [2*WORD_SIZE-1:0] mult_result,
-    input logic extra_add_bit,
+    input logic sum_carry_out,
     input logic [WORD_SIZE-1:0] sum_n,
     input logic clk_i,
     input logic reset_i,
@@ -36,10 +38,15 @@ module overflow #(
 
     // overflow/underflow signals, purely combinational
     logic overflow, underflow, overflow_flag, underflow_flag;
-    assign overflow = ({extra_add_bit, sum_n[WORD_SIZE-1]} == 2'b01) ||                                     // addition overflow
-                      ((mult_result[2*WORD_SIZE-1] == 1'b0) && mult_result[2*WORD_SIZE-1:WORD_SIZE-1] != '0); // multiplication overflow
-    assign underflow = ({extra_add_bit, sum_n[WORD_SIZE-1]} == 2'b10) ||                                    // addition underflow
-                       ((mult_result[2*WORD_SIZE-1] == 1'b1) && mult_result[2*WORD_SIZE-1:WORD_SIZE-1] != '1);// multiplication underflow
+    logic overflow_add, overflow_mult, underflow_add, underflow_mult;
+    
+    assign overflow_add = {sum_carry_out, sum_n[WORD_SIZE-1]} == 2'b01;
+    assign overflow_mult = (mult_result[2*WORD_SIZE-1] == 1'b0) && mult_result[2*WORD_SIZE-1:2*WORD_SIZE-INT_BITS-1] != '0;
+    assign underflow_add = {sum_carry_out, sum_n[WORD_SIZE-1]} == 2'b10;
+    assign underflow_mult = (mult_result[2*WORD_SIZE-1] == 1'b1) && mult_result[2*WORD_SIZE-1:2*WORD_SIZE-INT_BITS-1] != '1;
+    
+    assign overflow = overflow_add || overflow_mult;
+    assign underflow = underflow_add || underflow_mult;
     
     always_ff @(posedge clk_i) begin
         if (reset_i)

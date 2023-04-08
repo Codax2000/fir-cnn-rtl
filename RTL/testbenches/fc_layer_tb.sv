@@ -64,6 +64,7 @@ module fc_layer_tb ();
 
     fc_layer #(
         .WORD_SIZE(WORD_SIZE),
+        .INT_BITS(WORD_SIZE),
         .LAYER_HEIGHT(TEST_LAYER_HEIGHT),
         .PREVIOUS_LAYER_HEIGHT(INPUT_LAYER_HEIGHT),
         .LAYER_NUMBER(1)
