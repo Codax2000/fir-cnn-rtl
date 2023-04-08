@@ -67,6 +67,13 @@ module conv_layer #(
         endcase
     end
 
+    always_ff @(posedge clk_i) begin
+        if (reset_i)
+            ps <= eREADY;
+        else
+            ps <= ns;
+    end
+
     // counter for memory address
     up_counter #(
         .WORD_SIZE($clog2(NUM_ITERATIONS+1)),
@@ -117,11 +124,12 @@ module conv_layer #(
                 .add_bias,
                 .sum_en,
                 .clk_i,
-                .reset_i,
+                .reset_i(reset_i || (valid_o && yumi_i)),
                 .data_o(data_o[i])
             );
         end
     endgenerate
 
+    assign valid_o = ps == eDONE;
 
 endmodule
