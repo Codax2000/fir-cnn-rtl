@@ -10,6 +10,7 @@ layers of differing sizes. Assumes FIFO on both input and output.
 
 module fc_layer #(
     parameter WORD_SIZE=16,
+    parameter INT_BITS=8,
     parameter LAYER_HEIGHT=2,
     parameter PREVIOUS_LAYER_HEIGHT=4,
     parameter LAYER_NUMBER=1 ) (
@@ -33,8 +34,7 @@ module fc_layer #(
     );
 
     // manage inputs internally and pass them to neurons
-    // send neurons control signals, they are just a datapath
-    logic add_bias, add_bias_delay, sum_en; // delay add bias to give neuron memory time to read
+    logic add_bias, add_bias_delay, sum_en; // delay add_bias to give neuron memory time to read
     logic [$clog2(PREVIOUS_LAYER_HEIGHT+1)-1:0] mem_addr;
 
     // FSM for control signals
@@ -98,6 +98,7 @@ module fc_layer #(
         for (i = 0; i < LAYER_HEIGHT; i = i + 1) begin
             fc_neuron #(
                 .WORD_SIZE(WORD_SIZE),
+                .INT_BITS(INT_BITS),
                 .PREVIOUS_LAYER_HEIGHT(PREVIOUS_LAYER_HEIGHT),
                 .LAYER_NUMBER(LAYER_NUMBER),
                 .NEURON_NUMBER(i)

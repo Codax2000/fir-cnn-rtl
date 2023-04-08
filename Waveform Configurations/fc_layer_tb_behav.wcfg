@@ -11,13 +11,13 @@
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="229256fs"></ZoomStartTime>
-      <ZoomEndTime time="2294256fs"></ZoomEndTime>
-      <Cursor1Time time="1654470fs"></Cursor1Time>
+      <ZoomStartTime time="450000fs"></ZoomStartTime>
+      <ZoomEndTime time="3150000fs"></ZoomEndTime>
+      <Cursor1Time time="2700000fs"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
-      <NameColumnWidth column_width="161"></NameColumnWidth>
-      <ValueColumnWidth column_width="73"></ValueColumnWidth>
+      <NameColumnWidth column_width="203"></NameColumnWidth>
+      <ValueColumnWidth column_width="85"></ValueColumnWidth>
    </column_width_setting>
    <WVObjectSize size="8" />
    <wvobject fp_name="/fc_layer_tb/clk" type="logic">
@@ -200,45 +200,65 @@
             <obj_property name="ElementShortName">data_o[7:0]</obj_property>
             <obj_property name="ObjectShortName">data_o[7:0]</obj_property>
          </wvobject>
-         <wvobject fp_name="/fc_layer_tb/DUT/\genblk1[0].neuron /mult_result" type="array">
+         <wvobject fp_name="/fc_layer_tb/DUT/\genblk1[0].neuron /LU/mult_result" type="array">
             <obj_property name="ElementShortName">mult_result[15:0]</obj_property>
             <obj_property name="ObjectShortName">mult_result[15:0]</obj_property>
          </wvobject>
-         <wvobject fp_name="/fc_layer_tb/DUT/\genblk1[0].neuron /sum_in" type="array">
-            <obj_property name="ElementShortName">sum_in[7:0]</obj_property>
-            <obj_property name="ObjectShortName">sum_in[7:0]</obj_property>
+         <wvobject fp_name="/fc_layer_tb/DUT/\genblk1[0].neuron /LU/add_in" type="array">
+            <obj_property name="ElementShortName">add_in[7:0]</obj_property>
+            <obj_property name="ObjectShortName">add_in[7:0]</obj_property>
          </wvobject>
-         <wvobject fp_name="/fc_layer_tb/DUT/\genblk1[0].neuron /sum_n" type="array">
+         <wvobject fp_name="/fc_layer_tb/DUT/\genblk1[0].neuron /LU/sum_n" type="array">
             <obj_property name="ElementShortName">sum_n[7:0]</obj_property>
             <obj_property name="ObjectShortName">sum_n[7:0]</obj_property>
          </wvobject>
-         <wvobject fp_name="/fc_layer_tb/DUT/\genblk1[0].neuron /sum_r" type="array">
+         <wvobject fp_name="/fc_layer_tb/DUT/\genblk1[0].neuron /LU/sum_r" type="array">
             <obj_property name="ElementShortName">sum_r[7:0]</obj_property>
             <obj_property name="ObjectShortName">sum_r[7:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/fc_layer_tb/DUT/\genblk1[0].neuron /LU/sum_carry_out" type="logic">
+            <obj_property name="ElementShortName">sum_carry_out</obj_property>
+            <obj_property name="ObjectShortName">sum_carry_out</obj_property>
          </wvobject>
          <wvobject fp_name="group73" type="group">
             <obj_property name="label">Overflow</obj_property>
             <obj_property name="DisplayName">label</obj_property>
             <obj_property name="isExpanded"></obj_property>
-            <wvobject fp_name="/fc_layer_tb/DUT/\genblk1[0].neuron /extra_add_bit" type="logic">
-               <obj_property name="ElementShortName">extra_add_bit</obj_property>
-               <obj_property name="ObjectShortName">extra_add_bit</obj_property>
+            <wvobject fp_name="/fc_layer_tb/DUT/\genblk1[0].neuron /LU/overflow_tracker/sum_carry_out" type="logic">
+               <obj_property name="ElementShortName">sum_carry_out</obj_property>
+               <obj_property name="ObjectShortName">sum_carry_out</obj_property>
             </wvobject>
-            <wvobject fp_name="/fc_layer_tb/DUT/\genblk1[0].neuron /overflow" type="logic">
+            <wvobject fp_name="/fc_layer_tb/DUT/\genblk1[0].neuron /LU/overflow_tracker/overflow" type="logic">
                <obj_property name="ElementShortName">overflow</obj_property>
                <obj_property name="ObjectShortName">overflow</obj_property>
             </wvobject>
-            <wvobject fp_name="/fc_layer_tb/DUT/\genblk1[0].neuron /overflow_flag" type="logic">
-               <obj_property name="ElementShortName">overflow_flag</obj_property>
-               <obj_property name="ObjectShortName">overflow_flag</obj_property>
-            </wvobject>
-            <wvobject fp_name="/fc_layer_tb/DUT/\genblk1[0].neuron /underflow" type="logic">
+            <wvobject fp_name="/fc_layer_tb/DUT/\genblk1[0].neuron /LU/overflow_tracker/underflow" type="logic">
                <obj_property name="ElementShortName">underflow</obj_property>
                <obj_property name="ObjectShortName">underflow</obj_property>
             </wvobject>
-            <wvobject fp_name="/fc_layer_tb/DUT/\genblk1[0].neuron /underflow_flag" type="logic">
+            <wvobject fp_name="/fc_layer_tb/DUT/\genblk1[0].neuron /LU/overflow_tracker/underflow_flag" type="logic">
                <obj_property name="ElementShortName">underflow_flag</obj_property>
                <obj_property name="ObjectShortName">underflow_flag</obj_property>
+            </wvobject>
+            <wvobject fp_name="/fc_layer_tb/DUT/\genblk1[0].neuron /LU/overflow_tracker/overflow_flag" type="logic">
+               <obj_property name="ElementShortName">overflow_flag</obj_property>
+               <obj_property name="ObjectShortName">overflow_flag</obj_property>
+            </wvobject>
+            <wvobject fp_name="/fc_layer_tb/DUT/\genblk1[0].neuron /LU/overflow_tracker/overflow_add" type="logic">
+               <obj_property name="ElementShortName">overflow_add</obj_property>
+               <obj_property name="ObjectShortName">overflow_add</obj_property>
+            </wvobject>
+            <wvobject fp_name="/fc_layer_tb/DUT/\genblk1[0].neuron /LU/overflow_tracker/overflow_mult" type="logic">
+               <obj_property name="ElementShortName">overflow_mult</obj_property>
+               <obj_property name="ObjectShortName">overflow_mult</obj_property>
+            </wvobject>
+            <wvobject fp_name="/fc_layer_tb/DUT/\genblk1[0].neuron /LU/overflow_tracker/underflow_add" type="logic">
+               <obj_property name="ElementShortName">underflow_add</obj_property>
+               <obj_property name="ObjectShortName">underflow_add</obj_property>
+            </wvobject>
+            <wvobject fp_name="/fc_layer_tb/DUT/\genblk1[0].neuron /LU/overflow_tracker/underflow_mult" type="logic">
+               <obj_property name="ElementShortName">underflow_mult</obj_property>
+               <obj_property name="ObjectShortName">underflow_mult</obj_property>
             </wvobject>
          </wvobject>
       </wvobject>
@@ -246,53 +266,80 @@
          <obj_property name="label">Neuron 1 Signals</obj_property>
          <obj_property name="DisplayName">label</obj_property>
          <obj_property name="isExpanded"></obj_property>
-         <wvobject fp_name="/fc_layer_tb/DUT/\genblk1[1].neuron /data_o" type="array">
-            <obj_property name="ElementShortName">data_o[7:0]</obj_property>
-            <obj_property name="ObjectShortName">data_o[7:0]</obj_property>
+         <wvobject fp_name="/fc_layer_tb/DUT/\genblk1[1].neuron /reset_i" type="logic">
+            <obj_property name="ElementShortName">reset_i</obj_property>
+            <obj_property name="ObjectShortName">reset_i</obj_property>
          </wvobject>
-         <wvobject fp_name="/fc_layer_tb/DUT/\genblk1[1].neuron /mult_result" type="array">
-            <obj_property name="ElementShortName">mult_result[15:0]</obj_property>
-            <obj_property name="ObjectShortName">mult_result[15:0]</obj_property>
+         <wvobject fp_name="/fc_layer_tb/DUT/\genblk1[1].neuron /mem_addr_i" type="array">
+            <obj_property name="ElementShortName">mem_addr_i[2:0]</obj_property>
+            <obj_property name="ObjectShortName">mem_addr_i[2:0]</obj_property>
          </wvobject>
          <wvobject fp_name="/fc_layer_tb/DUT/\genblk1[1].neuron /mem_out" type="array">
             <obj_property name="ElementShortName">mem_out[7:0]</obj_property>
             <obj_property name="ObjectShortName">mem_out[7:0]</obj_property>
          </wvobject>
-         <wvobject fp_name="/fc_layer_tb/DUT/\genblk1[1].neuron /sum_in" type="array">
-            <obj_property name="ElementShortName">sum_in[7:0]</obj_property>
-            <obj_property name="ObjectShortName">sum_in[7:0]</obj_property>
+         <wvobject fp_name="/fc_layer_tb/DUT/\genblk1[1].neuron /data_i" type="array">
+            <obj_property name="ElementShortName">data_i[7:0]</obj_property>
+            <obj_property name="ObjectShortName">data_i[7:0]</obj_property>
          </wvobject>
-         <wvobject fp_name="/fc_layer_tb/DUT/\genblk1[1].neuron /sum_n" type="array">
+         <wvobject fp_name="/fc_layer_tb/DUT/\genblk1[1].neuron /data_o" type="array">
+            <obj_property name="ElementShortName">data_o[7:0]</obj_property>
+            <obj_property name="ObjectShortName">data_o[7:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/fc_layer_tb/DUT/\genblk1[1].neuron /LU/mult_result" type="array">
+            <obj_property name="ElementShortName">mult_result[15:0]</obj_property>
+            <obj_property name="ObjectShortName">mult_result[15:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/fc_layer_tb/DUT/\genblk1[1].neuron /LU/add_in" type="array">
+            <obj_property name="ElementShortName">add_in[7:0]</obj_property>
+            <obj_property name="ObjectShortName">add_in[7:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/fc_layer_tb/DUT/\genblk1[1].neuron /LU/sum_n" type="array">
             <obj_property name="ElementShortName">sum_n[7:0]</obj_property>
             <obj_property name="ObjectShortName">sum_n[7:0]</obj_property>
          </wvobject>
-         <wvobject fp_name="/fc_layer_tb/DUT/\genblk1[1].neuron /sum_r" type="array">
+         <wvobject fp_name="/fc_layer_tb/DUT/\genblk1[1].neuron /LU/sum_r" type="array">
             <obj_property name="ElementShortName">sum_r[7:0]</obj_property>
             <obj_property name="ObjectShortName">sum_r[7:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/fc_layer_tb/DUT/\genblk1[0].neuron /LU/sum_carry_out" type="logic">
+            <obj_property name="ElementShortName">sum_carry_out</obj_property>
+            <obj_property name="ObjectShortName">sum_carry_out</obj_property>
          </wvobject>
          <wvobject fp_name="group78" type="group">
             <obj_property name="label">Overflow</obj_property>
             <obj_property name="DisplayName">label</obj_property>
-            <obj_property name="isExpanded"></obj_property>
-            <wvobject fp_name="/fc_layer_tb/DUT/\genblk1[1].neuron /extra_add_bit" type="logic">
-               <obj_property name="ElementShortName">extra_add_bit</obj_property>
-               <obj_property name="ObjectShortName">extra_add_bit</obj_property>
-            </wvobject>
-            <wvobject fp_name="/fc_layer_tb/DUT/\genblk1[1].neuron /overflow" type="logic">
+            <wvobject fp_name="/fc_layer_tb/DUT/\genblk1[1].neuron /LU/overflow" type="logic">
                <obj_property name="ElementShortName">overflow</obj_property>
                <obj_property name="ObjectShortName">overflow</obj_property>
             </wvobject>
-            <wvobject fp_name="/fc_layer_tb/DUT/\genblk1[1].neuron /overflow_flag" type="logic">
+            <wvobject fp_name="/fc_layer_tb/DUT/\genblk1[1].neuron /LU/overflow_flag" type="logic">
                <obj_property name="ElementShortName">overflow_flag</obj_property>
                <obj_property name="ObjectShortName">overflow_flag</obj_property>
             </wvobject>
-            <wvobject fp_name="/fc_layer_tb/DUT/\genblk1[1].neuron /underflow" type="logic">
+            <wvobject fp_name="/fc_layer_tb/DUT/\genblk1[1].neuron /LU/underflow" type="logic">
                <obj_property name="ElementShortName">underflow</obj_property>
                <obj_property name="ObjectShortName">underflow</obj_property>
             </wvobject>
-            <wvobject fp_name="/fc_layer_tb/DUT/\genblk1[1].neuron /underflow_flag" type="logic">
+            <wvobject fp_name="/fc_layer_tb/DUT/\genblk1[1].neuron /LU/underflow_flag" type="logic">
                <obj_property name="ElementShortName">underflow_flag</obj_property>
                <obj_property name="ObjectShortName">underflow_flag</obj_property>
+            </wvobject>
+            <wvobject fp_name="/fc_layer_tb/DUT/\genblk1[1].neuron /LU/overflow_tracker/overflow_add" type="logic">
+               <obj_property name="ElementShortName">overflow_add</obj_property>
+               <obj_property name="ObjectShortName">overflow_add</obj_property>
+            </wvobject>
+            <wvobject fp_name="/fc_layer_tb/DUT/\genblk1[1].neuron /LU/overflow_tracker/overflow_mult" type="logic">
+               <obj_property name="ElementShortName">overflow_mult</obj_property>
+               <obj_property name="ObjectShortName">overflow_mult</obj_property>
+            </wvobject>
+            <wvobject fp_name="/fc_layer_tb/DUT/\genblk1[1].neuron /LU/overflow_tracker/underflow_add" type="logic">
+               <obj_property name="ElementShortName">underflow_add</obj_property>
+               <obj_property name="ObjectShortName">underflow_add</obj_property>
+            </wvobject>
+            <wvobject fp_name="/fc_layer_tb/DUT/\genblk1[1].neuron /LU/overflow_tracker/underflow_mult" type="logic">
+               <obj_property name="ElementShortName">underflow_mult</obj_property>
+               <obj_property name="ObjectShortName">underflow_mult</obj_property>
             </wvobject>
          </wvobject>
       </wvobject>
