@@ -1,15 +1,15 @@
-
+`timescale 1ns / 1ps
 
 module bn_layer_tb ();
     
-    parameter CLOCK_PERIOD = 100;
+    parameter CLOCK_PERIOD = 10;
     
-    parameter INPUT_SIZE=2;
-    parameter WORD_SIZE=8;
-    parameter MEM_INIT_MEAN="mean_test.mif";
-    parameter MEM_INIT_VARIANCE="variance_test.mif";
-    parameter MEM_INIT_SCALE="scale_test.mif";
-    parameter MEM_INIT_OFFSET="offset_test.mif";
+    parameter INPUT_SIZE=10;
+    parameter WORD_SIZE=16;
+    parameter MEM_INIT_MEAN="bn_mean_test.mif";
+    parameter MEM_INIT_VARIANCE="bn_variance_test.mif";
+    parameter MEM_INIT_SCALE="bn_scale_test.mif";
+    parameter MEM_INIT_OFFSET="bn_offset_test.mif";
     
 // VARIABLES
     
@@ -53,10 +53,22 @@ module bn_layer_tb ();
         
         // prev layer produces data
         valid_i <= 1;
-        data_r_i  <= 8'b00010000;
+        ready_i <= 1;
         @(posedge clk_i)
         
+        data_r_i  <= 16'b0011101101000110; @(posedge clk_i) // 0.732469473752462
+        data_r_i  <= 16'b0000010111111110; @(posedge clk_i) // -0.621721030422373
+        data_r_i  <= 16'b0000001010110101; @(posedge clk_i) // 0.773024276220328
+        data_r_i  <= 16'b1101110110100101; @(posedge clk_i) // -0.917345614901317
+        data_r_i  <= 16'b1111111010010100; @(posedge clk_i) // 0.251466403216965
+        data_r_i  <= 16'b0000111111100001; @(posedge clk_i) // -0.535625366716028
+        data_r_i  <= 16'b0001011011101110; @(posedge clk_i) // 1.08386757001342
+        data_r_i  <= 16'b1111001010100000; @(posedge clk_i) // 0.560921617710491
+        data_r_i  <= 16'b1110111100001000; @(posedge clk_i) // 0.113087525500705
+        data_r_i  <= 16'b0011111001110110; @(posedge clk_i) // -0.107299784013662
         
+        
+        @(posedge clk_i)
         $stop;
     end
     

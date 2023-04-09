@@ -10,6 +10,7 @@ Implementation: An internal counter tracks which mean/variance/scale/offset is a
 parameters:
   INPUT_SIZE        : number of inputs (the output size of the previous layer)
   WORD_SIZE         : the number of bits of inputs/outputs
+  N_SIZE            : the n parameter for Qm.n fixed point notation
   MEM_INIT_MEAN     : .mif file for the mean mem
   MEM_INIT_VARIANCE : .mif file for the variance mem
   MEM_INIT_SCALE    : .mif file for the scale mem
@@ -33,6 +34,7 @@ module bn_layer #(
 
   parameter INPUT_SIZE=1,
   parameter WORD_SIZE=16,
+  parameter N_SIZE=14,
   parameter MEM_INIT_MEAN="mean_test.mif",
   parameter MEM_INIT_VARIANCE="variance_test.mif",
   parameter MEM_INIT_SCALE="scale_test.mif",
@@ -108,51 +110,63 @@ module bn_layer #(
   end
 
   // mean rom
-  logic signed [$clog2(INPUT_SIZE)-1:0] mean_lo;
+  logic signed [WORD_SIZE-1:0] mean_lo;
   ROM #(.depth($clog2(INPUT_SIZE)),
         .width(WORD_SIZE),
-        .init_file(MEM_INIT_MEAN)) mean_mem (
+        .init_file(MEM_INIT_MEAN),
+        .do_read_hex(0)) mean_mem (
     .clk_i,
     .addr_i(count_n),
     .data_o(mean_lo)
   );
 
   // variance rom
-  logic signed [$clog2(INPUT_SIZE)-1:0] variance_lo;
+  logic signed [WORD_SIZE-1:0] variance_lo;
   ROM #(.depth($clog2(INPUT_SIZE)),
         .width(WORD_SIZE),
-        .init_file(MEM_INIT_VARIANCE)) variance_mem (
+        .init_file(MEM_INIT_VARIANCE),
+        .do_read_hex(0)) variance_mem (
     .clk_i,
     .addr_i(count_n),
     .data_o(variance_lo)
   );
 
   // scale rom
-  logic signed [$clog2(INPUT_SIZE)-1:0] scale_lo;
+  logic signed [WORD_SIZE-1:0] scale_lo;
   ROM #(.depth($clog2(INPUT_SIZE)),
         .width(WORD_SIZE),
-        .init_file(MEM_INIT_SCALE)) scale_mem (
+        .init_file(MEM_INIT_SCALE),
+        .do_read_hex(0)) scale_mem (
     .clk_i,
     .addr_i(count_n),
     .data_o(scale_lo)
   );
 
   // offset rom
-  logic signed [$clog2(INPUT_SIZE)-1:0] offset_lo;
+  logic signed [WORD_SIZE-1:0] offset_lo;
   ROM #(.depth($clog2(INPUT_SIZE)),
         .width(WORD_SIZE),
-        .init_file(MEM_INIT_OFFSET)) offset_mem (
+        .init_file(MEM_INIT_OFFSET),
+        .do_read_hex(0)) offset_mem (
     .clk_i,
     .addr_i(count_n),
     .data_o(offset_lo)
   );
 
   // forward computation logic
+  logic signed [WORD_SIZE-1:0] data_n_o, data1, data2, data3;
   always_ff @(posedge clk_i) begin
     if (en_li)
-      data_r_o <= ((data_r_i - mean_lo) * variance_lo * scale_lo) + offset_lo;
+      data_r_o <= data_n_o;
     else
       data_r_o <= data_r_o;
+  end
+  
+  always_comb begin
+    data1 = data_r_i - mean_lo;
+    data2 = data1 * variance_lo >>> N_SIZE;
+    data3 = data2 * scale_lo >>> N_SIZE;
+    data_n_o = data3 + offset_lo;
   end
 
 endmodule

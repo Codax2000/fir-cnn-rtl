@@ -10,7 +10,7 @@ parameters:
     init_file: name of mif file for initialization (coe file not tested but will likely not work)
 */
 
-module ROM #(parameter depth=3, width=8, init_file="fc_node_test.mif") (
+module ROM #(parameter depth=3, width=8, init_file="fc_node_test.mif",do_read_hex=1) (
     input  logic clk_i,
     input  logic [depth-1:0] addr_i,
     output logic [width-1:0] data_o
@@ -19,7 +19,10 @@ module ROM #(parameter depth=3, width=8, init_file="fc_node_test.mif") (
     logic [width-1:0] mem [2**depth-1:0];
 	
 	initial begin
-		$readmemh(init_file,mem);
+	   if (do_read_hex == 1)
+	       $readmemh(init_file,mem);
+	   else
+	       $readmemb(init_file,mem);
 	end
     
     always_ff @(posedge clk_i) begin
