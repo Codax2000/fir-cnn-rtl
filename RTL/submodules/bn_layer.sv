@@ -1,3 +1,5 @@
+`timescale 1ns / 1ps
+
 /**
 Eugene Liu
 4/4/2023
@@ -18,7 +20,7 @@ parameters:
 
 input-outputs:
   clk_i    : input clock
-  reset_i  : reset signal. Resets counter, controller, and data_r_o
+  reset_i  : reset signal. Resets counter, controller. data_r_o remains the same.
 
   ready_o  : handshake to prev layer. Indicates this layer is ready to recieve
   valid_i  : handshake to prev layer. Indicates prev layer has valid data
@@ -27,9 +29,7 @@ input-outputs:
   valid_o  : handshake to next layer. Indicates this layer has valid data
   ready_i  : handshake to next layer. Indicates next layer is ready to receive
   data_r_o : handshake to next layer. The data from this layer to the next layer
-
 */
-`timescale 1ns / 1ps
 
 module bn_layer #(
 
@@ -61,32 +61,18 @@ module bn_layer #(
 
 // BN_LAYER CONTROLLER
 
-  // controller states
-  typedef enum logic {eEMPTY=1'b0, eFULL=1'b1} state_e;
-  state_e state_n, state_r;
+  logic en_lo;
+  single_fifo_ctrl #() bn_ctrl (
+    .clk_i,
+    .reset_i,
+    .en_o(en_lo),
 
-  // state register
-  always_ff @(posedge clk_i) begin
-    if (reset_i)
-      state_r <= eEMPTY;
-    else
-      state_r <= state_n;
-  end
+    .ready_o,
+    .valid_i,
 
-  // next state logic
-  always_comb begin
-    case (state_r)
-      eEMPTY: state_n = valid_i ? eFULL : eEMPTY;
-      eFULL: state_n = (ready_i && !valid_i) ? eEMPTY : eFULL;
-      default: state_n = eEMPTY;
-    endcase
-  end
-
-  // controller signal logic
-  logic en_li;
-  assign en_li = ((state_r==eEMPTY) && valid_i) | (ready_i && valid_i);
-  assign ready_o = (state_r==eEMPTY) | ready_i;
-  assign valid_o = state_r == eFULL;
+    .valid_o,
+    .ready_i);
+  );
 
 
 
@@ -102,7 +88,7 @@ module bn_layer #(
   always_comb begin
     if (reset_i)
       count_n = 0;
-    else if (en_li) begin
+    else if (en_lo) begin
       if (count_r==INPUT_SIZE-1)
         count_n = 0;
       else
@@ -158,7 +144,7 @@ module bn_layer #(
   // forward computation logic
   logic signed [WORD_SIZE-1:0] data_n_o, data1, data2, data3;
   always_ff @(posedge clk_i) begin
-    if (en_li)
+    if (en_lo)
       data_r_o <= data_n_o;
     else
       data_r_o <= data_r_o;
@@ -188,11 +174,4 @@ module bn_layer #(
     .data_o(data_n_o)
   );
   
-//  always_comb begin
-//    data1 = data_r_i - mean_lo;
-//    data2 = data1 * variance_lo >>> N_SIZE;
-//    data3 = data2 * scale_lo >>> N_SIZE;
-//    data_n_o = data3 + offset_lo;
-//  end
-
 endmodule
