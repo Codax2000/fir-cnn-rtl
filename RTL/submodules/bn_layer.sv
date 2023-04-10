@@ -29,6 +29,7 @@ input-outputs:
   data_r_o : handshake to next layer. The data from this layer to the next layer
 
 */
+`timescale 1ns / 1ps
 
 module bn_layer #(
 
@@ -61,7 +62,7 @@ module bn_layer #(
 // BN_LAYER CONTROLLER
 
   // controller states
-  typedef enum logic {eEMPTY=0, eFULL=1} state_e;
+  typedef enum logic {eEMPTY=1'b0, eFULL=1'b1} state_e;
   state_e state_n, state_r;
 
   // state register
@@ -77,6 +78,7 @@ module bn_layer #(
     case (state_r)
       eEMPTY: state_n = valid_i ? eFULL : eEMPTY;
       eFULL: state_n = (ready_i && !valid_i) ? eEMPTY : eFULL;
+      default: state_n = eEMPTY;
     endcase
   end
 
@@ -162,11 +164,35 @@ module bn_layer #(
       data_r_o <= data_r_o;
   end
   
-  always_comb begin
-    data1 = data_r_i - mean_lo;
-    data2 = data1 * variance_lo >>> N_SIZE;
-    data3 = data2 * scale_lo >>> N_SIZE;
-    data_n_o = data3 + offset_lo;
-  end
+  safe_alu #(.WORD_SIZE(WORD_SIZE),.N_SIZE(N_SIZE),.OPERATION("sub")) sub1 (
+    .a_i(data_r_i),
+    .b_i(mean_lo),
+    .data_o(data1)
+  );
+  
+  safe_alu #(.WORD_SIZE(WORD_SIZE),.N_SIZE(N_SIZE),.OPERATION("mult")) mult1 (
+    .a_i(data1),
+    .b_i(variance_lo),
+    .data_o(data2)
+  );
+  
+  safe_alu #(.WORD_SIZE(WORD_SIZE),.N_SIZE(N_SIZE),.OPERATION("mult")) mult2 (
+    .a_i(data2),
+    .b_i(scale_lo),
+    .data_o(data3)
+  );
+  
+  safe_alu #(.WORD_SIZE(WORD_SIZE),.N_SIZE(N_SIZE),.OPERATION("add")) add1 (
+    .a_i(data3),
+    .b_i(offset_lo),
+    .data_o(data_n_o)
+  );
+  
+//  always_comb begin
+//    data1 = data_r_i - mean_lo;
+//    data2 = data1 * variance_lo >>> N_SIZE;
+//    data3 = data2 * scale_lo >>> N_SIZE;
+//    data_n_o = data3 + offset_lo;
+//  end
 
 endmodule

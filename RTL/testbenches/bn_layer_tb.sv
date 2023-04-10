@@ -6,6 +6,7 @@ module bn_layer_tb ();
     
     parameter INPUT_SIZE=10;
     parameter WORD_SIZE=16;
+    parameter N_SIZE=12;
     parameter MEM_INIT_MEAN="bn_mean_test.mif";
     parameter MEM_INIT_VARIANCE="bn_variance_test.mif";
     parameter MEM_INIT_SCALE="bn_scale_test.mif";
@@ -37,6 +38,7 @@ module bn_layer_tb ();
 // DEVICE UNDER TEST
     bn_layer #(.INPUT_SIZE(INPUT_SIZE),
                .WORD_SIZE(WORD_SIZE),
+               .N_SIZE(N_SIZE),
                .MEM_INIT_MEAN(MEM_INIT_MEAN),
                .MEM_INIT_VARIANCE(MEM_INIT_VARIANCE),
                .MEM_INIT_SCALE(MEM_INIT_SCALE),
@@ -48,27 +50,39 @@ module bn_layer_tb ();
 // TESTBENCH
     
     initial begin
+        // initialize all inputs
+        reset_i <= 0; valid_i <= 0; ready_i <= 0;
+        
         // reset
         reset_i <= 1; @(posedge clk_i); reset_i <= 0; @(posedge clk_i);
         
-        // prev layer produces data
-        valid_i <= 1;
-        ready_i <= 1;
-        @(posedge clk_i)
+        // state_r = eEMPTY
+        valid_i <= 1; data_r_i <= 16'b0000111011010010; @(posedge clk_i) // 0.732469473752462
         
-        data_r_i  <= 16'b0011101101000110; @(posedge clk_i) // 0.732469473752462
-        data_r_i  <= 16'b0000010111111110; @(posedge clk_i) // -0.621721030422373
-        data_r_i  <= 16'b0000001010110101; @(posedge clk_i) // 0.773024276220328
-        data_r_i  <= 16'b1101110110100101; @(posedge clk_i) // -0.917345614901317
-        data_r_i  <= 16'b1111111010010100; @(posedge clk_i) // 0.251466403216965
-        data_r_i  <= 16'b0000111111100001; @(posedge clk_i) // -0.535625366716028
-        data_r_i  <= 16'b0001011011101110; @(posedge clk_i) // 1.08386757001342
-        data_r_i  <= 16'b1111001010100000; @(posedge clk_i) // 0.560921617710491
-        data_r_i  <= 16'b1110111100001000; @(posedge clk_i) // 0.113087525500705
-        data_r_i  <= 16'b0011111001110110; @(posedge clk_i) // -0.107299784013662
+        // state_r = eFULL, data_r_o = 0.732469473752462, valid_o = 1, ready_o = 0
+        data_r_i <= 16'b0000000101111111; @(posedge clk_i) // -0.621721030422373
+        
+        // state_r = eFULL, data_r_o = 0.732469473752462, valid_o = 1, ready_o = 0
+        ready_i <= 1; @(posedge clk_i)
+        
+        // state_r = eFULL, data_r_o = -0.621721030422373, valid_o = 1, ready_o = 1
+        data_r_i <= 16'b0000000010101101; @(posedge clk_i) // 0.773024276220328
+        data_r_i <= 16'b1111011101101001; @(posedge clk_i) // -0.917345614901317
+        data_r_i <= 16'b1111111110100101; @(posedge clk_i) // 0.251466403216965
+        data_r_i <= 16'b0000001111111000; @(posedge clk_i) // -0.535625366716028
+        data_r_i <= 16'b0000010110111011; @(posedge clk_i) // 1.08386757001342
+        data_r_i <= 16'b1111110010101000; @(posedge clk_i) // 0.560921617710491
+        data_r_i <= 16'b1111101111000010; @(posedge clk_i) // 0.113087525500705
         
         
-        @(posedge clk_i)
+        //
+        valid_i <= 0; data_r_i <= 16'b0000111110011110; @(posedge clk_i) // -0.107299784013662
+        
+        // state_r = eEMPTY, data_r_o = 0.113087525500705
+        valid_i <= 1; 
+
+        
+        @(posedge clk_i); @(posedge clk_i)
         $stop;
     end
     
