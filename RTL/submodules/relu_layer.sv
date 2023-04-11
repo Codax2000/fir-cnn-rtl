@@ -59,7 +59,6 @@ module relu_layer #(
 
     .valid_o,
     .ready_i);
-  );
 
   
   
@@ -72,8 +71,8 @@ module relu_layer #(
   always_ff @(posedge clk_i) begin
     if (en_lo)
 	   data_r_o <= data_r_i[WORD_SIZE-1] ? '0 : data_r_i;
-	 else
-	   data_r_o <= data_r_o
+	else
+	   data_r_o <= data_r_o;
   end
 
 endmodule

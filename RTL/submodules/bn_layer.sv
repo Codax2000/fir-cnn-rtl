@@ -72,7 +72,6 @@ module bn_layer #(
 
     .valid_o,
     .ready_i);
-  );
 
 
 
