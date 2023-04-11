@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wave_config>
+   <wave_state>
+   </wave_state>
+   <db_ref_list>
+      <db_ref path="bn_layer_tb_behav.wdb" id="1">
+         <top_modules>
+            <top_module name="bn_layer_tb" />
+            <top_module name="glbl" />
+         </top_modules>
+      </db_ref>
+   </db_ref_list>
+   <zoom_setting>
+      <ZoomStartTime time="0.000 ns"></ZoomStartTime>
+      <ZoomEndTime time="150.001 ns"></ZoomEndTime>
+      <Cursor1Time time="145.856 ns"></Cursor1Time>
+   </zoom_setting>
+   <column_width_setting>
+      <NameColumnWidth column_width="276"></NameColumnWidth>
+      <ValueColumnWidth column_width="92"></ValueColumnWidth>
+   </column_width_setting>
+   <WVObjectSize size="10" />
+   <wvobject fp_name="/bn_layer_tb/clk_i" type="logic">
+      <obj_property name="ElementShortName">clk_i</obj_property>
+      <obj_property name="ObjectShortName">clk_i</obj_property>
+   </wvobject>
+   <wvobject fp_name="/bn_layer_tb/reset_i" type="logic">
+      <obj_property name="ElementShortName">reset_i</obj_property>
+      <obj_property name="ObjectShortName">reset_i</obj_property>
+   </wvobject>
+   <wvobject fp_name="/bn_layer_tb/ready_o" type="logic">
+      <obj_property name="ElementShortName">ready_o</obj_property>
+      <obj_property name="ObjectShortName">ready_o</obj_property>
+   </wvobject>
+   <wvobject fp_name="/bn_layer_tb/valid_i" type="logic">
+      <obj_property name="ElementShortName">valid_i</obj_property>
+      <obj_property name="ObjectShortName">valid_i</obj_property>
+   </wvobject>
+   <wvobject fp_name="/bn_layer_tb/data_r_i" type="array">
+      <obj_property name="ElementShortName">data_r_i[15:0]</obj_property>
+      <obj_property name="ObjectShortName">data_r_i[15:0]</obj_property>
+      <obj_property name="Radix">REALRADIX</obj_property>
+      <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+      <obj_property name="radix_fractionWidth">12</obj_property>
+      <obj_property name="radix_otherWidth">0</obj_property>
+   </wvobject>
+   <wvobject fp_name="/bn_layer_tb/valid_o" type="logic">
+      <obj_property name="ElementShortName">valid_o</obj_property>
+      <obj_property name="ObjectShortName">valid_o</obj_property>
+   </wvobject>
+   <wvobject fp_name="/bn_layer_tb/ready_i" type="logic">
+      <obj_property name="ElementShortName">ready_i</obj_property>
+      <obj_property name="ObjectShortName">ready_i</obj_property>
+   </wvobject>
+   <wvobject fp_name="/bn_layer_tb/data_r_o" type="array">
+      <obj_property name="ElementShortName">data_r_o[15:0]</obj_property>
+      <obj_property name="ObjectShortName">data_r_o[15:0]</obj_property>
+      <obj_property name="Radix">REALRADIX</obj_property>
+      <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+      <obj_property name="radix_fractionWidth">12</obj_property>
+      <obj_property name="radix_otherWidth">0</obj_property>
+   </wvobject>
+   <wvobject fp_name="group39" type="group">
+      <obj_property name="label">internal comp</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <wvobject fp_name="/bn_layer_tb/DUT/mean_lo" type="array">
+         <obj_property name="ElementShortName">mean_lo[15:0]</obj_property>
+         <obj_property name="ObjectShortName">mean_lo[15:0]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">12</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/bn_layer_tb/DUT/data1" type="array">
+         <obj_property name="ElementShortName">data1[15:0]</obj_property>
+         <obj_property name="ObjectShortName">data1[15:0]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">12</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/bn_layer_tb/DUT/variance_lo" type="array">
+         <obj_property name="ElementShortName">variance_lo[15:0]</obj_property>
+         <obj_property name="ObjectShortName">variance_lo[15:0]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">12</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/bn_layer_tb/DUT/data2" type="array">
+         <obj_property name="ElementShortName">data2[15:0]</obj_property>
+         <obj_property name="ObjectShortName">data2[15:0]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">12</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/bn_layer_tb/DUT/scale_lo" type="array">
+         <obj_property name="ElementShortName">scale_lo[15:0]</obj_property>
+         <obj_property name="ObjectShortName">scale_lo[15:0]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">12</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/bn_layer_tb/DUT/data3" type="array">
+         <obj_property name="ElementShortName">data3[15:0]</obj_property>
+         <obj_property name="ObjectShortName">data3[15:0]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">12</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/bn_layer_tb/DUT/offset_lo" type="array">
+         <obj_property name="ElementShortName">offset_lo[15:0]</obj_property>
+         <obj_property name="ObjectShortName">offset_lo[15:0]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">12</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/bn_layer_tb/DUT/data_n_o" type="array">
+         <obj_property name="ElementShortName">data_n_o[15:0]</obj_property>
+         <obj_property name="ObjectShortName">data_n_o[15:0]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">12</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/bn_layer_tb/DUT/count_n" type="array">
+         <obj_property name="ElementShortName">count_n[3:0]</obj_property>
+         <obj_property name="ObjectShortName">count_n[3:0]</obj_property>
+         <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">12</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/bn_layer_tb/DUT/state_n" type="other">
+         <obj_property name="ElementShortName">state_n</obj_property>
+         <obj_property name="ObjectShortName">state_n</obj_property>
+      </wvobject>
+   </wvobject>
+   <wvobject fp_name="/bn_layer_tb/DUT/state_r" type="other">
+      <obj_property name="ElementShortName">state_r</obj_property>
+      <obj_property name="ObjectShortName">state_r</obj_property>
+   </wvobject>
+</wave_config>
