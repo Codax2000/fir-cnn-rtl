@@ -21,7 +21,7 @@ module ROM #(parameter depth=3, width=8, neuron_type=0, layer_number=1, neuron_n
 
     logic [width-1:0] mem [2**depth-1:0];
 
-    // TODO: Find out if this negatively impacts synthesis
+    // TODO: Find out if parameters like this negatively impact synthesis
     parameter ascii_offset = 48;
 	parameter logic [7:0] neuron_type_p = neuron_type + ascii_offset;
     parameter logic [7:0] layer_number_p = layer_number + ascii_offset;

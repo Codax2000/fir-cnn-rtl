@@ -23,7 +23,7 @@ module conv_layer #(
     
     // input interface
     input logic start_i,
-    input logic [WORD_SIZE-1:0] data_i,
+    input logic signed [WORD_SIZE-1:0] data_i,
     
     // helpful output interface
     output logic valid_o,
