@@ -13,7 +13,7 @@ parameters:
     neuron number: neuron identifier
 */
 
-module ROM #(parameter depth=3, width=8, neuron_type=0, layer_number=1, neuron_number=0) (
+module ROM_neuron #(parameter depth=3, width=8, neuron_type=0, layer_number=1, neuron_number=0) (
     input  logic clk_i,
     input  logic [depth-1:0] addr_i,
     output logic [width-1:0] data_o

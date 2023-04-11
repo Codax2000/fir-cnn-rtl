@@ -87,7 +87,7 @@ module conv_layer #(
     );
 
     // ROM for kernel values
-    ROM #(
+    ROM_neuron #(
         .depth($clog2(NUM_ITERATIONS+1)),
         .width(WORD_SIZE),
         .neuron_type(0),
