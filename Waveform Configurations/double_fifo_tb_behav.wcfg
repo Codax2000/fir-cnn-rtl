@@ -11,15 +11,15 @@
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="283333fs"></ZoomStartTime>
-      <ZoomEndTime time="1383334fs"></ZoomEndTime>
-      <Cursor1Time time="1200000fs"></Cursor1Time>
+      <ZoomStartTime time="0fs"></ZoomStartTime>
+      <ZoomEndTime time="1000000fs"></ZoomEndTime>
+      <Cursor1Time time="1200fs"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
       <NameColumnWidth column_width="167"></NameColumnWidth>
-      <ValueColumnWidth column_width="64"></ValueColumnWidth>
+      <ValueColumnWidth column_width="60"></ValueColumnWidth>
    </column_width_setting>
-   <WVObjectSize size="10" />
+   <WVObjectSize size="9" />
    <wvobject fp_name="/double_fifo_tb/wen_i" type="logic">
       <obj_property name="ElementShortName">wen_i</obj_property>
       <obj_property name="ObjectShortName">wen_i</obj_property>
@@ -31,10 +31,6 @@
    <wvobject fp_name="/double_fifo_tb/data_i" type="array">
       <obj_property name="ElementShortName">data_i[15:0]</obj_property>
       <obj_property name="ObjectShortName">data_i[15:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/double_fifo_tb/DUT/mid_data" type="array">
-      <obj_property name="ElementShortName">mid_data[15:0]</obj_property>
-      <obj_property name="ObjectShortName">mid_data[15:0]</obj_property>
    </wvobject>
    <wvobject fp_name="/double_fifo_tb/data_o" type="array">
       <obj_property name="ElementShortName">data_o[15:0]</obj_property>
@@ -48,11 +44,6 @@
       <obj_property name="ElementShortName">empty_o</obj_property>
       <obj_property name="ObjectShortName">empty_o</obj_property>
    </wvobject>
-   <wvobject fp_name="/double_fifo_tb/DUT/data_contained" type="array">
-      <obj_property name="ElementShortName">data_contained[1:0]</obj_property>
-      <obj_property name="ObjectShortName">data_contained[1:0]</obj_property>
-      <obj_property name="Radix">BINARYRADIX</obj_property>
-   </wvobject>
    <wvobject fp_name="/double_fifo_tb/clk_i" type="logic">
       <obj_property name="ElementShortName">clk_i</obj_property>
       <obj_property name="ObjectShortName">clk_i</obj_property>
@@ -60,5 +51,9 @@
    <wvobject fp_name="/double_fifo_tb/reset_i" type="logic">
       <obj_property name="ElementShortName">reset_i</obj_property>
       <obj_property name="ObjectShortName">reset_i</obj_property>
+   </wvobject>
+   <wvobject fp_name="/double_fifo_tb/DUT/ps" type="other">
+      <obj_property name="ElementShortName">ps</obj_property>
+      <obj_property name="ObjectShortName">ps</obj_property>
    </wvobject>
 </wave_config>

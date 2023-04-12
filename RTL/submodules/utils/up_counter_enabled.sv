@@ -24,7 +24,7 @@ module up_counter_enabled #(
         case (ps)
             eCOUNTING:
                 // note: true here only because we use the last index as the bias, otherwise would be (data_o == INPUT_MAX && en_i)
-                if (data_o == INPUT_MAX)
+                if ((data_o == INPUT_MAX) && en_i)
                     ns = eDONE;
                 else
                     ns = eCOUNTING;
