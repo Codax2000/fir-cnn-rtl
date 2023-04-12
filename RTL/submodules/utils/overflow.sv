@@ -24,8 +24,7 @@ outputs:
 module overflow #(
     parameter WORD_SIZE=16,
     parameter INT_BITS=8 ) (
-    
-    input logic [2*WORD_SIZE-1:0] mult_result,
+
     input logic sum_carry_out,
     input logic [WORD_SIZE-1:0] sum_n,
     input logic clk_i,
@@ -38,15 +37,13 @@ module overflow #(
 
     // overflow/underflow signals, purely combinational
     logic overflow, underflow, overflow_flag, underflow_flag;
-    logic overflow_add, overflow_mult, underflow_add, underflow_mult;
+    logic overflow_add, underflow_add;
     
     assign overflow_add = {sum_carry_out, sum_n[WORD_SIZE-1]} == 2'b01;
-    assign overflow_mult = (mult_result[2*WORD_SIZE-1] == 1'b0) && mult_result[2*WORD_SIZE-1:2*WORD_SIZE-INT_BITS-1] != '0;
     assign underflow_add = {sum_carry_out, sum_n[WORD_SIZE-1]} == 2'b10;
-    assign underflow_mult = (mult_result[2*WORD_SIZE-1] == 1'b1) && mult_result[2*WORD_SIZE-1:2*WORD_SIZE-INT_BITS-1] != '1;
     
-    assign overflow = overflow_add || overflow_mult;
-    assign underflow = underflow_add || underflow_mult;
+    assign overflow = overflow_add;
+    assign underflow = underflow_add;
     
     always_ff @(posedge clk_i) begin
         if (reset_i)

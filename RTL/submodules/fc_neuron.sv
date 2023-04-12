@@ -30,7 +30,7 @@ module fc_neuron #(
 
     logic signed [WORD_SIZE-1:0] mem_out;
 
-    ROM #(
+    ROM_neuron #(
         .depth($clog2(PREVIOUS_LAYER_HEIGHT+1)),
         .width(WORD_SIZE),
         .neuron_type(1),

@@ -21,7 +21,7 @@ module ROM_tb ();
         forever # (CLOCK_PERIOD / 2) clk_i = ~clk_i;
     end
 
-    ROM DUT (.*);
+    ROM_neuron DUT (.*);
 
     integer i;
     initial begin

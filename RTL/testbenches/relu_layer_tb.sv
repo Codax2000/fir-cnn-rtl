@@ -1,16 +1,10 @@
 `timescale 1ns / 1ps
 
-module bn_layer_tb ();
+module relu_layer_tb ();
     
     parameter CLOCK_PERIOD = 10;
-    
-    parameter INPUT_SIZE=10;
+
     parameter WORD_SIZE=16;
-    parameter N_SIZE=12;
-    parameter MEM_INIT_MEAN="bn_mean_test.mif";
-    parameter MEM_INIT_VARIANCE="bn_variance_test.mif";
-    parameter MEM_INIT_SCALE="bn_scale_test.mif";
-    parameter MEM_INIT_OFFSET="bn_offset_test.mif";
     
 // VARIABLES
     
@@ -36,13 +30,7 @@ module bn_layer_tb ();
     
     
 // DEVICE UNDER TEST
-    bn_layer #(.INPUT_SIZE(INPUT_SIZE),
-               .WORD_SIZE(WORD_SIZE),
-               .N_SIZE(N_SIZE),
-               .MEM_INIT_MEAN(MEM_INIT_MEAN),
-               .MEM_INIT_VARIANCE(MEM_INIT_VARIANCE),
-               .MEM_INIT_SCALE(MEM_INIT_SCALE),
-               .MEM_INIT_OFFSET(MEM_INIT_OFFSET)
+    relu_layer #(.WORD_SIZE(WORD_SIZE)
     ) DUT (.*);
     
     
@@ -87,3 +75,4 @@ module bn_layer_tb ();
     end
     
 endmodule
+
