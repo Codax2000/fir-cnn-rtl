@@ -40,12 +40,20 @@ module logical_unit #(
     output logic signed [WORD_SIZE-1:0] data_o
     );
 
-    logic signed [2*WORD_SIZE-1:0] mult_result;
-    logic signed [WORD_SIZE-1:0] add_in, sum_n, sum_r;
+    logic signed [WORD_SIZE-1:0] mult_result, add_in, sum_n, sum_r;
     logic sum_carry_out;
 
-    assign mult_result = mem_i * data_i;
-    assign add_in = add_bias ? mem_i : mult_result[2*WORD_SIZE-INT_BITS-1:WORD_SIZE-INT_BITS];
+    safe_alu #(
+        .WORD_SIZE(WORD_SIZE),
+        .N_SIZE(WORD_SIZE-INT_BITS),
+        .OPERATION("mult")
+    ) multiplier (
+        .a_i(mem_i),
+        .b_i(data_i),
+        .data_o(mult_result)
+    );
+
+    assign add_in = add_bias ? mem_i : mult_result;
     assign {sum_carry_out, sum_n} = {sum_r[WORD_SIZE-1], sum_r} + {add_in[WORD_SIZE-1], add_in};
 
     // overflow logic
@@ -54,7 +62,6 @@ module logical_unit #(
         .WORD_SIZE(WORD_SIZE),
         .INT_BITS(INT_BITS)
     ) overflow_tracker (
-        .mult_result,
         .sum_carry_out,
         .sum_n,
         .clk_i,
