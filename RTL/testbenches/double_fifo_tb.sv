@@ -7,7 +7,7 @@ module double_fifo_tb ();
 
     logic full_o, empty_o;
     
-    double_fifo DUT (.*);
+    single_fifo DUT (.*);
     
     parameter CLOCK_PERIOD = 100;
     initial begin

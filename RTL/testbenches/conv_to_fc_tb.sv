@@ -137,7 +137,7 @@ module conv_to_fc_tb ();
         .data_o(conv_fifo_in)
     );
 
-    double_fifo #(
+    single_fifo #(
         .WORD_SIZE(WORD_SIZE)
     ) conv_out_fifo (
         .clk_i,
@@ -193,7 +193,7 @@ module conv_to_fc_tb ();
         .data_o(hidden_fifo_in)
     );
 
-    double_fifo #(
+    single_fifo #(
         .WORD_SIZE(WORD_SIZE)
     ) hidden_out_fifo (
         .clk_i,
@@ -250,7 +250,7 @@ module conv_to_fc_tb ();
         .data_o(output_fifo_in)
     );
 
-    double_fifo #(
+    single_fifo #(
         .WORD_SIZE(WORD_SIZE)
     ) output_fifo (
         .clk_i,
@@ -300,7 +300,7 @@ module conv_to_fc_tb ();
             else $display("Assertion Error 4: Expected %h, Received %h", 8'h0, data_out);
         ren_out <= 1'b1; @(posedge clk_i);
         ren_out <= 1'b0; @(posedge clk_i);
-        assert (!output_fifo_empty)
+        assert (output_fifo_empty)
             else $display("Assertion Error 5: Output FIFO Should be Empty");
         repeat(2)        @(posedge clk_i);
         $stop;
