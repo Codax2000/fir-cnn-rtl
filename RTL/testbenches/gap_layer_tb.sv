@@ -3,14 +3,11 @@
 module gap_layer_tb ();
     
     parameter CLOCK_PERIOD = 10;
-    
-    parameter INPUT_SIZE=10;
+    parameter INPUT_SIZE=5;
     parameter WORD_SIZE=16;
     parameter N_SIZE=12;
-    parameter MEM_INIT_MEAN="bn_mean_test.mif";
-    parameter MEM_INIT_VARIANCE="bn_variance_test.mif";
-    parameter MEM_INIT_SCALE="bn_scale_test.mif";
-    parameter MEM_INIT_OFFSET="bn_offset_test.mif";
+    
+    
     
 // VARIABLES
     
@@ -36,13 +33,10 @@ module gap_layer_tb ();
     
     
 // DEVICE UNDER TEST
+
     gap_layer #(.INPUT_SIZE(INPUT_SIZE),
                .WORD_SIZE(WORD_SIZE),
-               .N_SIZE(N_SIZE),
-               .MEM_INIT_MEAN(MEM_INIT_MEAN),
-               .MEM_INIT_VARIANCE(MEM_INIT_VARIANCE),
-               .MEM_INIT_SCALE(MEM_INIT_SCALE),
-               .MEM_INIT_OFFSET(MEM_INIT_OFFSET)
+               .N_SIZE(N_SIZE)
     ) DUT (.*);
     
     
@@ -50,15 +44,12 @@ module gap_layer_tb ();
 // TESTBENCH
     
     initial begin
-	 
         // initialize all inputs
         reset_i <= 0; valid_i <= 0; ready_i <= 0;
         
         // reset
         reset_i <= 1; @(posedge clk_i); reset_i <= 0; @(posedge clk_i);
         
-		  
-		  
 		  
         // state_r = eEMPTY
         valid_i <= 1; data_r_i <= 16'b0000011010011000; @(posedge clk_i)

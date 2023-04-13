@@ -31,7 +31,8 @@ module gap_layer #(
 
   parameter INPUT_SIZE=1,
   parameter WORD_SIZE=16,
-  parameter N_SIZE=8) (
+  parameter N_SIZE=8,
+  parameter signed [WORD_SIZE-1:0] MULTIPLIER=$rtoi((2.0**N_SIZE)/$itor(INPUT_SIZE))) (
 
   // top level control
   input logic clk_i,
@@ -60,7 +61,7 @@ module gap_layer #(
   // state register
   always_ff @(posedge clk_i) begin
     if (reset_i)
-      state_r <= eDONE;
+      state_r <= eBUSY;
     else
       state_r <= state_n;
   end
@@ -70,8 +71,8 @@ module gap_layer #(
   always_comb begin
     case (state_r)
       eBUSY: state_n = (valid_i && (count_r == INPUT_SIZE-1)) ? eDONE : eBUSY;
-      eDONE: state_n = (ready_i && !valid_i) ? eBUSY : eDONE;
-      default: state_n = eDONE;
+      eDONE: state_n = !ready_i ? eDONE : eBUSY;
+      default: state_n = eBUSY;
     endcase
   end
 
@@ -106,16 +107,23 @@ module gap_layer #(
 
 
   // forward computation logic
-  logic signed [WORD_SIZE-1:0] data_n_o, data1, data2, data3;
+  logic signed [WORD_SIZE-1:0] data_n_o, data_mult;
   always_ff @(posedge clk_i) begin
     if (en_lo)
-      data_r_o <= (count_r == 0) ? data_r_i : data_n_o;
+      data_r_o <= (count_r == 0) ? data_mult : data_n_o;
     else
       data_r_o <= data_r_o;
   end
   
-  safe_alu #(.WORD_SIZE(WORD_SIZE),.N_SIZE(N_SIZE),.OPERATION("add")) add1 (
+  safe_alu #(.WORD_SIZE(WORD_SIZE),.N_SIZE(N_SIZE),.OPERATION("mult")) mult1 (
     .a_i(data_r_i),
+    .b_i(MULTIPLIER),
+    .data_o(data_mult)
+  );
+  
+  
+  safe_alu #(.WORD_SIZE(WORD_SIZE),.N_SIZE(N_SIZE),.OPERATION("add")) add1 (
+    .a_i(data_mult),
     .b_i(data_r_o),
     .data_o(data_n_o)
   );
