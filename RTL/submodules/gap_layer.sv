@@ -10,9 +10,10 @@ Interface: Uses a valid-ready handshakes. Is a helpful producer and consumer. Th
 Implementation: An internal counter tracks the input number, and is used to initialize value and exit computation loop. The counter automatically resets properly.
 
 parameters:
-  INPUT_SIZE        : number of inputs (the output size of the previous layer)
-  WORD_SIZE         : the number of bits of inputs/outputs
-  N_SIZE            : the n parameter for Qm.n fixed point notation
+  INPUT_SIZE : number of inputs (the output size of the previous layer)
+  WORD_SIZE  : the number of bits of inputs/outputs
+  N_SIZE     : the n parameter for Qm.n fixed point notation
+  MULTIPLIER : a multiplier representing 1/INPUT_SIZE. Default value is auto-computed in Qm.n format.
 
 input-outputs:
   clk_i    : input clock
@@ -52,7 +53,7 @@ module gap_layer #(
 
 
 
-// BN_LAYER CONTROLLER
+// GAP_LAYER CONTROLLER
 
   // controller states
   typedef enum logic {eBUSY=1'b0, eDONE=1'b1} state_e;
@@ -86,7 +87,7 @@ module gap_layer #(
 
 
 
-// BN_LAYER DATAPATH
+// GAP_LAYER DATAPATH
 
   // up counter with enable and auto-reset before overflow
   logic [$clog2(INPUT_SIZE)-1:0] count_n;
