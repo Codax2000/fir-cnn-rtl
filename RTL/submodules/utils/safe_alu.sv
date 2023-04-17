@@ -4,19 +4,20 @@
 Eugene Liu
 4/8/2023
 
-A package with overflow and underflow safe adders, subtractors, and multipliers.
+A package with overflow and underflow safe adders, subtractors, multipliers, and complimentors.
 
 Interface: Fully combinational. Up to user to register data
 Implementation:
-  adder      : data_o = a_i + b_i
-  subtractor : data_o = a_i - b_i
-  multiplier : data_o = a_i * b_i multiplication result is truncated to WORD_SIZE
+  adder        : data_o = a_i + b_i
+  subtractor   : data_o = a_i - b_i
+  multiplier   : data_o = a_i * b_i  multiplication result is truncated to WORD_SIZE
+  complimentor : data_o = -a_i       deals with edge case where a_i = most negative int, e.g. 3'b100
 
 parameters:
   WORD_SIZE : the number of bits of inputs/outputs
   N_SIZE    : the n parameter for Qm.n fixed point notation
   M_SIZE    : the m parameter for Qm.n fixed point notation (not including sign bit)
-  OPERATION : the desired operation expressed as a string (choose "add", "sub", or "mult")
+  OPERATION : the desired operation expressed as a string (choose "add", "sub", or "mult", "comp")
 
 input-outputs:
   a_i    : input operand a
@@ -40,6 +41,7 @@ module safe_alu #(
 // DATAPATH
   generate
     case (OPERATION)
+      
       
       // adder
       "add": begin
@@ -88,6 +90,18 @@ module safe_alu #(
             data_o = {1'b0,{(WORD_SIZE-1){1'b1}}}; // overflow
         end
       end
+      
+      
+      // complimentor
+      "comp": begin
+        always_comb begin          
+          if (a_i == {1'b1,{(WORD_SIZE-1){1'b0}}})
+            data_o = {1'b0,{(WORD_SIZE-1){1'b1}}}; // overflow
+          else
+            data_o = ~a_i + 1'b1;
+        end
+      end
+      
       
     endcase
   endgenerate
