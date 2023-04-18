@@ -94,6 +94,7 @@ module conv_layer #(
         .layer_number(LAYER_NUMBER),
         .neuron_number(CONVOLUTION_NUMBER)
     ) weight_bias_mem (
+        .reset_i,
         .clk_i,
         .addr_i(mem_addr),
         .data_o(mem_out)
