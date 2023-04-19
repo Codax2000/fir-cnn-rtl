@@ -34,13 +34,9 @@ input-outputs:
 module bn_layer #(
 
   parameter INPUT_SIZE=1,
-  parameter LAYER_NUM=0,
+  parameter LAYER_NUMBER=1,
   parameter WORD_SIZE=16,
-  parameter N_SIZE=14,
-  parameter MEM_INIT_MEAN="mean_test.mif",
-  parameter MEM_INIT_VARIANCE="variance_test.mif",
-  parameter MEM_INIT_SCALE="scale_test.mif",
-  parameter MEM_INIT_OFFSET="offset_test.mif") (
+  parameter N_SIZE=14) (
 
   // top level control
   input logic clk_i,
@@ -103,7 +99,7 @@ module bn_layer #(
     .depth($clog2(INPUT_SIZE)),
     .width(WORD_SIZE),
     .neuron_type(2),
-    .layer_number(LAYER_NUM),
+    .layer_number(LAYER_NUMBER),
     .neuron_number(0)
   ) mean_mem (
     .reset_i,
@@ -118,7 +114,7 @@ module bn_layer #(
     .depth($clog2(INPUT_SIZE)),
     .width(WORD_SIZE),
     .neuron_type(2),
-    .layer_number(LAYER_NUM),
+    .layer_number(LAYER_NUMBER),
     .neuron_number(1)
   ) variance_mem (
     .reset_i,
@@ -133,7 +129,7 @@ module bn_layer #(
     .depth($clog2(INPUT_SIZE)),
     .width(WORD_SIZE),
     .neuron_type(2),
-    .layer_number(LAYER_NUM),
+    .layer_number(LAYER_NUMBER),
     .neuron_number(2)
   ) scale_mem (
     .reset_i,
@@ -148,7 +144,7 @@ module bn_layer #(
     .depth($clog2(INPUT_SIZE)),
     .width(WORD_SIZE),
     .neuron_type(2),
-    .layer_number(LAYER_NUM),
+    .layer_number(LAYER_NUMBER),
     .neuron_number(3)
   ) offset_mem (
     .reset_i,
