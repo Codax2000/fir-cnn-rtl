@@ -14,6 +14,7 @@ parameters:
 */
 
 module ROM_neuron #(parameter depth=3, width=8, neuron_type=0, layer_number=1, neuron_number=0) (
+    input   logic reset_i,
     input  logic clk_i,
     input  logic [depth-1:0] addr_i,
     output logic [width-1:0] data_o
@@ -27,15 +28,18 @@ module ROM_neuron #(parameter depth=3, width=8, neuron_type=0, layer_number=1, n
     parameter logic [7:0] layer_number_p = layer_number + ascii_offset;
     parameter logic [7:0] neuron_number_p = neuron_number + ascii_offset;
 
-    // odd logic, but it synthesizes to {"n_n_n.mif" where "n" is a parameter as defined above}
-    parameter logic [71:0] init_file = {neuron_type_p, 8'h5f, layer_number_p, 8'h5f, neuron_number_p, 32'h2e6d6966};
+    // odd logic, but it synthesizes to {"n_n_n.mem" where "n" is a parameter as defined above}
+    parameter logic [71:0] init_file = {neuron_type_p, 8'h5f, layer_number_p, 8'h5f, neuron_number_p, 32'h2e6d656d};
 
-	initial begin
-		$readmemh(init_file,mem);
-	end
-    
-    always_ff @(posedge clk_i) begin
-        data_o <= mem[addr_i];
-    end
+	ROM_inferred #(
+        .ADDR_WIDTH(depth),
+        .WORD_SIZE(width),
+        .MEM_INIT(init_file)
+    ) internal_rom (
+        .addr_i,
+        .data_o,
+        .clk_i,
+        .reset_i
+    );
     
 endmodule

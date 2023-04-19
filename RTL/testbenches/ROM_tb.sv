@@ -2,7 +2,7 @@
 
 module ROM_tb ();
 
-    logic clk_i;
+    logic clk_i, reset_i;
     logic [2:0] addr_i;
     logic [7:0] data_o;
 
@@ -25,9 +25,12 @@ module ROM_tb ();
 
     integer i;
     initial begin
+        addr_i <= '0;
+        reset_i <= 1'b1; @(posedge clk_i);
+        reset_i <= 1'b0; @(posedge clk_i);
         for (i = 0; i < 8; i = i + 1) begin
             addr_i <= i;
-            repeat(2) @(posedge clk_i);
+            repeat(2)  @(posedge clk_i);
         end
         
         $stop;
