@@ -39,12 +39,13 @@ module ROM_inferred #(
       .clka(clk_i),                     // 1-bit input: Clock signal for port A.
       .ena(1'b1),                       // 1-bit input: Memory enable signal for port A. Must be high on clock
                                        // cycles when read operations are initiated. Pipelined internally.
-      .rsta(rsta),                     // 1-bit input: Reset signal for the final port A output register stage.
+      .rsta(reset_i),                     // 1-bit input: Reset signal for the final port A output register stage.
                                        // Synchronously resets output port douta to the value specified by
                                        // parameter READ_RESET_VALUE_A.
       .injectsbiterra(1'b0),
       .injectdbiterra(1'b0),
-      .regcea(1'b1)
+      .regcea(1'b1),
+      .sleep(1'b0)
 );
 
 endmodule
