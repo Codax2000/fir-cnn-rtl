@@ -7,10 +7,8 @@ module bn_layer_tb ();
     parameter INPUT_SIZE=10;
     parameter WORD_SIZE=16;
     parameter N_SIZE=12;
-    parameter MEM_INIT_MEAN="bn_mean_test.mif";
-    parameter MEM_INIT_VARIANCE="bn_variance_test.mif";
-    parameter MEM_INIT_SCALE="bn_scale_test.mif";
-    parameter MEM_INIT_OFFSET="bn_offset_test.mif";
+    parameter LAYER_NUM=1;
+
     
 // VARIABLES
     
@@ -39,10 +37,7 @@ module bn_layer_tb ();
     bn_layer #(.INPUT_SIZE(INPUT_SIZE),
                .WORD_SIZE(WORD_SIZE),
                .N_SIZE(N_SIZE),
-               .MEM_INIT_MEAN(MEM_INIT_MEAN),
-               .MEM_INIT_VARIANCE(MEM_INIT_VARIANCE),
-               .MEM_INIT_SCALE(MEM_INIT_SCALE),
-               .MEM_INIT_OFFSET(MEM_INIT_OFFSET)
+               .LAYER_NUMBER(LAYER_NUM)
     ) DUT (.*);
     
     
@@ -54,7 +49,7 @@ module bn_layer_tb ();
         reset_i <= 0; valid_i <= 0; ready_i <= 0;
         
         // reset
-        reset_i <= 1; @(posedge clk_i); reset_i <= 0; @(posedge clk_i);
+        reset_i <= 1; @(posedge clk_i);@(posedge clk_i);@(posedge clk_i); reset_i <= 0; @(posedge clk_i);
         
         // state_r = eEMPTY
         valid_i <= 1; data_r_i <= 16'b0000111011010010; @(posedge clk_i) // 0.732469473752462
@@ -78,7 +73,7 @@ module bn_layer_tb ();
         //
         valid_i <= 0; data_r_i <= 16'b0000111110011110; @(posedge clk_i) // -0.107299784013662
         
-        // state_r = eEMPTY, data_r_o = 0.113087525500705
+        // state_r = eEMPTY,
         valid_i <= 1; 
 
         
