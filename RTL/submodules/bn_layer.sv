@@ -34,6 +34,7 @@ input-outputs:
 module bn_layer #(
 
   parameter INPUT_SIZE=1,
+  parameter LAYER_NUM=0,
   parameter WORD_SIZE=16,
   parameter N_SIZE=14,
   parameter MEM_INIT_MEAN="mean_test.mif",
@@ -98,10 +99,14 @@ module bn_layer #(
 
   // mean rom
   logic signed [WORD_SIZE-1:0] mean_lo;
-  ROM #(.depth($clog2(INPUT_SIZE)),
-        .width(WORD_SIZE),
-        .init_file(MEM_INIT_MEAN),
-        .do_read_hex(0)) mean_mem (
+  ROM_neuron #(
+    .depth($clog2(INPUT_SIZE)),
+    .width(WORD_SIZE),
+    .neuron_type(2),
+    .layer_number(LAYER_NUM),
+    .neuron_number(0)
+  ) mean_mem (
+    .reset_i,
     .clk_i,
     .addr_i(count_n),
     .data_o(mean_lo)
@@ -109,10 +114,14 @@ module bn_layer #(
 
   // variance rom
   logic signed [WORD_SIZE-1:0] variance_lo;
-  ROM #(.depth($clog2(INPUT_SIZE)),
-        .width(WORD_SIZE),
-        .init_file(MEM_INIT_VARIANCE),
-        .do_read_hex(0)) variance_mem (
+  ROM_neuron #(
+    .depth($clog2(INPUT_SIZE)),
+    .width(WORD_SIZE),
+    .neuron_type(2),
+    .layer_number(LAYER_NUM),
+    .neuron_number(1)
+  ) variance_mem (
+    .reset_i,
     .clk_i,
     .addr_i(count_n),
     .data_o(variance_lo)
@@ -120,10 +129,14 @@ module bn_layer #(
 
   // scale rom
   logic signed [WORD_SIZE-1:0] scale_lo;
-  ROM #(.depth($clog2(INPUT_SIZE)),
-        .width(WORD_SIZE),
-        .init_file(MEM_INIT_SCALE),
-        .do_read_hex(0)) scale_mem (
+  ROM_neuron #(
+    .depth($clog2(INPUT_SIZE)),
+    .width(WORD_SIZE),
+    .neuron_type(2),
+    .layer_number(LAYER_NUM),
+    .neuron_number(2)
+  ) scale_mem (
+    .reset_i,
     .clk_i,
     .addr_i(count_n),
     .data_o(scale_lo)
@@ -131,10 +144,14 @@ module bn_layer #(
 
   // offset rom
   logic signed [WORD_SIZE-1:0] offset_lo;
-  ROM #(.depth($clog2(INPUT_SIZE)),
-        .width(WORD_SIZE),
-        .init_file(MEM_INIT_OFFSET),
-        .do_read_hex(0)) offset_mem (
+  ROM_neuron #(
+    .depth($clog2(INPUT_SIZE)),
+    .width(WORD_SIZE),
+    .neuron_type(2),
+    .layer_number(LAYER_NUM),
+    .neuron_number(3)
+  ) offset_mem (
+    .reset_i,
     .clk_i,
     .addr_i(count_n),
     .data_o(offset_lo)
