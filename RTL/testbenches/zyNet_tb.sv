@@ -47,9 +47,10 @@ module zyNet_tb ();
 
     
     
-    zyNet #(.WORD_SIZE(WORD_SIZE),
-.INT_BITS(4)
-) dut (
+    zyNet #(
+        .WORD_SIZE(WORD_SIZE),
+        .INT_BITS(4)
+    ) dut (
     .*);
     
     
@@ -65,7 +66,7 @@ module zyNet_tb ();
         repeat(26) @(posedge clk_i);
         start_i <= 1; @(posedge clk_i);
         
-        repeat(40) @(posedge clk_i);
+        repeat(60) @(posedge clk_i);
         $stop;
     end
     

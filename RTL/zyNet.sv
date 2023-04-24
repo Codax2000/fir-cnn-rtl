@@ -43,9 +43,11 @@ module zyNet #(
     
     
     
-//// gap_layer_0
-//    logic signed [NUM_KERNELS-1:0] gap0_ready_lo, gap0_valid_lo;
-//    logic signed [NUM_KERNELS-1:0] [WORD_SIZE-1:0] gap0_data_lo;
+// gap_layer_0
+    logic signed [NUM_KERNELS-1:0] gap0_ready_lo, gap0_valid_lo;
+    logic signed [NUM_KERNELS-1:0] [WORD_SIZE-1:0] gap0_data_lo;
+    
+    
     
     genvar i;
     generate
@@ -91,29 +93,43 @@ module zyNet #(
 
 
             abs_layer #(
-              .WORD_SIZE(WORD_SIZE)
+                .WORD_SIZE(WORD_SIZE)
             ) absolute_value (
-              // top level control
-              .clk_i,
-              .reset_i,
+                // top level control
+                .clk_i,
+                .reset_i,
             
-              // handshake to prev layer
-              .ready_o(abs0_ready_lo[i]),
-              .valid_i(fc_output0_wen_lo[i]),
-              .data_r_i(fc_output0_data_lo[i]),
+                // handshake to prev layer
+                .ready_o(abs0_ready_lo[i]),
+                .valid_i(fc_output0_wen_lo[i]),
+                .data_r_i(fc_output0_data_lo[i]),
             
-              // handshake to next layer
-              .valid_o(abs0_valid_lo[i]),
-              .ready_i(1'b1),
-              .data_r_o(abs0_data_lo[i])
+                // handshake to next layer
+                .valid_o(abs0_valid_lo[i]),
+                .ready_i(gap0_ready_lo[i]),
+                .data_r_o(abs0_data_lo[i])
             );
 
     
-    //        gap_layer #(
-    //            // TODO: insert params
-    //        ) global_average_pooling (
-    //            // TODO: insert io
-    //        );
+            gap_layer #(
+                .INPUT_SIZE(INPUT_LAYER_HEIGHT_0-KERNEL_HEIGHT_0+1),
+                .WORD_SIZE(WORD_SIZE),
+                .N_SIZE(WORD_SIZE-INT_BITS)
+            ) global_average_pooling (
+                // top level control
+                .clk_i,
+                .reset_i,
+            
+                // handshake to prev layer
+                .ready_o(gap0_ready_lo[i]),
+                .valid_i(abs0_valid_lo[i]),
+                .data_r_i(abs0_data_lo[i]),
+            
+                // handshake to next layer
+                .valid_o(gap0_valid_lo[i]),
+                .ready_i(1'b1),
+                .data_r_o(gap0_data_lo[i])
+            );
         
         end
     endgenerate
