@@ -45,7 +45,7 @@ module up_counter_enabled #(
 
     // counting logic
     always_ff @(posedge clk_i) begin
-        if (ns == eDONE)
+        if (ns == eDONE || reset_i)
             data_o <= '0;
         else if ((ps == eCOUNTING || start_i) && en_i) // start counting on the next clock cycle
             data_o <= data_o + 1;
