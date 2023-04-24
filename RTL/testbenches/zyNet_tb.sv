@@ -66,7 +66,7 @@ module zyNet_tb ();
         repeat(26) @(posedge clk_i);
         start_i <= 1; @(posedge clk_i);
         
-        repeat(60) @(posedge clk_i);
+        repeat(100) @(posedge clk_i);
         $stop;
     end
     

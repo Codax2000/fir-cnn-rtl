@@ -29,24 +29,43 @@ module zyNet #(
     
     
     
-// fc_output_0 serializer
+// fc_output_layer_0
     localparam LAYER_HEIGHT_0 = INPUT_LAYER_HEIGHT_0 - KERNEL_HEIGHT_0 + 1;
     
-    logic signed [NUM_KERNELS-1:0] fc_output0_ready_lo, fc_output0_wen_lo;
+    logic [NUM_KERNELS-1:0] fc_output0_ready_lo, fc_output0_wen_lo;
     logic signed [NUM_KERNELS-1:0] [WORD_SIZE-1:0] fc_output0_data_lo;
     
     
     
 // abs_layer_0
-    logic signed [NUM_KERNELS-1:0] abs0_ready_lo, abs0_valid_lo;
+    logic [NUM_KERNELS-1:0] abs0_ready_lo, abs0_valid_lo;
     logic signed [NUM_KERNELS-1:0] [WORD_SIZE-1:0] abs0_data_lo;
     
     
     
 // gap_layer_0
-    logic signed [NUM_KERNELS-1:0] gap0_ready_lo, gap0_valid_lo;
+    logic [NUM_KERNELS-1:0] gap0_ready_lo, gap0_valid_lo;
     logic signed [NUM_KERNELS-1:0] [WORD_SIZE-1:0] gap0_data_lo;
     
+    
+    
+// fc_output_layer_1
+    localparam LAYER_HEIGHT_1 = 8;
+    
+    logic fc_output1_ready_lo, fc_output1_wen_lo;
+    logic signed [WORD_SIZE-1:0] fc_output1_data_lo;
+    
+    
+    
+// double_fifo_0
+    logic fifo0_full_lo, fifo0_empty_lo;
+    logic signed [WORD_SIZE-1:0] fifo0_data_lo;
+    
+    
+    
+// fc_layer_0
+    logic fc0_ren_lo, fc0_valid_lo;
+    logic signed [NUM_KERNELS-1:0] [WORD_SIZE-1:0] fc0_data_lo;
     
     
     genvar i;
@@ -134,11 +153,67 @@ module zyNet #(
         end
     endgenerate
     
-    //fc_layer #(
-    //    // TODO: Insert params
-    //) hidden_layer (
-    //    // TODO: insert values
-    //);
+    fc_output_layer #(
+        .LAYER_HEIGHT(LAYER_HEIGHT_1),
+        .WORD_SIZE(WORD_SIZE)
+    ) hidden_layer_output (
+        .clk_i,
+        .reset_i,
+        
+        // handshake to prev layer
+        .valid_i(&gap0_valid_lo),
+        .ready_o(fc_output1_ready_lo),
+        .data_i(gap0_data_lo),
+    
+        // handshake to next layer
+        .wen_o(fc_output1_wen_lo),
+        .full_i(fifo0_full_lo),
+        .data_o(fc_output1_data_lo)
+    );
+    
+    
+    double_fifo #(
+        .WORD_SIZE(WORD_SIZE)
+    ) fifo_0 (
+        .clk_i,
+        .reset_i,
+        
+        // handshake to prev layer
+        .full_o(fifo0_full_lo),
+        .wen_i(fc_output1_wen_lo),
+        .data_i(fc_output1_data_lo),
+    
+        // handshake to next layer
+        .ren_i(fc0_ren_lo),
+        .empty_o(fifo0_empty_lo),
+        .data_o(fifo0_data_lo)
+    );
+    
+    
+    fc_layer #(
+        .WORD_SIZE(WORD_SIZE),
+        .INT_BITS(INT_BITS),
+        .LAYER_HEIGHT(NUM_KERNELS),
+        .PREVIOUS_LAYER_HEIGHT(LAYER_HEIGHT_1),
+        .LAYER_NUMBER(0)
+    ) hidden_layer (
+        .reset_i,
+        .clk_i,
+    
+        // helpful input interface
+        .data_i(fifo0_data_lo),
+        .empty_i(fifo0_empty_lo),
+        .ren_o(fc0_ren_lo), // also yumi_o, but not using that convention here
+    
+        // helpful output interface
+        .valid_o(fc0_valid_lo),
+        .ready_i(1'b1),
+        .data_o(fc0_data_lo),
+
+        // input for back-propagation, not currently used
+        .weight_i(),
+        .mem_wen_i()
+    );
     
     //fc_output_layer #(
     //    // TODO: insert params
