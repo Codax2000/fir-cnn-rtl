@@ -1,0 +1,611 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wave_config>
+   <wave_state>
+   </wave_state>
+   <db_ref_list>
+      <db_ref path="zyNet_tb_behav.wdb" id="1">
+         <top_modules>
+            <top_module name="glbl" />
+            <top_module name="zyNet_tb" />
+         </top_modules>
+      </db_ref>
+   </db_ref_list>
+   <zoom_setting>
+      <ZoomStartTime time="369.690 ns"></ZoomStartTime>
+      <ZoomEndTime time="380.404 ns"></ZoomEndTime>
+      <Cursor1Time time="373.487 ns"></Cursor1Time>
+   </zoom_setting>
+   <column_width_setting>
+      <NameColumnWidth column_width="212"></NameColumnWidth>
+      <ValueColumnWidth column_width="113"></ValueColumnWidth>
+   </column_width_setting>
+   <WVObjectSize size="16" />
+   <wvobject fp_name="/zyNet_tb/clk_i" type="logic">
+      <obj_property name="ElementShortName">clk_i</obj_property>
+      <obj_property name="ObjectShortName">clk_i</obj_property>
+   </wvobject>
+   <wvobject fp_name="/zyNet_tb/reset_i" type="logic">
+      <obj_property name="ElementShortName">reset_i</obj_property>
+      <obj_property name="ObjectShortName">reset_i</obj_property>
+   </wvobject>
+   <wvobject fp_name="/zyNet_tb/start_i" type="logic">
+      <obj_property name="ElementShortName">start_i</obj_property>
+      <obj_property name="ObjectShortName">start_i</obj_property>
+   </wvobject>
+   <wvobject fp_name="/zyNet_tb/data_i" type="array">
+      <obj_property name="ElementShortName">data_i[15:0]</obj_property>
+      <obj_property name="ObjectShortName">data_i[15:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/zyNet_tb/valid_o" type="logic">
+      <obj_property name="ElementShortName">valid_o</obj_property>
+      <obj_property name="ObjectShortName">valid_o</obj_property>
+   </wvobject>
+   <wvobject fp_name="/zyNet_tb/yumi_i" type="logic">
+      <obj_property name="ElementShortName">yumi_i</obj_property>
+      <obj_property name="ObjectShortName">yumi_i</obj_property>
+   </wvobject>
+   <wvobject fp_name="/zyNet_tb/data_o" type="array">
+      <obj_property name="ElementShortName">data_o[15:0]</obj_property>
+      <obj_property name="ObjectShortName">data_o[15:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/zyNet_tb/count_r" type="array">
+      <obj_property name="ElementShortName">count_r[22:0]</obj_property>
+      <obj_property name="ObjectShortName">count_r[22:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/zyNet_tb/CLOCK_PERIOD" type="array">
+      <obj_property name="ElementShortName">CLOCK_PERIOD[31:0]</obj_property>
+      <obj_property name="ObjectShortName">CLOCK_PERIOD[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/zyNet_tb/WORD_SIZE" type="array">
+      <obj_property name="ElementShortName">WORD_SIZE[31:0]</obj_property>
+      <obj_property name="ObjectShortName">WORD_SIZE[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/zyNet_tb/rom/data_o" type="array">
+      <obj_property name="ElementShortName">data_o[15:0]</obj_property>
+      <obj_property name="ObjectShortName">data_o[15:0]</obj_property>
+      <obj_property name="Radix">REALRADIX</obj_property>
+      <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+      <obj_property name="radix_fractionWidth">12</obj_property>
+      <obj_property name="radix_otherWidth">0</obj_property>
+   </wvobject>
+   <wvobject fp_name="/zyNet_tb/dut/\genblk1[0].kernel /weight_bias_mem/data_o" type="array">
+      <obj_property name="ElementShortName">data_o[15:0]</obj_property>
+      <obj_property name="ObjectShortName">data_o[15:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/zyNet_tb/dut/\genblk1[0].kernel /mem_addr" type="array">
+      <obj_property name="ElementShortName">mem_addr[3:0]</obj_property>
+      <obj_property name="ObjectShortName">mem_addr[3:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/zyNet_tb/dut/\genblk1[0].kernel /data_shift_reg" type="array">
+      <obj_property name="ElementShortName">data_shift_reg[25:0][15:0]</obj_property>
+      <obj_property name="ObjectShortName">data_shift_reg[25:0][15:0]</obj_property>
+      <obj_property name="isExpanded"></obj_property>
+   </wvobject>
+   <wvobject fp_name="/zyNet_tb/dut/conv0_data_lo" type="array">
+      <obj_property name="ElementShortName">conv0_data_lo[7:0][12:0][15:0]</obj_property>
+      <obj_property name="ObjectShortName">conv0_data_lo[7:0][12:0][15:0]</obj_property>
+      <obj_property name="isExpanded"></obj_property>
+      <obj_property name="Radix">REALRADIX</obj_property>
+      <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+      <obj_property name="radix_fractionWidth">12</obj_property>
+      <obj_property name="radix_otherWidth">0</obj_property>
+      <wvobject fp_name="/zyNet_tb/dut/conv0_data_lo[7]" type="array">
+         <obj_property name="ElementShortName">[7][12:0][15:0]</obj_property>
+         <obj_property name="ObjectShortName">[7][12:0][15:0]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">12</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+         <wvobject fp_name="/zyNet_tb/dut/conv0_data_lo[7][12]" type="array">
+            <obj_property name="ElementShortName">[12][15:0]</obj_property>
+            <obj_property name="ObjectShortName">[12][15:0]</obj_property>
+            <obj_property name="Radix">REALRADIX</obj_property>
+            <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+            <obj_property name="radix_fractionWidth">12</obj_property>
+            <obj_property name="radix_otherWidth">0</obj_property>
+         </wvobject>
+         <wvobject fp_name="/zyNet_tb/dut/conv0_data_lo[7][11]" type="array">
+            <obj_property name="ElementShortName">[11][15:0]</obj_property>
+            <obj_property name="ObjectShortName">[11][15:0]</obj_property>
+            <obj_property name="Radix">REALRADIX</obj_property>
+            <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+            <obj_property name="radix_fractionWidth">12</obj_property>
+            <obj_property name="radix_otherWidth">0</obj_property>
+         </wvobject>
+         <wvobject fp_name="/zyNet_tb/dut/conv0_data_lo[7][10]" type="array">
+            <obj_property name="ElementShortName">[10][15:0]</obj_property>
+            <obj_property name="ObjectShortName">[10][15:0]</obj_property>
+            <obj_property name="Radix">REALRADIX</obj_property>
+            <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+            <obj_property name="radix_fractionWidth">12</obj_property>
+            <obj_property name="radix_otherWidth">0</obj_property>
+         </wvobject>
+         <wvobject fp_name="/zyNet_tb/dut/conv0_data_lo[7][9]" type="array">
+            <obj_property name="ElementShortName">[9][15:0]</obj_property>
+            <obj_property name="ObjectShortName">[9][15:0]</obj_property>
+            <obj_property name="Radix">REALRADIX</obj_property>
+            <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+            <obj_property name="radix_fractionWidth">12</obj_property>
+            <obj_property name="radix_otherWidth">0</obj_property>
+         </wvobject>
+         <wvobject fp_name="/zyNet_tb/dut/conv0_data_lo[7][8]" type="array">
+            <obj_property name="ElementShortName">[8][15:0]</obj_property>
+            <obj_property name="ObjectShortName">[8][15:0]</obj_property>
+            <obj_property name="Radix">REALRADIX</obj_property>
+            <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+            <obj_property name="radix_fractionWidth">12</obj_property>
+            <obj_property name="radix_otherWidth">0</obj_property>
+         </wvobject>
+         <wvobject fp_name="/zyNet_tb/dut/conv0_data_lo[7][7]" type="array">
+            <obj_property name="ElementShortName">[7][15:0]</obj_property>
+            <obj_property name="ObjectShortName">[7][15:0]</obj_property>
+            <obj_property name="Radix">REALRADIX</obj_property>
+            <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+            <obj_property name="radix_fractionWidth">12</obj_property>
+            <obj_property name="radix_otherWidth">0</obj_property>
+         </wvobject>
+         <wvobject fp_name="/zyNet_tb/dut/conv0_data_lo[7][6]" type="array">
+            <obj_property name="ElementShortName">[6][15:0]</obj_property>
+            <obj_property name="ObjectShortName">[6][15:0]</obj_property>
+            <obj_property name="Radix">REALRADIX</obj_property>
+            <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+            <obj_property name="radix_fractionWidth">12</obj_property>
+            <obj_property name="radix_otherWidth">0</obj_property>
+         </wvobject>
+         <wvobject fp_name="/zyNet_tb/dut/conv0_data_lo[7][5]" type="array">
+            <obj_property name="ElementShortName">[5][15:0]</obj_property>
+            <obj_property name="ObjectShortName">[5][15:0]</obj_property>
+            <obj_property name="Radix">REALRADIX</obj_property>
+            <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+            <obj_property name="radix_fractionWidth">12</obj_property>
+            <obj_property name="radix_otherWidth">0</obj_property>
+         </wvobject>
+         <wvobject fp_name="/zyNet_tb/dut/conv0_data_lo[7][4]" type="array">
+            <obj_property name="ElementShortName">[4][15:0]</obj_property>
+            <obj_property name="ObjectShortName">[4][15:0]</obj_property>
+            <obj_property name="Radix">REALRADIX</obj_property>
+            <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+            <obj_property name="radix_fractionWidth">12</obj_property>
+            <obj_property name="radix_otherWidth">0</obj_property>
+         </wvobject>
+         <wvobject fp_name="/zyNet_tb/dut/conv0_data_lo[7][3]" type="array">
+            <obj_property name="ElementShortName">[3][15:0]</obj_property>
+            <obj_property name="ObjectShortName">[3][15:0]</obj_property>
+            <obj_property name="Radix">REALRADIX</obj_property>
+            <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+            <obj_property name="radix_fractionWidth">12</obj_property>
+            <obj_property name="radix_otherWidth">0</obj_property>
+         </wvobject>
+         <wvobject fp_name="/zyNet_tb/dut/conv0_data_lo[7][2]" type="array">
+            <obj_property name="ElementShortName">[2][15:0]</obj_property>
+            <obj_property name="ObjectShortName">[2][15:0]</obj_property>
+            <obj_property name="Radix">REALRADIX</obj_property>
+            <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+            <obj_property name="radix_fractionWidth">12</obj_property>
+            <obj_property name="radix_otherWidth">0</obj_property>
+         </wvobject>
+         <wvobject fp_name="/zyNet_tb/dut/conv0_data_lo[7][1]" type="array">
+            <obj_property name="ElementShortName">[1][15:0]</obj_property>
+            <obj_property name="ObjectShortName">[1][15:0]</obj_property>
+            <obj_property name="Radix">REALRADIX</obj_property>
+            <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+            <obj_property name="radix_fractionWidth">12</obj_property>
+            <obj_property name="radix_otherWidth">0</obj_property>
+         </wvobject>
+         <wvobject fp_name="/zyNet_tb/dut/conv0_data_lo[7][0]" type="array">
+            <obj_property name="ElementShortName">[0][15:0]</obj_property>
+            <obj_property name="ObjectShortName">[0][15:0]</obj_property>
+            <obj_property name="Radix">REALRADIX</obj_property>
+            <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+            <obj_property name="radix_fractionWidth">12</obj_property>
+            <obj_property name="radix_otherWidth">0</obj_property>
+         </wvobject>
+      </wvobject>
+      <wvobject fp_name="/zyNet_tb/dut/conv0_data_lo[6]" type="array">
+         <obj_property name="ElementShortName">[6][12:0][15:0]</obj_property>
+         <obj_property name="ObjectShortName">[6][12:0][15:0]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">12</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+         <wvobject fp_name="/zyNet_tb/dut/conv0_data_lo[6][12]" type="array">
+            <obj_property name="ElementShortName">[12][15:0]</obj_property>
+            <obj_property name="ObjectShortName">[12][15:0]</obj_property>
+            <obj_property name="Radix">REALRADIX</obj_property>
+            <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+            <obj_property name="radix_fractionWidth">12</obj_property>
+            <obj_property name="radix_otherWidth">0</obj_property>
+         </wvobject>
+         <wvobject fp_name="/zyNet_tb/dut/conv0_data_lo[6][11]" type="array">
+            <obj_property name="ElementShortName">[11][15:0]</obj_property>
+            <obj_property name="ObjectShortName">[11][15:0]</obj_property>
+            <obj_property name="Radix">REALRADIX</obj_property>
+            <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+            <obj_property name="radix_fractionWidth">12</obj_property>
+            <obj_property name="radix_otherWidth">0</obj_property>
+         </wvobject>
+         <wvobject fp_name="/zyNet_tb/dut/conv0_data_lo[6][10]" type="array">
+            <obj_property name="ElementShortName">[10][15:0]</obj_property>
+            <obj_property name="ObjectShortName">[10][15:0]</obj_property>
+            <obj_property name="Radix">REALRADIX</obj_property>
+            <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+            <obj_property name="radix_fractionWidth">12</obj_property>
+            <obj_property name="radix_otherWidth">0</obj_property>
+         </wvobject>
+         <wvobject fp_name="/zyNet_tb/dut/conv0_data_lo[6][9]" type="array">
+            <obj_property name="ElementShortName">[9][15:0]</obj_property>
+            <obj_property name="ObjectShortName">[9][15:0]</obj_property>
+            <obj_property name="Radix">REALRADIX</obj_property>
+            <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+            <obj_property name="radix_fractionWidth">12</obj_property>
+            <obj_property name="radix_otherWidth">0</obj_property>
+         </wvobject>
+         <wvobject fp_name="/zyNet_tb/dut/conv0_data_lo[6][8]" type="array">
+            <obj_property name="ElementShortName">[8][15:0]</obj_property>
+            <obj_property name="ObjectShortName">[8][15:0]</obj_property>
+            <obj_property name="Radix">REALRADIX</obj_property>
+            <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+            <obj_property name="radix_fractionWidth">12</obj_property>
+            <obj_property name="radix_otherWidth">0</obj_property>
+         </wvobject>
+         <wvobject fp_name="/zyNet_tb/dut/conv0_data_lo[6][7]" type="array">
+            <obj_property name="ElementShortName">[7][15:0]</obj_property>
+            <obj_property name="ObjectShortName">[7][15:0]</obj_property>
+            <obj_property name="Radix">REALRADIX</obj_property>
+            <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+            <obj_property name="radix_fractionWidth">12</obj_property>
+            <obj_property name="radix_otherWidth">0</obj_property>
+         </wvobject>
+         <wvobject fp_name="/zyNet_tb/dut/conv0_data_lo[6][6]" type="array">
+            <obj_property name="ElementShortName">[6][15:0]</obj_property>
+            <obj_property name="ObjectShortName">[6][15:0]</obj_property>
+            <obj_property name="Radix">REALRADIX</obj_property>
+            <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+            <obj_property name="radix_fractionWidth">12</obj_property>
+            <obj_property name="radix_otherWidth">0</obj_property>
+         </wvobject>
+         <wvobject fp_name="/zyNet_tb/dut/conv0_data_lo[6][5]" type="array">
+            <obj_property name="ElementShortName">[5][15:0]</obj_property>
+            <obj_property name="ObjectShortName">[5][15:0]</obj_property>
+            <obj_property name="Radix">REALRADIX</obj_property>
+            <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+            <obj_property name="radix_fractionWidth">12</obj_property>
+            <obj_property name="radix_otherWidth">0</obj_property>
+         </wvobject>
+         <wvobject fp_name="/zyNet_tb/dut/conv0_data_lo[6][4]" type="array">
+            <obj_property name="ElementShortName">[4][15:0]</obj_property>
+            <obj_property name="ObjectShortName">[4][15:0]</obj_property>
+            <obj_property name="Radix">REALRADIX</obj_property>
+            <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+            <obj_property name="radix_fractionWidth">12</obj_property>
+            <obj_property name="radix_otherWidth">0</obj_property>
+         </wvobject>
+         <wvobject fp_name="/zyNet_tb/dut/conv0_data_lo[6][3]" type="array">
+            <obj_property name="ElementShortName">[3][15:0]</obj_property>
+            <obj_property name="ObjectShortName">[3][15:0]</obj_property>
+            <obj_property name="Radix">REALRADIX</obj_property>
+            <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+            <obj_property name="radix_fractionWidth">12</obj_property>
+            <obj_property name="radix_otherWidth">0</obj_property>
+         </wvobject>
+         <wvobject fp_name="/zyNet_tb/dut/conv0_data_lo[6][2]" type="array">
+            <obj_property name="ElementShortName">[2][15:0]</obj_property>
+            <obj_property name="ObjectShortName">[2][15:0]</obj_property>
+            <obj_property name="Radix">REALRADIX</obj_property>
+            <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+            <obj_property name="radix_fractionWidth">12</obj_property>
+            <obj_property name="radix_otherWidth">0</obj_property>
+         </wvobject>
+         <wvobject fp_name="/zyNet_tb/dut/conv0_data_lo[6][1]" type="array">
+            <obj_property name="ElementShortName">[1][15:0]</obj_property>
+            <obj_property name="ObjectShortName">[1][15:0]</obj_property>
+            <obj_property name="Radix">REALRADIX</obj_property>
+            <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+            <obj_property name="radix_fractionWidth">12</obj_property>
+            <obj_property name="radix_otherWidth">0</obj_property>
+         </wvobject>
+         <wvobject fp_name="/zyNet_tb/dut/conv0_data_lo[6][0]" type="array">
+            <obj_property name="ElementShortName">[0][15:0]</obj_property>
+            <obj_property name="ObjectShortName">[0][15:0]</obj_property>
+            <obj_property name="Radix">REALRADIX</obj_property>
+            <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+            <obj_property name="radix_fractionWidth">12</obj_property>
+            <obj_property name="radix_otherWidth">0</obj_property>
+         </wvobject>
+      </wvobject>
+      <wvobject fp_name="/zyNet_tb/dut/conv0_data_lo[5]" type="array">
+         <obj_property name="ElementShortName">[5][12:0][15:0]</obj_property>
+         <obj_property name="ObjectShortName">[5][12:0][15:0]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">12</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+         <wvobject fp_name="/zyNet_tb/dut/conv0_data_lo[5][12]" type="array">
+            <obj_property name="ElementShortName">[12][15:0]</obj_property>
+            <obj_property name="ObjectShortName">[12][15:0]</obj_property>
+            <obj_property name="Radix">REALRADIX</obj_property>
+            <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+            <obj_property name="radix_fractionWidth">12</obj_property>
+            <obj_property name="radix_otherWidth">0</obj_property>
+         </wvobject>
+         <wvobject fp_name="/zyNet_tb/dut/conv0_data_lo[5][11]" type="array">
+            <obj_property name="ElementShortName">[11][15:0]</obj_property>
+            <obj_property name="ObjectShortName">[11][15:0]</obj_property>
+            <obj_property name="Radix">REALRADIX</obj_property>
+            <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+            <obj_property name="radix_fractionWidth">12</obj_property>
+            <obj_property name="radix_otherWidth">0</obj_property>
+         </wvobject>
+         <wvobject fp_name="/zyNet_tb/dut/conv0_data_lo[5][10]" type="array">
+            <obj_property name="ElementShortName">[10][15:0]</obj_property>
+            <obj_property name="ObjectShortName">[10][15:0]</obj_property>
+            <obj_property name="Radix">REALRADIX</obj_property>
+            <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+            <obj_property name="radix_fractionWidth">12</obj_property>
+            <obj_property name="radix_otherWidth">0</obj_property>
+         </wvobject>
+         <wvobject fp_name="/zyNet_tb/dut/conv0_data_lo[5][9]" type="array">
+            <obj_property name="ElementShortName">[9][15:0]</obj_property>
+            <obj_property name="ObjectShortName">[9][15:0]</obj_property>
+            <obj_property name="Radix">REALRADIX</obj_property>
+            <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+            <obj_property name="radix_fractionWidth">12</obj_property>
+            <obj_property name="radix_otherWidth">0</obj_property>
+         </wvobject>
+         <wvobject fp_name="/zyNet_tb/dut/conv0_data_lo[5][8]" type="array">
+            <obj_property name="ElementShortName">[8][15:0]</obj_property>
+            <obj_property name="ObjectShortName">[8][15:0]</obj_property>
+            <obj_property name="Radix">REALRADIX</obj_property>
+            <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+            <obj_property name="radix_fractionWidth">12</obj_property>
+            <obj_property name="radix_otherWidth">0</obj_property>
+         </wvobject>
+         <wvobject fp_name="/zyNet_tb/dut/conv0_data_lo[5][7]" type="array">
+            <obj_property name="ElementShortName">[7][15:0]</obj_property>
+            <obj_property name="ObjectShortName">[7][15:0]</obj_property>
+            <obj_property name="Radix">REALRADIX</obj_property>
+            <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+            <obj_property name="radix_fractionWidth">12</obj_property>
+            <obj_property name="radix_otherWidth">0</obj_property>
+         </wvobject>
+         <wvobject fp_name="/zyNet_tb/dut/conv0_data_lo[5][6]" type="array">
+            <obj_property name="ElementShortName">[6][15:0]</obj_property>
+            <obj_property name="ObjectShortName">[6][15:0]</obj_property>
+            <obj_property name="Radix">REALRADIX</obj_property>
+            <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+            <obj_property name="radix_fractionWidth">12</obj_property>
+            <obj_property name="radix_otherWidth">0</obj_property>
+         </wvobject>
+         <wvobject fp_name="/zyNet_tb/dut/conv0_data_lo[5][5]" type="array">
+            <obj_property name="ElementShortName">[5][15:0]</obj_property>
+            <obj_property name="ObjectShortName">[5][15:0]</obj_property>
+            <obj_property name="Radix">REALRADIX</obj_property>
+            <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+            <obj_property name="radix_fractionWidth">12</obj_property>
+            <obj_property name="radix_otherWidth">0</obj_property>
+         </wvobject>
+         <wvobject fp_name="/zyNet_tb/dut/conv0_data_lo[5][4]" type="array">
+            <obj_property name="ElementShortName">[4][15:0]</obj_property>
+            <obj_property name="ObjectShortName">[4][15:0]</obj_property>
+            <obj_property name="Radix">REALRADIX</obj_property>
+            <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+            <obj_property name="radix_fractionWidth">12</obj_property>
+            <obj_property name="radix_otherWidth">0</obj_property>
+         </wvobject>
+         <wvobject fp_name="/zyNet_tb/dut/conv0_data_lo[5][3]" type="array">
+            <obj_property name="ElementShortName">[3][15:0]</obj_property>
+            <obj_property name="ObjectShortName">[3][15:0]</obj_property>
+            <obj_property name="Radix">REALRADIX</obj_property>
+            <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+            <obj_property name="radix_fractionWidth">12</obj_property>
+            <obj_property name="radix_otherWidth">0</obj_property>
+         </wvobject>
+         <wvobject fp_name="/zyNet_tb/dut/conv0_data_lo[5][2]" type="array">
+            <obj_property name="ElementShortName">[2][15:0]</obj_property>
+            <obj_property name="ObjectShortName">[2][15:0]</obj_property>
+            <obj_property name="Radix">REALRADIX</obj_property>
+            <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+            <obj_property name="radix_fractionWidth">12</obj_property>
+            <obj_property name="radix_otherWidth">0</obj_property>
+         </wvobject>
+         <wvobject fp_name="/zyNet_tb/dut/conv0_data_lo[5][1]" type="array">
+            <obj_property name="ElementShortName">[1][15:0]</obj_property>
+            <obj_property name="ObjectShortName">[1][15:0]</obj_property>
+            <obj_property name="Radix">REALRADIX</obj_property>
+            <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+            <obj_property name="radix_fractionWidth">12</obj_property>
+            <obj_property name="radix_otherWidth">0</obj_property>
+         </wvobject>
+         <wvobject fp_name="/zyNet_tb/dut/conv0_data_lo[5][0]" type="array">
+            <obj_property name="ElementShortName">[0][15:0]</obj_property>
+            <obj_property name="ObjectShortName">[0][15:0]</obj_property>
+            <obj_property name="Radix">REALRADIX</obj_property>
+            <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+            <obj_property name="radix_fractionWidth">12</obj_property>
+            <obj_property name="radix_otherWidth">0</obj_property>
+         </wvobject>
+      </wvobject>
+      <wvobject fp_name="/zyNet_tb/dut/conv0_data_lo[4]" type="array">
+         <obj_property name="ElementShortName">[4][12:0][15:0]</obj_property>
+         <obj_property name="ObjectShortName">[4][12:0][15:0]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">12</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/zyNet_tb/dut/conv0_data_lo[3]" type="array">
+         <obj_property name="ElementShortName">[3][12:0][15:0]</obj_property>
+         <obj_property name="ObjectShortName">[3][12:0][15:0]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">12</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/zyNet_tb/dut/conv0_data_lo[2]" type="array">
+         <obj_property name="ElementShortName">[2][12:0][15:0]</obj_property>
+         <obj_property name="ObjectShortName">[2][12:0][15:0]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">12</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/zyNet_tb/dut/conv0_data_lo[1]" type="array">
+         <obj_property name="ElementShortName">[1][12:0][15:0]</obj_property>
+         <obj_property name="ObjectShortName">[1][12:0][15:0]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">12</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+         <obj_property name="isExpanded"></obj_property>
+         <wvobject fp_name="/zyNet_tb/dut/conv0_data_lo[1][12]" type="array">
+            <obj_property name="ElementShortName">[12][15:0]</obj_property>
+            <obj_property name="ObjectShortName">[12][15:0]</obj_property>
+            <obj_property name="Radix">REALRADIX</obj_property>
+            <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+            <obj_property name="radix_fractionWidth">12</obj_property>
+            <obj_property name="radix_otherWidth">0</obj_property>
+         </wvobject>
+         <wvobject fp_name="/zyNet_tb/dut/conv0_data_lo[1][11]" type="array">
+            <obj_property name="ElementShortName">[11][15:0]</obj_property>
+            <obj_property name="ObjectShortName">[11][15:0]</obj_property>
+            <obj_property name="Radix">REALRADIX</obj_property>
+            <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+            <obj_property name="radix_fractionWidth">12</obj_property>
+            <obj_property name="radix_otherWidth">0</obj_property>
+         </wvobject>
+         <wvobject fp_name="/zyNet_tb/dut/conv0_data_lo[1][10]" type="array">
+            <obj_property name="ElementShortName">[10][15:0]</obj_property>
+            <obj_property name="ObjectShortName">[10][15:0]</obj_property>
+            <obj_property name="Radix">REALRADIX</obj_property>
+            <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+            <obj_property name="radix_fractionWidth">12</obj_property>
+            <obj_property name="radix_otherWidth">0</obj_property>
+         </wvobject>
+         <wvobject fp_name="/zyNet_tb/dut/conv0_data_lo[1][9]" type="array">
+            <obj_property name="ElementShortName">[9][15:0]</obj_property>
+            <obj_property name="ObjectShortName">[9][15:0]</obj_property>
+            <obj_property name="Radix">REALRADIX</obj_property>
+            <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+            <obj_property name="radix_fractionWidth">12</obj_property>
+            <obj_property name="radix_otherWidth">0</obj_property>
+         </wvobject>
+         <wvobject fp_name="/zyNet_tb/dut/conv0_data_lo[1][8]" type="array">
+            <obj_property name="ElementShortName">[8][15:0]</obj_property>
+            <obj_property name="ObjectShortName">[8][15:0]</obj_property>
+            <obj_property name="Radix">REALRADIX</obj_property>
+            <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+            <obj_property name="radix_fractionWidth">12</obj_property>
+            <obj_property name="radix_otherWidth">0</obj_property>
+         </wvobject>
+         <wvobject fp_name="/zyNet_tb/dut/conv0_data_lo[1][7]" type="array">
+            <obj_property name="ElementShortName">[7][15:0]</obj_property>
+            <obj_property name="ObjectShortName">[7][15:0]</obj_property>
+            <obj_property name="Radix">REALRADIX</obj_property>
+            <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+            <obj_property name="radix_fractionWidth">12</obj_property>
+            <obj_property name="radix_otherWidth">0</obj_property>
+         </wvobject>
+         <wvobject fp_name="/zyNet_tb/dut/conv0_data_lo[1][6]" type="array">
+            <obj_property name="ElementShortName">[6][15:0]</obj_property>
+            <obj_property name="ObjectShortName">[6][15:0]</obj_property>
+            <obj_property name="Radix">REALRADIX</obj_property>
+            <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+            <obj_property name="radix_fractionWidth">12</obj_property>
+            <obj_property name="radix_otherWidth">0</obj_property>
+         </wvobject>
+         <wvobject fp_name="/zyNet_tb/dut/conv0_data_lo[1][5]" type="array">
+            <obj_property name="ElementShortName">[5][15:0]</obj_property>
+            <obj_property name="ObjectShortName">[5][15:0]</obj_property>
+            <obj_property name="Radix">REALRADIX</obj_property>
+            <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+            <obj_property name="radix_fractionWidth">12</obj_property>
+            <obj_property name="radix_otherWidth">0</obj_property>
+         </wvobject>
+         <wvobject fp_name="/zyNet_tb/dut/conv0_data_lo[1][4]" type="array">
+            <obj_property name="ElementShortName">[4][15:0]</obj_property>
+            <obj_property name="ObjectShortName">[4][15:0]</obj_property>
+            <obj_property name="Radix">REALRADIX</obj_property>
+            <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+            <obj_property name="radix_fractionWidth">12</obj_property>
+            <obj_property name="radix_otherWidth">0</obj_property>
+         </wvobject>
+         <wvobject fp_name="/zyNet_tb/dut/conv0_data_lo[1][3]" type="array">
+            <obj_property name="ElementShortName">[3][15:0]</obj_property>
+            <obj_property name="ObjectShortName">[3][15:0]</obj_property>
+            <obj_property name="Radix">REALRADIX</obj_property>
+            <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+            <obj_property name="radix_fractionWidth">12</obj_property>
+            <obj_property name="radix_otherWidth">0</obj_property>
+         </wvobject>
+         <wvobject fp_name="/zyNet_tb/dut/conv0_data_lo[1][2]" type="array">
+            <obj_property name="ElementShortName">[2][15:0]</obj_property>
+            <obj_property name="ObjectShortName">[2][15:0]</obj_property>
+            <obj_property name="Radix">REALRADIX</obj_property>
+            <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+            <obj_property name="radix_fractionWidth">12</obj_property>
+            <obj_property name="radix_otherWidth">0</obj_property>
+         </wvobject>
+         <wvobject fp_name="/zyNet_tb/dut/conv0_data_lo[1][1]" type="array">
+            <obj_property name="ElementShortName">[1][15:0]</obj_property>
+            <obj_property name="ObjectShortName">[1][15:0]</obj_property>
+            <obj_property name="Radix">REALRADIX</obj_property>
+            <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+            <obj_property name="radix_fractionWidth">12</obj_property>
+            <obj_property name="radix_otherWidth">0</obj_property>
+         </wvobject>
+         <wvobject fp_name="/zyNet_tb/dut/conv0_data_lo[1][0]" type="array">
+            <obj_property name="ElementShortName">[0][15:0]</obj_property>
+            <obj_property name="ObjectShortName">[0][15:0]</obj_property>
+            <obj_property name="Radix">REALRADIX</obj_property>
+            <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+            <obj_property name="radix_fractionWidth">12</obj_property>
+            <obj_property name="radix_otherWidth">0</obj_property>
+         </wvobject>
+      </wvobject>
+      <wvobject fp_name="/zyNet_tb/dut/conv0_data_lo[0]" type="array">
+         <obj_property name="ElementShortName">[0][12:0][15:0]</obj_property>
+         <obj_property name="ObjectShortName">[0][12:0][15:0]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">12</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/zyNet_tb/dut/conv0_data_lo[7]" type="array">
+         <obj_property name="ElementShortName">[7][12:0][15:0]</obj_property>
+         <obj_property name="ObjectShortName">[7][12:0][15:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/zyNet_tb/dut/conv0_data_lo[6]" type="array">
+         <obj_property name="ElementShortName">[6][12:0][15:0]</obj_property>
+         <obj_property name="ObjectShortName">[6][12:0][15:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/zyNet_tb/dut/conv0_data_lo[5]" type="array">
+         <obj_property name="ElementShortName">[5][12:0][15:0]</obj_property>
+         <obj_property name="ObjectShortName">[5][12:0][15:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/zyNet_tb/dut/conv0_data_lo[4]" type="array">
+         <obj_property name="ElementShortName">[4][12:0][15:0]</obj_property>
+         <obj_property name="ObjectShortName">[4][12:0][15:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/zyNet_tb/dut/conv0_data_lo[3]" type="array">
+         <obj_property name="ElementShortName">[3][12:0][15:0]</obj_property>
+         <obj_property name="ObjectShortName">[3][12:0][15:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/zyNet_tb/dut/conv0_data_lo[2]" type="array">
+         <obj_property name="ElementShortName">[2][12:0][15:0]</obj_property>
+         <obj_property name="ObjectShortName">[2][12:0][15:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/zyNet_tb/dut/conv0_data_lo[1]" type="array">
+         <obj_property name="ElementShortName">[1][12:0][15:0]</obj_property>
+         <obj_property name="ObjectShortName">[1][12:0][15:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/zyNet_tb/dut/conv0_data_lo[0]" type="array">
+         <obj_property name="ElementShortName">[0][12:0][15:0]</obj_property>
+         <obj_property name="ObjectShortName">[0][12:0][15:0]</obj_property>
+      </wvobject>
+   </wvobject>
+   <wvobject fp_name="/zyNet_tb/dut/\genblk1[0].kernel /ps" type="array">
+      <obj_property name="ElementShortName">ps[1:0]</obj_property>
+      <obj_property name="ObjectShortName">ps[1:0]</obj_property>
+   </wvobject>
+</wave_config>

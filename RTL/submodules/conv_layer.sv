@@ -38,7 +38,7 @@ module conv_layer #(
     logic [$clog2(NUM_ITERATIONS+1)-1:0] mem_addr;
     logic add_bias, sum_en;
 
-    logic [KERNEL_HEIGHT*KERNEL_WIDTH-1:0][WORD_SIZE-1:0] data_shift_reg;
+    logic [(INPUT_LAYER_HEIGHT - KERNEL_HEIGHT + 1) * KERNEL_WIDTH-1:0][WORD_SIZE-1:0] data_shift_reg;
     logic signed [WORD_SIZE-1:0] mem_out;
 
     assign sum_en = ps == eBUSY;
@@ -103,7 +103,7 @@ module conv_layer #(
     // shift register for holding inputs
     shift_register #(
         .WORD_SIZE(WORD_SIZE),
-        .REGISTER_LENGTH(KERNEL_HEIGHT * KERNEL_WIDTH)
+        .REGISTER_LENGTH((INPUT_LAYER_HEIGHT - KERNEL_HEIGHT + 1) * KERNEL_WIDTH)
     ) input_shift_reg (
         .data_i,
         .shift_en_i(1'b1), // not currently used
