@@ -68,6 +68,20 @@ module zyNet #(
     logic signed [NUM_KERNELS-1:0] [WORD_SIZE-1:0] fc0_data_lo;
     
     
+    
+// fc_output_layer_2
+    localparam LAYER_HEIGHT_2 = 8;
+    
+    logic fc_output2_ready_lo, fc_output2_wen_lo;
+    logic signed [WORD_SIZE-1:0] fc_output2_data_lo;
+    
+    
+    
+// bn_layer_0
+    logic bn0_ready_lo, bn0_valid_lo;
+    logic signed [WORD_SIZE-1:0] bn0_data_lo;
+    
+    
     genvar i;
     generate
         for (i = 0; i < NUM_KERNELS; i = i + 1) begin
@@ -97,7 +111,7 @@ module zyNet #(
             fc_output_layer #(
                 .LAYER_HEIGHT(LAYER_HEIGHT_0),
                 .WORD_SIZE(WORD_SIZE)
-            ) serializer (
+            ) fc_output_layer_0 (
                 .clk_i,
                 .reset_i,
                 
@@ -153,10 +167,11 @@ module zyNet #(
         end
     endgenerate
     
+    
     fc_output_layer #(
         .LAYER_HEIGHT(LAYER_HEIGHT_1),
         .WORD_SIZE(WORD_SIZE)
-    ) hidden_layer_output (
+    ) fc_output_layer_1 (
         .clk_i,
         .reset_i,
         
@@ -200,14 +215,14 @@ module zyNet #(
         .reset_i,
         .clk_i,
     
-        // helpful input interface
+        // demanding input interface
         .data_i(fifo0_data_lo),
         .empty_i(fifo0_empty_lo),
         .ren_o(fc0_ren_lo), // also yumi_o, but not using that convention here
     
         // helpful output interface
         .valid_o(fc0_valid_lo),
-        .ready_i(1'b1),
+        .ready_i(fc_output2_ready_lo),
         .data_o(fc0_data_lo),
 
         // input for back-propagation, not currently used
@@ -215,17 +230,46 @@ module zyNet #(
         .mem_wen_i()
     );
     
-    //fc_output_layer #(
-    //    // TODO: insert params
-    //) hidden_layer_output (
-    //    // TODO: insert values
-    //);
     
-    //bn_layer #(
-    //    // TODO: insert params
-    //) batch_normalize (
-    //    // TODO: insert IO
-    //);
+    fc_output_layer #(
+        .LAYER_HEIGHT(LAYER_HEIGHT_2),
+        .WORD_SIZE(WORD_SIZE)
+    ) fc_output_layer_2 (
+        .clk_i,
+        .reset_i,
+        
+        // handshake to prev layer
+        .valid_i(fc0_valid_lo),
+        .ready_o(fc_output2_ready_lo),
+        .data_i(fc0_data_lo),
+    
+        // handshake to next layer
+        .wen_o(fc_output2_wen_lo),
+        .full_i(~bn0_ready_lo),
+        .data_o(fc_output2_data_lo)
+    );
+    
+    
+    bn_layer #(
+        .INPUT_SIZE(LAYER_HEIGHT_2),
+        .LAYER_NUMBER(0),
+        .WORD_SIZE(WORD_SIZE),
+        .N_SIZE(WORD_SIZE-INT_BITS)
+    ) bn_layer_0 (
+        // top level control
+        .clk_i,
+        .reset_i,
+        
+        // handshake to prev layer
+        .ready_o(bn0_ready_lo),
+        .valid_i(fc_output2_wen_lo),
+        .data_r_i(fc_output2_data_lo),
+        
+        // handshake to next layer
+        .valid_o(bn0_valid_lo),
+        .ready_i(1'b1),
+        .data_r_o(bn0_data_lo)
+    );
     
     //relu_layer #(
     //    // TODO: insert params
