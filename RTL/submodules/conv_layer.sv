@@ -21,8 +21,12 @@ module conv_layer #(
     input logic clk_i,
     input logic reset_i,
     
-    // input interface
+    // still need start signal
     input logic start_i,
+
+    // input interface
+    input logic valid_i,
+    output logic ready_o,
     input logic signed [WORD_SIZE-1:0] data_i,
     
     // helpful output interface
@@ -33,104 +37,61 @@ module conv_layer #(
     parameter NUM_ITERATIONS = KERNEL_HEIGHT * KERNEL_WIDTH;
 
     // control logic
-    enum logic [1:0] {eREADY=2'b00, eBUSY=2'b01, eDONE=2'b10} ps, ns;
+    enum logic [1:0] {eREADY=2'b00, eSHIFT=2'b01, eCOMPUTE=2'b10, eDONE=2'b11} ps, ns;
 
-    logic [$clog2(NUM_ITERATIONS+1)-1:0] mem_addr;
-    logic add_bias, sum_en;
+    // necessary control signals for internal operation, in addition to handshake signals
+    logic add_bias, sum_en, shift_en;
 
-    logic [KERNEL_HEIGHT*KERNEL_WIDTH-1:0][WORD_SIZE-1:0] data_shift_reg;
-    logic signed [WORD_SIZE-1:0] mem_out;
+    // shift register and memory address counter
+        // In SHIFT stage, tracks how many values in shift register.
+        // In COMPUTE stage, tracks current memory address
+    logic [$clog2(KERNEL_HEIGHT * KERNEL_WIDTH + 1)-1:0] shift_and_mem_addr_count;
 
-    assign sum_en = ps == eBUSY;
-    always_ff @(posedge clk_i)
-        add_bias <= mem_addr == NUM_ITERATIONS;
+    // memory output, sent to ALUs with data
+    logic signed [WORD_SIZE - 1:0] mem_out;
 
-    // next state logic
+    // next state and transition logic
     always_comb begin
         case (ps)
             eREADY:
                 if (start_i)
-                    ns = eBUSY;
+                    ns = eSHIFT;
                 else
                     ns = eREADY;
-            eBUSY:
-                if (add_bias)
+            eSHIFT:
+                if (shift_and_mem_addr_count == ((INPUT_LAYER_HEIGHT - KERNEL_HEIGHT + 1) * KERNEL_WIDTH)):
+                    ns = eCOMPUTE;
+                else
+                    ns = eSHIFT;
+            eCOMPUTE:
+                if (add_bias):
                     ns = eDONE;
                 else
-                    ns = eBUSY;
-            2'b11, // should never happen but good to have just in case, especially to avoid inferring a latch
+                    ns = eCOMPUTE;
             eDONE:
-                if (valid_o && yumi_i) // if handshake happens, be ready to start again
+                if (valid_o && yumi_i):
                     ns = eREADY;
                 else
                     ns = eDONE;
         endcase
     end
 
+    // assign control logic
     always_ff @(posedge clk_i) begin
-        if (reset_i)
-            ps <= eREADY;
-        else
-            ps <= ns;
+        add_bias <= ps == eCOMPUTE && (shift_and_mem_addr_count == KERNEL_HEIGHT * KERNEL_WIDTH);
     end
 
-    // counter for memory address
-    up_counter #(
-        .WORD_SIZE($clog2(NUM_ITERATIONS+1)),
-        .INPUT_MAX(NUM_ITERATIONS)
-    ) mem_address_counter (
-        .start_i,
+    up_counter_enabled #(
+        .WORD_SIZE($clog2(KERNEL_HEIGHT * KERNEL_WIDTH + 1)),
+        .INPUT_MAX(KERNEL_HEIGHT*KERNEL_WIDTH)
+    ) shift_and_mem_counter (
+        .start_i(1'b1),
         .clk_i,
         .reset_i,
+        .en_i(ready_o && valid_i),
 
-        .data_o(mem_addr)
+        .data_o(shift_and_mem_addr_count)
     );
 
-    // ROM for kernel values
-    ROM_neuron #(
-        .depth($clog2(NUM_ITERATIONS+1)),
-        .width(WORD_SIZE),
-        .neuron_type(0),
-        .layer_number(LAYER_NUMBER),
-        .neuron_number(CONVOLUTION_NUMBER)
-    ) weight_bias_mem (
-        .reset_i,
-        .clk_i,
-        .addr_i(mem_addr),
-        .data_o(mem_out)
-    );
-
-    // shift register for holding inputs
-    shift_register #(
-        .WORD_SIZE(WORD_SIZE),
-        .REGISTER_LENGTH(KERNEL_HEIGHT * KERNEL_WIDTH)
-    ) input_shift_reg (
-        .data_i,
-        .shift_en_i(1'b1), // not currently used
-        .clk_i,
-        .reset_i,
-        .data_o(data_shift_reg)
-    );
-
-    // generate 'neurons' (really just logical units from fully-connected layer)
-    genvar i;
-    generate
-        for (i = 0; i < INPUT_LAYER_HEIGHT - KERNEL_HEIGHT + 1; i = i + 1) begin
-            logical_unit #(
-                .WORD_SIZE(WORD_SIZE),
-                .INT_BITS(INT_BITS)
-            ) LU (
-                .mem_i(mem_out),
-                .data_i(data_shift_reg[i*KERNEL_WIDTH]), // allow for multiple kernel widths
-                .add_bias,
-                .sum_en,
-                .clk_i,
-                .reset_i(reset_i || (valid_o && yumi_i)),
-                .data_o(data_o[i])
-            );
-        end
-    endgenerate
-
-    assign valid_o = ps == eDONE;
 
 endmodule
