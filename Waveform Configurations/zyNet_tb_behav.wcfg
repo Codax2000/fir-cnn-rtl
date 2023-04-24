@@ -11,15 +11,15 @@
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="642.850 ns"></ZoomStartTime>
-      <ZoomEndTime time="747.468 ns"></ZoomEndTime>
-      <Cursor1Time time="929.333 ns"></Cursor1Time>
+      <ZoomStartTime time="671.090 ns"></ZoomStartTime>
+      <ZoomEndTime time="702.160 ns"></ZoomEndTime>
+      <Cursor1Time time="675.337 ns"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
-      <NameColumnWidth column_width="212"></NameColumnWidth>
-      <ValueColumnWidth column_width="73"></ValueColumnWidth>
+      <NameColumnWidth column_width="203"></NameColumnWidth>
+      <ValueColumnWidth column_width="72"></ValueColumnWidth>
    </column_width_setting>
-   <WVObjectSize size="15" />
+   <WVObjectSize size="16" />
    <wvobject fp_name="/zyNet_tb/clk_i" type="logic">
       <obj_property name="ElementShortName">clk_i</obj_property>
       <obj_property name="ObjectShortName">clk_i</obj_property>
@@ -146,6 +146,7 @@
    <wvobject fp_name="group1848" type="group">
       <obj_property name="label">Stage 5: bn_layer_0</obj_property>
       <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="isExpanded"></obj_property>
       <wvobject fp_name="/zyNet_tb/dut/fc_output2_data_lo" type="array">
          <obj_property name="ElementShortName">fc_output2_data_lo[15:0]</obj_property>
          <obj_property name="ObjectShortName">fc_output2_data_lo[15:0]</obj_property>
@@ -169,6 +170,23 @@
       <wvobject fp_name="/zyNet_tb/dut/bn0_valid_lo" type="logic">
          <obj_property name="ElementShortName">bn0_valid_lo</obj_property>
          <obj_property name="ObjectShortName">bn0_valid_lo</obj_property>
+      </wvobject>
+   </wvobject>
+   <wvobject fp_name="group161" type="group">
+      <obj_property name="label">Stage 6: relu_layer_0</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="isExpanded"></obj_property>
+      <wvobject fp_name="/zyNet_tb/dut/relu0_data_lo" type="array">
+         <obj_property name="ElementShortName">relu0_data_lo[15:0]</obj_property>
+         <obj_property name="ObjectShortName">relu0_data_lo[15:0]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">12</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/zyNet_tb/dut/relu0_valid_lo" type="logic">
+         <obj_property name="ElementShortName">relu0_valid_lo</obj_property>
+         <obj_property name="ObjectShortName">relu0_valid_lo</obj_property>
       </wvobject>
    </wvobject>
 </wave_config>

@@ -64,14 +64,14 @@ module zyNet #(
     
     
 // fc_layer_0
+    localparam LAYER_HEIGHT_2 = 8;
+    
     logic fc0_ren_lo, fc0_valid_lo;
-    logic signed [NUM_KERNELS-1:0] [WORD_SIZE-1:0] fc0_data_lo;
+    logic signed [LAYER_HEIGHT_2-1:0] [WORD_SIZE-1:0] fc0_data_lo;
     
     
     
 // fc_output_layer_2
-    localparam LAYER_HEIGHT_2 = 8;
-    
     logic fc_output2_ready_lo, fc_output2_wen_lo;
     logic signed [WORD_SIZE-1:0] fc_output2_data_lo;
     
@@ -80,6 +80,21 @@ module zyNet #(
 // bn_layer_0
     logic bn0_ready_lo, bn0_valid_lo;
     logic signed [WORD_SIZE-1:0] bn0_data_lo;
+    
+    
+    
+// relu_layer_0
+    logic relu0_ready_lo, relu0_valid_lo;
+    logic signed [WORD_SIZE-1:0] relu0_data_lo;
+    
+    
+    
+//// fc_layer_1
+//    localparam LAYER_HEIGHT_3 = 10;
+    
+//    logic fc1_ren_lo, fc1_valid_lo;
+//    logic signed [LAYER_HEIGHT_3-1:0] [WORD_SIZE-1:0] fc1_data_lo;
+    
     
     
     genvar i;
@@ -267,15 +282,28 @@ module zyNet #(
         
         // handshake to next layer
         .valid_o(bn0_valid_lo),
-        .ready_i(1'b1),
+        .ready_i(relu0_ready_lo),
         .data_r_o(bn0_data_lo)
     );
     
-    //relu_layer #(
-    //    // TODO: insert params
-    //) hidden_layer_relu (
-    //    // TODO: insert values
-    //);
+    
+    relu_layer #(
+        .WORD_SIZE(WORD_SIZE)
+    ) hidden_layer_relu (
+        // top level control
+        .clk_i,
+        .reset_i,
+        
+        // handshake to prev layer
+        .ready_o(relu0_ready_lo),
+        .valid_i(bn0_valid_lo),
+        .data_r_i(bn0_data_lo),
+        
+        // handshake to next layer
+        .valid_o(relu0_valid_lo),
+        .ready_i(1'b1),
+        .data_r_o(relu0_data_lo)
+    );
     
     //double_fifo #(
     //    // TODO: Insert params
