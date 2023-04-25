@@ -34,7 +34,7 @@ module conv_layer #(
     input logic yumi_i,
     output logic [INPUT_LAYER_HEIGHT - KERNEL_HEIGHT:0][WORD_SIZE-1:0] data_o);
     
-    parameter NUM_ITERATIONS = KERNEL_HEIGHT * KERNEL_WIDTH;
+    localparam NUM_ITERATIONS = KERNEL_HEIGHT * KERNEL_WIDTH;
 
     // control logic
     enum logic [1:0] {eREADY=2'b00, eSHIFT=2'b01, eCOMPUTE=2'b10, eDONE=2'b11} ps, ns;
@@ -43,19 +43,18 @@ module conv_layer #(
     logic add_bias, sum_en;
 
     // shift register and memory address counter
-        // In SHIFT stage, tracks how many values in shift register.
-        // In COMPUTE stage, tracks current memory address
-    logic [$clog2(KERNEL_HEIGHT * KERNEL_WIDTH + 1)-1:0] shift_and_mem_addr_count;
+    logic [$clog2(KERNEL_HEIGHT * KERNEL_WIDTH + 1)-1:0] mem_addr;
+    logic [$clog2(INPUT_LAYER_HEIGHT * KERNEL_WIDTH + 1)-1:0] shift_count;
 
     // memory output, sent to ALUs with data
     logic signed [WORD_SIZE - 1:0] mem_out;
-    logic signed [(KERNEL_HEIGHT * KERNEL_WIDTH)-1:0][WORD_SIZE - 1:0] shift_reg_out;
+    logic signed [KERNEL_WIDTH * (INPUT_LAYER_HEIGHT - KERNEL_HEIGHT + 1)-1:0][WORD_SIZE - 1:0] shift_reg_out;
 
     // transition signals for simplicity
     logic end_shift_stage;
-    assign end_shift_stage = ps == eSHIFT && shift_and_mem_addr_count == ((INPUT_LAYER_HEIGHT - KERNEL_HEIGHT + 1) * KERNEL_WIDTH - 1);
+    assign end_shift_stage = shift_count == KERNEL_WIDTH * (INPUT_LAYER_HEIGHT - KERNEL_HEIGHT + 1) - 1;
 
-    assign sum_en = ps == eCOMPUTE;
+    assign sum_en = ps == eCOMPUTE && ((valid_i && ready_o) || shift_count == INPUT_LAYER_HEIGHT * KERNEL_WIDTH);
 
     // next state and transition logic
     always_comb begin
@@ -92,27 +91,39 @@ module conv_layer #(
 
     // assign control logic
     always_ff @(posedge clk_i) begin
-        add_bias <= ps == eCOMPUTE && (shift_and_mem_addr_count == KERNEL_HEIGHT * KERNEL_WIDTH);
+        add_bias <= mem_addr == KERNEL_HEIGHT * KERNEL_WIDTH;
     end
 
     up_counter_enabled #(
         .WORD_SIZE($clog2(KERNEL_HEIGHT * KERNEL_WIDTH + 1)),
-        .INPUT_MAX(KERNEL_HEIGHT*KERNEL_WIDTH)
-    ) shift_and_mem_counter (
+        .INPUT_MAX(KERNEL_HEIGHT * KERNEL_WIDTH)
+    ) mem_counter (
         .start_i(1'b1),
         .clk_i,
-        .reset_i(end_shift_stage || add_bias),  // reset on either transition to next state
-        .en_i(ready_o && valid_i),              // enable count on input handshake
+        .reset_i(reset_i || (valid_o && yumi_i)),      
+        .en_i(((valid_i && ready_o) || sum_en) && ps == eCOMPUTE),         // enable count on input handshake
 
-        .data_o(shift_and_mem_addr_count)
+        .data_o(mem_addr)
+    );
+
+    up_counter_enabled #(
+        .WORD_SIZE($clog2(INPUT_LAYER_HEIGHT * KERNEL_WIDTH + 1)),
+        .INPUT_MAX(INPUT_LAYER_HEIGHT * KERNEL_WIDTH)
+    ) shift_counter (
+        .start_i(1'b1),
+        .clk_i,
+        .reset_i(reset_i || (valid_o && yumi_i)),      // reset on either transition to next state
+        .en_i(valid_i && ready_o),         // enable count on input handshake
+
+        .data_o(shift_count)
     );
 
     shift_register #(
         .WORD_SIZE(WORD_SIZE),
-        .REGISTER_LENGTH(KERNEL_HEIGHT*KERNEL_WIDTH)
+        .REGISTER_LENGTH(KERNEL_WIDTH * (INPUT_LAYER_HEIGHT - KERNEL_HEIGHT + 1))
     ) input_register (
         .data_i,
-        .shift_en_i(valid_i && ready_o),
+        .shift_en_i(valid_i && ready_o && (shift_count != (KERNEL_WIDTH * INPUT_LAYER_HEIGHT))),
         
         .clk_i,
         .reset_i,
@@ -129,11 +140,10 @@ module conv_layer #(
     ) weight_mem (
         .reset_i,
         .clk_i,
-        .addr_i(shift_and_mem_addr_count),
+        .addr_i(mem_addr),
         .data_o(mem_out)
     );
 
-    /**
     genvar i;
     generate
         for (i = 0; i < INPUT_LAYER_HEIGHT - KERNEL_HEIGHT + 1; i = i + 1) begin
@@ -142,7 +152,7 @@ module conv_layer #(
                 .INT_BITS(INT_BITS)
             ) LU (
                 .mem_i(mem_out),
-                .data_i(data_shift_reg[i*KERNEL_WIDTH]), // allow for multiple kernel widths
+                .data_i(shift_reg_out[i*KERNEL_WIDTH]), // allow for multiple kernel widths
                 .add_bias,
                 .sum_en,
                 .clk_i,
@@ -151,10 +161,8 @@ module conv_layer #(
             );
         end
     endgenerate
-    */
-
-    // assign output variables
-    assign ready_o = ps == eSHIFT || eCOMPUTE;
+    
+    assign ready_o = ps == eCOMPUTE || ps == eSHIFT;
     assign valid_o = ps == eDONE;
 
 endmodule
