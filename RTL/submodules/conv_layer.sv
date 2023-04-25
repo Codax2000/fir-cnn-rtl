@@ -40,7 +40,7 @@ module conv_layer #(
     enum logic [1:0] {eREADY=2'b00, eSHIFT=2'b01, eCOMPUTE=2'b10, eDONE=2'b11} ps, ns;
 
     // necessary control signals for internal operation, in addition to handshake signals
-    logic add_bias, sum_en, shift_en;
+    logic add_bias, sum_en;
 
     // shift register and memory address counter
         // In SHIFT stage, tracks how many values in shift register.
@@ -49,6 +49,13 @@ module conv_layer #(
 
     // memory output, sent to ALUs with data
     logic signed [WORD_SIZE - 1:0] mem_out;
+    logic signed [(KERNEL_HEIGHT * KERNEL_WIDTH)-1:0][WORD_SIZE - 1:0] shift_reg_out;
+
+    // transition signals for simplicity
+    logic end_shift_stage;
+    assign end_shift_stage = ps == eSHIFT && shift_and_mem_addr_count == ((INPUT_LAYER_HEIGHT - KERNEL_HEIGHT + 1) * KERNEL_WIDTH - 1);
+
+    assign sum_en = ps == eCOMPUTE;
 
     // next state and transition logic
     always_comb begin
@@ -59,21 +66,28 @@ module conv_layer #(
                 else
                     ns = eREADY;
             eSHIFT:
-                if (shift_and_mem_addr_count == ((INPUT_LAYER_HEIGHT - KERNEL_HEIGHT + 1) * KERNEL_WIDTH)):
+                if (end_shift_stage)
                     ns = eCOMPUTE;
                 else
                     ns = eSHIFT;
             eCOMPUTE:
-                if (add_bias):
+                if (add_bias)
                     ns = eDONE;
                 else
                     ns = eCOMPUTE;
             eDONE:
-                if (valid_o && yumi_i):
+                if (valid_o && yumi_i)
                     ns = eREADY;
                 else
                     ns = eDONE;
         endcase
+    end
+
+    always_ff @(posedge clk_i) begin
+        if (reset_i)
+            ps <= eREADY;
+        else
+            ps <= ns;
     end
 
     // assign control logic
@@ -87,11 +101,60 @@ module conv_layer #(
     ) shift_and_mem_counter (
         .start_i(1'b1),
         .clk_i,
-        .reset_i,
-        .en_i(ready_o && valid_i),
+        .reset_i(end_shift_stage || add_bias),  // reset on either transition to next state
+        .en_i(ready_o && valid_i),              // enable count on input handshake
 
         .data_o(shift_and_mem_addr_count)
     );
 
+    shift_register #(
+        .WORD_SIZE(WORD_SIZE),
+        .REGISTER_LENGTH(KERNEL_HEIGHT*KERNEL_WIDTH)
+    ) input_register (
+        .data_i,
+        .shift_en_i(valid_i && ready_o),
+        
+        .clk_i,
+        .reset_i,
+
+        .data_o(shift_reg_out)
+    );
+
+    ROM_neuron #(
+        .depth($clog2(KERNEL_HEIGHT * KERNEL_WIDTH + 1)),
+        .width(WORD_SIZE),
+        .neuron_type(0),
+        .layer_number(LAYER_NUMBER),
+        .neuron_number(CONVOLUTION_NUMBER)
+    ) weight_mem (
+        .reset_i,
+        .clk_i,
+        .addr_i(shift_and_mem_addr_count),
+        .data_o(mem_out)
+    );
+
+    /**
+    genvar i;
+    generate
+        for (i = 0; i < INPUT_LAYER_HEIGHT - KERNEL_HEIGHT + 1; i = i + 1) begin
+            logical_unit #(
+                .WORD_SIZE(WORD_SIZE),
+                .INT_BITS(INT_BITS)
+            ) LU (
+                .mem_i(mem_out),
+                .data_i(data_shift_reg[i*KERNEL_WIDTH]), // allow for multiple kernel widths
+                .add_bias,
+                .sum_en,
+                .clk_i,
+                .reset_i(reset_i || (valid_o && yumi_i)),
+                .data_o(data_o[i])
+            );
+        end
+    endgenerate
+    */
+
+    // assign output variables
+    assign ready_o = ps == eSHIFT || eCOMPUTE;
+    assign valid_o = ps == eDONE;
 
 endmodule
