@@ -21,7 +21,13 @@ module ROM_tb ();
         forever # (CLOCK_PERIOD / 2) clk_i = ~clk_i;
     end
 
-    ROM_neuron DUT (.*);
+    ROM_neuron #(
+        .depth(3), 
+        .width(8),
+        .neuron_type(4),
+        .layer_number(3),
+        .neuron_number(146)
+    ) DUT (.*);
 
     integer i;
     initial begin

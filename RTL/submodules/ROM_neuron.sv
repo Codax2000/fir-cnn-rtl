@@ -23,13 +23,16 @@ module ROM_neuron #(parameter depth=3, width=8, neuron_type=0, layer_number=1, n
     logic [width-1:0] mem [2**depth-1:0];
 
     // TODO: Find out if parameters like this negatively impact synthesis
-    parameter ascii_offset = 48;
-	parameter logic [7:0] neuron_type_p = neuron_type + ascii_offset;
-    parameter logic [7:0] layer_number_p = layer_number + ascii_offset;
-    parameter logic [7:0] neuron_number_p = neuron_number + ascii_offset;
+    localparam ascii_offset = 48;
+	localparam logic [7:0] neuron_type_p = neuron_type + ascii_offset;
+    localparam logic [7:0] layer_number_p = layer_number + ascii_offset;
+    localparam logic [7:0] neuron_number_ones_p = (neuron_number % 10) + ascii_offset;
+    localparam logic [7:0] neuron_number_tens_p = ((neuron_number / 10) % 10) + ascii_offset;
+    localparam logic [7:0] neuron_number_hundreds_p = ((neuron_number / 100) % 10) + ascii_offset;
+    
 
-    // odd logic, but it synthesizes to {"n_n_n.mem" where "n" is a parameter as defined above}
-    parameter logic [71:0] init_file = {neuron_type_p, 8'h5f, layer_number_p, 8'h5f, neuron_number_p, 32'h2e6d656d};
+    // odd logic, but it synthesizes to {"n_n_nnn.mem" where "n" is a parameter as defined above}
+    localparam logic [87:0] init_file = {neuron_type_p, 8'h5f, layer_number_p, 8'h5f, neuron_number_hundreds_p, neuron_number_tens_p, neuron_number_ones_p, 32'h2e6d656d};
 
 	ROM_inferred #(
         .ADDR_WIDTH(depth),
