@@ -14,10 +14,12 @@ module fc_output_layer #(
     input logic clk_i,
     input logic reset_i,
     
+    // helpful handshake to prev layer
     input logic valid_i,
     output logic ready_o,
     input logic [LAYER_HEIGHT-1:0][WORD_SIZE-1:0] data_i,
 
+    // demanding handshake to next layer
     output logic wen_o,
     input logic full_i,
     output logic [WORD_SIZE-1:0] data_o
