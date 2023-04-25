@@ -29,7 +29,11 @@ module zyNet_tb ();
     
     
     
-// DEVICE UNDER TEST
+    
+    
+// DATAPATH
+
+    // counter
     logic en;
     logic [22:0] count_r;
     always_ff @(posedge clk_i) begin
@@ -39,19 +43,27 @@ module zyNet_tb ();
             count_r <= en ? count_r+1 :  count_r;
     end
 
-    ROM #(.depth(23),.width(16),.init_file("testData.mem"),.do_read_hex(1)) rom (
-        .clk_i,
-        .addr_i(count_r),
-        .data_o(data_i)
+    // test ROM
+    ROM_inferred #(
+       .ADDR_WIDTH(23),
+       .WORD_SIZE(WORD_SIZE),
+       .MEM_INIT("testData.mem")
+    ) rom (
+       .clk_i,
+       .reset_i,
+       
+       .addr_i(count_r),
+       .data_o(data_i)
     );
-
     
-    
+    // DUT
     zyNet #(
         .WORD_SIZE(WORD_SIZE),
         .INT_BITS(4)
     ) dut (
     .*);
+    
+    
     
     
     

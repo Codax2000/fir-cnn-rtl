@@ -17,8 +17,9 @@ module zyNet #(
     
     
     
-    
-// conv_layer_0
+// LAYER PARAMETERS AND WIRES
+
+    // conv_layer_0
     localparam INPUT_LAYER_HEIGHT_0 = 16;
     localparam KERNEL_HEIGHT_0 = 4;
     localparam KERNEL_WIDTH_0 = 2;
@@ -28,75 +29,69 @@ module zyNet #(
     logic [NUM_KERNELS-1:0] conv0_valid_lo;
     
     
-    
-// fc_output_layer_0
+    // fc_output_layer_0
     localparam LAYER_HEIGHT_0 = INPUT_LAYER_HEIGHT_0 - KERNEL_HEIGHT_0 + 1;
     
     logic [NUM_KERNELS-1:0] fc_output0_ready_lo, fc_output0_wen_lo;
     logic signed [NUM_KERNELS-1:0] [WORD_SIZE-1:0] fc_output0_data_lo;
     
     
-    
-// abs_layer_0
+    // abs_layer_0
     logic [NUM_KERNELS-1:0] abs0_ready_lo, abs0_valid_lo;
     logic signed [NUM_KERNELS-1:0] [WORD_SIZE-1:0] abs0_data_lo;
     
     
-    
-// gap_layer_0
+    // gap_layer_0
     logic [NUM_KERNELS-1:0] gap0_ready_lo, gap0_valid_lo;
     logic signed [NUM_KERNELS-1:0] [WORD_SIZE-1:0] gap0_data_lo;
     
     
-    
-// fc_output_layer_1
+    // fc_output_layer_1
     localparam LAYER_HEIGHT_1 = 8;
     
     logic fc_output1_ready_lo, fc_output1_wen_lo;
     logic signed [WORD_SIZE-1:0] fc_output1_data_lo;
     
     
-    
-// double_fifo_0
+    // double_fifo_0
     logic fifo0_full_lo, fifo0_empty_lo;
     logic signed [WORD_SIZE-1:0] fifo0_data_lo;
     
     
-    
-// fc_layer_0
+    // fc_layer_0
     localparam LAYER_HEIGHT_2 = 8;
     
     logic fc0_ren_lo, fc0_valid_lo;
     logic signed [LAYER_HEIGHT_2-1:0] [WORD_SIZE-1:0] fc0_data_lo;
     
     
-    
-// fc_output_layer_2
+    // fc_output_layer_2
     logic fc_output2_ready_lo, fc_output2_wen_lo;
     logic signed [WORD_SIZE-1:0] fc_output2_data_lo;
     
     
-    
-// bn_layer_0
+    // bn_layer_0
     logic bn0_ready_lo, bn0_valid_lo;
     logic signed [WORD_SIZE-1:0] bn0_data_lo;
     
     
-    
-// relu_layer_0
+    // relu_layer_0
     logic relu0_ready_lo, relu0_valid_lo;
     logic signed [WORD_SIZE-1:0] relu0_data_lo;
     
     
+    // fc_layer_1
+    localparam LAYER_HEIGHT_3 = 10;
     
-//// fc_layer_1
-//    localparam LAYER_HEIGHT_3 = 10;
-    
-//    logic fc1_ren_lo, fc1_valid_lo;
-//    logic signed [LAYER_HEIGHT_3-1:0] [WORD_SIZE-1:0] fc1_data_lo;
-    
+    logic fc1_ren_lo, fc1_valid_lo;
+    logic signed [LAYER_HEIGHT_3-1:0] [WORD_SIZE-1:0] fc1_data_lo;
     
     
+    
+    
+    
+// LAYER DATAPATH
+
     genvar i;
     generate
         for (i = 0; i < NUM_KERNELS; i = i + 1) begin
@@ -223,7 +218,7 @@ module zyNet #(
     fc_layer #(
         .WORD_SIZE(WORD_SIZE),
         .INT_BITS(INT_BITS),
-        .LAYER_HEIGHT(NUM_KERNELS),
+        .LAYER_HEIGHT(LAYER_HEIGHT_2),
         .PREVIOUS_LAYER_HEIGHT(LAYER_HEIGHT_1),
         .LAYER_NUMBER(0)
     ) hidden_layer (
@@ -301,20 +296,34 @@ module zyNet #(
         
         // handshake to next layer
         .valid_o(relu0_valid_lo),
-        .ready_i(1'b1),
+        .ready_i(fc1_ren_lo),
         .data_r_o(relu0_data_lo)
     );
+
     
-    //double_fifo #(
-    //    // TODO: Insert params
-    //) hidden_layer_to_output_fifo (
-    //    // TODO: insert values
-    //);
+    fc_layer #(
+        .WORD_SIZE(WORD_SIZE),
+        .INT_BITS(INT_BITS),
+        .LAYER_HEIGHT(LAYER_HEIGHT_3),
+        .PREVIOUS_LAYER_HEIGHT(LAYER_HEIGHT_2),
+        .LAYER_NUMBER(1)
+    ) fc_layer_1 (
+        .reset_i,
+        .clk_i,
     
-    //fc_layer #(
-    //    // TODO: insert params
-    //) output_layer (
-    //    // TODO: insert IO
-    //);
+        // demanding input interface
+        .data_i(relu0_data_lo),
+        .empty_i(~relu0_valid_lo),
+        .ren_o(fc1_ren_lo), // also yumi_o, but not using that convention here
+    
+        // helpful output interface
+        .valid_o(fc1_valid_lo),
+        .ready_i(1'b1),
+        .data_o(fc1_data_lo),
+
+        // input for back-propagation, not currently used
+        .weight_i(),
+        .mem_wen_i()
+    );
     
 endmodule
