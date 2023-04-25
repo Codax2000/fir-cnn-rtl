@@ -101,7 +101,7 @@ module conv_layer #(
         .start_i(1'b1),
         .clk_i,
         .reset_i(reset_i || (valid_o && yumi_i)),      
-        .en_i(((valid_i && ready_o) || sum_en) && ps == eCOMPUTE),         // enable count on input handshake
+        .en_i((((valid_i && ready_o) || sum_en) && ps == eCOMPUTE) || end_shift_stage),         // enable count on input handshake
 
         .data_o(mem_addr)
     );
@@ -162,7 +162,7 @@ module conv_layer #(
         end
     endgenerate
     
-    assign ready_o = ps == eCOMPUTE || ps == eSHIFT;
+    assign ready_o = (ps == eCOMPUTE && !(shift_count == INPUT_LAYER_HEIGHT * KERNEL_WIDTH)) || ps == eSHIFT;
     assign valid_o = ps == eDONE;
 
 endmodule

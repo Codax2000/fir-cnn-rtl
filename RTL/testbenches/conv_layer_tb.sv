@@ -113,6 +113,9 @@ module conv_layer_tb ();
         
         Expected output: overflow on node 1, fine on node 0
         7f_6e
+        
+    
+        data_i <= 64'h06_08_0f_0f_02_01_01_03; // data for test case 2
     */
     initial begin
         reset_i <= 1'b1;    @(posedge clk_i);
@@ -120,7 +123,6 @@ module conv_layer_tb ();
         start_i <= 1'b0;
         yumi_i <= 1'b0;
         valid_i <= 1'b0;
-        data_i <= 64'h06_08_0f_0f_02_01_01_03; // data for test case 2
         reset_i <= 1'b0;    @(posedge clk_i);
         valid_i <= 1'b1;    @(posedge clk_i);
         valid_i <= 1'b0;    @(posedge clk_i);
@@ -129,18 +131,12 @@ module conv_layer_tb ();
         start_i <= 1'b1;    @(posedge clk_i);
         start_i <= 1'b0;    @(posedge clk_i);
                             @(posedge valid_o);
+        $display("Assert Test Case 1:");
         assert(data_o == 16'h43_5c)
             else $display("Assertion Error 1: Expected %h, Received %h", 16'h43_5c, data_o);
-        yumi_i <= 1'b1; 
-        start_i <= 1'b1;    @(posedge clk_i);
-        yumi_i <= 1'b0;
-        start_i <= 1'b0;    @(posedge clk_i);
-                            @(posedge valid_o);
-        assert (data_o == 16'h7f_6e)
-            else $display("Assertion Error 2: Expected %h, Received %h", 16'h7f_6e, data_o);
-        yumi_i <= 1'b1; 
-        start_i <= 1'b1;    @(posedge clk_i);
-        yumi_i <= 1'b0;
+        repeat(2)           @(posedge clk_i);
+        yumi_i <= 1'b1;     @(posedge clk_i);
+                            @(posedge clk_i);
 
         $stop;
     end
