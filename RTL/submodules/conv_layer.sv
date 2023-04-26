@@ -4,8 +4,33 @@ Alex Knowlton
 2/28/2023
 
 Convolutional layer module. Outputs done when all layers finished and biased. On start,
-updates output and begins convolution again, assumed inputs are constant.
+takes data in one word at a time and outputs data in parallel via valid-ready handshakes.
 
+parameters:
+    INPUT_LAYER_HEIGHT  : height of input layer (not total number of inputs, just the height)
+    KERNEL_WIDTH        : width of kernel used for computation
+    KERNEL_HEIGHT       : height of kernel
+    WORD_SIZE           : number of bits in each piece of data
+    INT_BITS            : the 'n' of n.m fixed point notation.
+    LAYER_NUMBER        : layer number in neural net. used for finding the correct memory file for kernel
+    CONVOLUTION_NUMBER  : kernel number. also used for finding the correct memory file
+
+inputs:
+    clk_i   : 1-bit : clock signal
+    reset_i : 1-bit : reset signal
+    start_i : 1-bit : signal to start computation (to delay computation until new outputs are received)
+
+    valid_i : 1-bit : valid signal for input handshake
+    yumi_i  : 1-bit : ready signal for output handshake
+
+    data_i  : n-bit : incoming data. size is WORD_SIZE
+    
+
+outputs:
+    data_o  : n-bit : outgoing data. packed array of [INPUT_LAYER_HEIGHT - KERNEL_HEIGHT + 1][WORD_SIZE] bits,
+                      where least significant word is equivalent to output[0], which should correlate to Rx[0].
+    ready_o : 1-bit : ready signal for input handshake
+    valid_o : 1-bit : valid signal for output handshake
 */
 
 module conv_layer #(
