@@ -4,57 +4,24 @@ module conv_layer_tb ();
 
     parameter CLOCK_PERIOD = 100;
     
-    parameter INPUT_LAYER_HEIGHT = 4;
-    parameter KERNEL_HEIGHT = 3;
-    parameter KERNEL_WIDTH = 2;
-    parameter WORD_SIZE = 8;
+    parameter INPUT_LAYER_HEIGHT=4;
+    parameter KERNEL_HEIGHT=3;
+    parameter KERNEL_WIDTH=2;
+    parameter WORD_SIZE=8;
     parameter INT_BITS = 8;
 
-    logic [INPUT_LAYER_HEIGHT*2-1:0][WORD_SIZE-1:0] data_i;
-    logic [WORD_SIZE-1:0] fifo_data_in, fifo_data_out;
+    // control variables
+    logic clk_i;
+    logic reset_i;
+    
+    // input variables
+    logic start_i;
+    logic [WORD_SIZE-1:0] data_i;
+    
+    logic valid_o, yumi_i;
     logic [INPUT_LAYER_HEIGHT - KERNEL_HEIGHT:0][WORD_SIZE-1:0] data_o;
 
-    logic fifo_full, fifo_empty, wen, ren;
-
-    // signals to control in testbench
-    logic valid_i, start_i, yumi_i;
-    
-    // clock and reset signals
-    logic reset_i, clk_i;
-
-    // ready and valid outputs, useful for watching within testbench
-    logic ready_o, valid_o;
-
-    fc_output_layer #(
-        .LAYER_HEIGHT(INPUT_LAYER_HEIGHT*2),
-        .WORD_SIZE(WORD_SIZE)
-    ) test_input_serializer (
-        .clk_i,
-        .reset_i,
-    
-        .valid_i,
-        .ready_o,
-        .data_i,
-
-        .wen_o(wen),
-        .full_i(fifo_full),
-        .data_o(fifo_data_in)
-    );
-
-    double_fifo #(
-        .WORD_SIZE(WORD_SIZE)
-    ) middle_fifo (
-        .clk_i,
-        .reset_i,
-
-        .wen_i(wen),
-        .data_i(fifo_data_in),
-        .full_o(fifo_full),
-        
-        .data_o(fifo_data_out),
-        .empty_o(fifo_empty),
-        .ren_i(ren)
-    );
+    assign data_i = '0; // temporary, awaiting convolutional node implementation
 
     conv_layer #(
         .INPUT_LAYER_HEIGHT(INPUT_LAYER_HEIGHT),
@@ -64,23 +31,7 @@ module conv_layer_tb ();
         .INT_BITS(INT_BITS),
         .LAYER_NUMBER(1),
         .CONVOLUTION_NUMBER(0)
-    ) DUT (
-        .clk_i,
-        .reset_i,
-        
-        // still need start signal
-        .start_i,
-
-        // input interface
-        .valid_i(!fifo_empty),
-        .ready_o(ren),
-        .data_i(fifo_data_out),
-        
-        // helpful output interface
-        .valid_o,
-        .yumi_i,
-        .data_o
-    );
+    ) DUT (.*);
     
     initial begin
         clk_i = 1'b1;
@@ -113,46 +64,47 @@ module conv_layer_tb ();
         
         Expected output: overflow on node 1, fine on node 0
         7f_6e
-        
-    
-        data_i <= 64'h06_08_0f_0f_02_01_01_03; // data for test case 2
     */
     initial begin
         reset_i <= 1'b1;    @(posedge clk_i);
-        data_i <= 64'h01_00_05_09_02_03_05_01; // data for test case 1
         start_i <= 1'b0;
         yumi_i <= 1'b0;
-        valid_i <= 1'b0;
         reset_i <= 1'b0;    @(posedge clk_i);
-        valid_i <= 1'b1;    @(posedge clk_i);
-        valid_i <= 1'b0;    @(posedge clk_i);
-                            @(negedge fifo_empty);
-                            @(posedge clk_i);
-        start_i <= 1'b1;    @(posedge clk_i);
-        start_i <= 1'b0;    @(posedge clk_i);
+        data_i <= 8'h01;    @(posedge clk_i);
+        data_i <= 8'h05;    @(posedge clk_i); 
+        data_i <= 8'h03;    @(posedge clk_i);   
+        data_i <= 8'h02;    @(posedge clk_i);
+        data_i <= 8'h09;    @(posedge clk_i);
+        start_i <= 1'b1;    
+        data_i <= 8'h05;    @(posedge clk_i);
+        start_i <= 1'b0;
+        data_i <= 8'h00;    @(posedge clk_i);
+        data_i <= 8'h01;    @(posedge clk_i);
+        data_i <= '0;       @(posedge clk_i);
                             @(posedge valid_o);
-        $display("Assert Test Case 1:");
-        assert(data_o == 16'h43_5c)
-            $display("Test Case Passed");
-        else
-            $display("Assertion Error 1: Expected %h, Received %h", 16'h43_5c, data_o);
-        repeat(2)           @(posedge clk_i);
-        data_i <= 64'h06_08_0f_0f_02_01_01_03; // data for test case 2
+                            @(posedge clk_i);
+        assert (data_o == 16'h43_5c)
+            else $display("Assertion Error 1: Expected %h, Received %h", 16'h43_5c, data_o);
         yumi_i <= 1'b1;     @(posedge clk_i);
         yumi_i <= 1'b0;     @(posedge clk_i);
-        valid_i <= 1'b1;    @(posedge clk_i);
-        valid_i <= 1'b0;    @(posedge clk_i);
-        start_i <= 1'b1;    @(posedge clk_i);
-        start_i <= 1'b0;    @(posedge clk_i);
+
+        // Test case 2
+        data_i <= 8'h03;    @(posedge clk_i);
+        data_i <= 8'h01;    @(posedge clk_i); 
+        data_i <= 8'h01;    @(posedge clk_i);   
+        data_i <= 8'h02;    @(posedge clk_i);
+        data_i <= 8'h0f;    @(posedge clk_i);
+        start_i <= 1'b1;    
+        data_i <= 8'h0f;    @(posedge clk_i);
+        start_i <= 1'b0;
+        data_i <= 8'h05;    @(posedge clk_i);
+        data_i <= 8'h06;    @(posedge clk_i);
+        data_i <= '0;       @(posedge clk_i);
                             @(posedge valid_o);
                             @(posedge clk_i);
-        $display("Assert Test Case 2:");
-        assert(data_o == 16'h7f_6e)
-            $display("Test Case Passed");
-        else
-            $display("Assertion Error 1: Expected %h, Received %h", 16'h7f_6e, data_o);  
-                            @(posedge clk_i);               
-
+        assert (data_o == 16'h7f_6e)
+            else $display("Assertion Error 2: Expected %h, Received %h", 16'h7f_6e, data_o);
+        yumi_i <= 1'b1;     @(posedge clk_i);
         $stop;
     end
 

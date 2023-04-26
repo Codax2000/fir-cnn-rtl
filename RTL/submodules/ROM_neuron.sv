@@ -20,6 +20,8 @@ module ROM_neuron #(parameter depth=3, width=8, neuron_type=0, layer_number=1, n
     output logic [width-1:0] data_o
     );
 
+    logic [width-1:0] mem [2**depth-1:0];
+
     // TODO: Find out if parameters like this negatively impact synthesis
     localparam ascii_offset = 48;
 	localparam logic [7:0] neuron_type_p = neuron_type + ascii_offset;
