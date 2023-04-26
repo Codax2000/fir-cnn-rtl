@@ -10,8 +10,8 @@ updates output and begins convolution again, assumed inputs are constant.
 
 module conv_layer #(
 
-    parameter INPUT_LAYER_HEIGHT=4,
-    parameter KERNEL_HEIGHT=3,
+    parameter INPUT_LAYER_HEIGHT=64,
+    parameter KERNEL_HEIGHT=5,
     parameter KERNEL_WIDTH=2, // 2 if using i and q, 1 if using only 1 channel
     parameter WORD_SIZE=16,
     parameter INT_BITS=4, // integer bits in fixed-point arithmetic (default Q4.8)
