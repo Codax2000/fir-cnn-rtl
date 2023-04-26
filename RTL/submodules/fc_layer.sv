@@ -15,7 +15,7 @@ module fc_layer #(
     parameter PREVIOUS_LAYER_HEIGHT=4,
     parameter LAYER_NUMBER=1 ) (
     
-    // helpful input interface
+    // demanding input interface
     input logic signed [WORD_SIZE-1:0] data_i,
     input logic empty_i,
     output logic ren_o, // also yumi_o, but not using that convention here

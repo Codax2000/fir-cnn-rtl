@@ -10,13 +10,10 @@ Interface: Uses a valid-ready handshakes. Is a helpful producer and consumer. Th
 Implementation: An internal counter tracks which mean/variance/scale/offset is applied to which data_r_i, and the counter automatically resets properly.
 
 parameters:
-  INPUT_SIZE        : number of inputs (the output size of the previous layer)
-  WORD_SIZE         : the number of bits of inputs/outputs
-  N_SIZE            : the n parameter for Qm.n fixed point notation
-  MEM_INIT_MEAN     : .mif file for the mean mem
-  MEM_INIT_VARIANCE : .mif file for the variance mem
-  MEM_INIT_SCALE    : .mif file for the scale mem
-  MEM_INIT_OFFSET   : .mif file for the offset mem
+  INPUT_SIZE   : number of inputs (the output size of the previous layer)
+  LAYER_NUMBER : the layer number (for automatic .mem file naming)
+  WORD_SIZE    : the number of bits of inputs/outputs
+  N_SIZE       : the n parameter for Qm.n fixed point notation
 
 input-outputs:
   clk_i    : input clock

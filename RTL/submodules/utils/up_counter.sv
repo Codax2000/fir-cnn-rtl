@@ -16,7 +16,7 @@ module up_counter #(
     output logic [WORD_SIZE-1:0] data_o
     );
 
-    enum {eCOUNTING=1'b0, eDONE=1'b1} ps, ns;
+    enum logic {eCOUNTING=1'b0, eDONE=1'b1} ps, ns;
 
     // control logic
     always_comb begin
