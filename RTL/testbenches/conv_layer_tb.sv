@@ -135,8 +135,19 @@ module conv_layer_tb ();
         assert(data_o == 16'h43_5c)
             else $display("Assertion Error 1: Expected %h, Received %h", 16'h43_5c, data_o);
         repeat(2)           @(posedge clk_i);
+        data_i <= 64'h06_08_0f_0f_02_01_01_03; // data for test case 2
         yumi_i <= 1'b1;     @(posedge clk_i);
+        yumi_i <= 1'b0;     @(posedge clk_i);
+        valid_i <= 1'b1;    @(posedge clk_i);
+        valid_i <= 1'b0;    @(posedge clk_i);
+        start_i <= 1'b1;    @(posedge clk_i);
+        start_i <= 1'b0;    @(posedge clk_i);
+                            @(posedge valid_o);
                             @(posedge clk_i);
+        $display("Assert Test Case 2:");
+        assert(data_o == 16'h7f_6e)
+            else $display("Assertion Error 1: Expected %h, Received %h", 16'h7f_6e, data_o);  
+                            @(posedge clk_i);               
 
         $stop;
     end

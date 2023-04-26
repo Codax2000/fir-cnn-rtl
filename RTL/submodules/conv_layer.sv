@@ -123,7 +123,7 @@ module conv_layer #(
         .REGISTER_LENGTH(KERNEL_WIDTH * (INPUT_LAYER_HEIGHT - KERNEL_HEIGHT + 1))
     ) input_register (
         .data_i,
-        .shift_en_i(valid_i && ready_o && (shift_count != (KERNEL_WIDTH * INPUT_LAYER_HEIGHT))),
+        .shift_en_i((valid_i && ready_o) ^ (shift_count == (KERNEL_WIDTH * INPUT_LAYER_HEIGHT))),
         
         .clk_i,
         .reset_i,
