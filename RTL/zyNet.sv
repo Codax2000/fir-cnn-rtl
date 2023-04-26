@@ -95,7 +95,7 @@ module zyNet #(
     genvar i;
     generate
         for (i = 0; i < NUM_KERNELS; i = i + 1) begin
-            conv_layer #(/* TODO: insert parameters */
+            conv_layer #(
                 .INPUT_LAYER_HEIGHT(INPUT_LAYER_HEIGHT_0),
                 .KERNEL_HEIGHT(KERNEL_HEIGHT_0),
                 .KERNEL_WIDTH(KERNEL_WIDTH_0),
