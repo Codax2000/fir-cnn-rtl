@@ -17,13 +17,16 @@ Written .mif files are
 module zyNet_matlab_tb ();
 
     // TODO: Change test parameters as necessary
-    parameter NUM_TESTS = 1000;
+    parameter NUM_TESTS = 35880;
 
     // TODO: Set any necessary model parameters here
-    parameter INPUT_LAYER_HEIGHT = 64; // 60 samples, 2 '0' elements on either side
+    parameter INPUT_LAYER_HEIGHT = 265; // 60 samples, 2 '0' elements on either side
     parameter OUTPUT_LAYER_HEIGHT = 10;
     parameter WORD_SIZE = 16;
     parameter INT_BITS = 4;
+    
+    
+    parameter CLOCK_PERIOD = 1;
 
     // control variables
     logic clk_i, reset_i, start_i;
@@ -37,8 +40,8 @@ module zyNet_matlab_tb ();
     logic [OUTPUT_LAYER_HEIGHT-1:0][WORD_SIZE-1:0] data_o;
 
     // values for testing
-    logic [NUM_TESTS-1:0] test_inputs [INPUT_LAYER_HEIGHT-1:0][WORD_SIZE-1:0];
-    logic [NUM_TESTS-1:0] expected_outputs [OUTPUT_LAYER_HEIGHT-1:0][WORD_SIZE-1:0];
+    logic [INPUT_LAYER_HEIGHT-1:0] [WORD_SIZE-1:0] test_inputs [NUM_TESTS-1:0];
+    logic [OUTPUT_LAYER_HEIGHT-1:0][WORD_SIZE-1:0] expected_outputs [NUM_TESTS-1:0];
     logic [OUTPUT_LAYER_HEIGHT-1:0][WORD_SIZE-1:0] current_expected_output;
     
     // fc output layer and single fifo model the async FIFO that the FPGA will be writing to
@@ -80,7 +83,8 @@ module zyNet_matlab_tb ();
 
     zyNet #(
         .WORD_SIZE(WORD_SIZE),
-        .INT_BITS(INT_BITS)
+        .INT_BITS(INT_BITS),
+        .OUTPUT_SIZE(OUTPUT_LAYER_HEIGHT)
     ) DUT (
         .clk_i,
         .reset_i,
@@ -108,6 +112,7 @@ module zyNet_matlab_tb ();
     end
 
     // testbench loop
+    int measured_outputs, errors;
     initial begin
         measured_outputs = $fopen("./mem/test_values/test_outputs_actual.csv", "w");
         errors = $fopen("./mem/test_values/test_output_error.csv", "w");
