@@ -36,7 +36,6 @@ module overflow #(
     output logic overflow_flag);
 
     // overflow/underflow signals, purely combinational
-    logic overflow, underflow, overflow_flag, underflow_flag;
     logic overflow_add, underflow_add;
     
     assign overflow_add = {sum_carry_out, sum_n[WORD_SIZE-1]} == 2'b01;

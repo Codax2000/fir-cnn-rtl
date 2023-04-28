@@ -7,8 +7,11 @@ module zyNet #(
     input logic clk_i,
     input logic reset_i,
 
-    input logic [WORD_SIZE-1:0] data_i,
     input logic start_i,
+
+    input logic [WORD_SIZE-1:0] data_i,
+    input logic valid_i,
+    output logic ready_o,
 
     // output: helpful valid-ready handshake
     output logic [OUTPUT_SIZE-1:0][WORD_SIZE-1:0] data_o,
@@ -16,7 +19,9 @@ module zyNet #(
     input logic yumi_i);
     
     
-    
+    // output ready values to avoid synthesis errors
+    logic [NUM_KERNELS-1:0] ready_outs;
+    assign ready_o = ready_outs[0];
     
 // LAYER PARAMETERS AND WIRES
 
@@ -110,6 +115,9 @@ module zyNet #(
                 
                 // input interface
                 .start_i,
+
+                .valid_i,
+                .ready_o(ready_outs[i]),
                 .data_i,
                 
                 // helpful output interface
@@ -318,9 +326,9 @@ module zyNet #(
         .ren_o(fc1_ren_lo), // also yumi_o, but not using that convention here
     
         // helpful output interface
-        .valid_o(fc1_valid_lo),
-        .ready_i(1'b1),
-        .data_o(fc1_data_lo),
+        .valid_o,
+        .ready_i(yumi_i),
+        .data_o,
 
         // input for back-propagation, not currently used
         .weight_i(),
