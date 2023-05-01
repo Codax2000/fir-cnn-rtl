@@ -58,7 +58,8 @@ module gap_layer_tb ();
         data_r_i <= 16'b1111100011011101; @(posedge clk_i)
         data_r_i <= 16'b1111000101111010; @(posedge clk_i)
         data_r_i <= 16'b1111001100011100; @(posedge clk_i) // -0.536757963510032
-		  ready_i <= 1; @(posedge clk_i)
+        @(posedge clk_i) @(posedge clk_i) @(posedge clk_i)
+		  ready_i <= 1;
 		  
         data_r_i <= 16'b0000101001011010; @(posedge clk_i)
         data_r_i <= 16'b0000011000111100; @(posedge clk_i)

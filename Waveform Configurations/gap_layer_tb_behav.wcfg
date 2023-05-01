@@ -12,14 +12,14 @@
    </db_ref_list>
    <zoom_setting>
       <ZoomStartTime time="0.000 ns"></ZoomStartTime>
-      <ZoomEndTime time="202.992 ns"></ZoomEndTime>
-      <Cursor1Time time="123.600 ns"></Cursor1Time>
+      <ZoomEndTime time="150.001 ns"></ZoomEndTime>
+      <Cursor1Time time="150.000 ns"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
-      <NameColumnWidth column_width="276"></NameColumnWidth>
-      <ValueColumnWidth column_width="68"></ValueColumnWidth>
+      <NameColumnWidth column_width="236"></NameColumnWidth>
+      <ValueColumnWidth column_width="113"></ValueColumnWidth>
    </column_width_setting>
-   <WVObjectSize size="11" />
+   <WVObjectSize size="13" />
    <wvobject fp_name="/gap_layer_tb/clk_i" type="logic">
       <obj_property name="ElementShortName">clk_i</obj_property>
       <obj_property name="ObjectShortName">clk_i</obj_property>
@@ -60,46 +60,24 @@
       <obj_property name="radix_fractionWidth">12</obj_property>
       <obj_property name="radix_otherWidth">0</obj_property>
    </wvobject>
-   <wvobject fp_name="group13" type="group">
-      <obj_property name="label">params</obj_property>
-      <obj_property name="DisplayName">label</obj_property>
-      <obj_property name="isExpanded"></obj_property>
-      <wvobject fp_name="/gap_layer_tb/CLOCK_PERIOD" type="array">
-         <obj_property name="ElementShortName">CLOCK_PERIOD[31:0]</obj_property>
-         <obj_property name="ObjectShortName">CLOCK_PERIOD[31:0]</obj_property>
-         <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
-      </wvobject>
-      <wvobject fp_name="/gap_layer_tb/INPUT_SIZE" type="array">
-         <obj_property name="ElementShortName">INPUT_SIZE[31:0]</obj_property>
-         <obj_property name="ObjectShortName">INPUT_SIZE[31:0]</obj_property>
-         <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
-      </wvobject>
-      <wvobject fp_name="/gap_layer_tb/WORD_SIZE" type="array">
-         <obj_property name="ElementShortName">WORD_SIZE[31:0]</obj_property>
-         <obj_property name="ObjectShortName">WORD_SIZE[31:0]</obj_property>
-         <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
-      </wvobject>
-      <wvobject fp_name="/gap_layer_tb/N_SIZE" type="array">
-         <obj_property name="ElementShortName">N_SIZE[31:0]</obj_property>
-         <obj_property name="ObjectShortName">N_SIZE[31:0]</obj_property>
-         <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
-      </wvobject>
-      <wvobject fp_name="/gap_layer_tb/DUT/MULTIPLIER" type="array">
-         <obj_property name="ElementShortName">MULTIPLIER[15:0]</obj_property>
-         <obj_property name="ObjectShortName">MULTIPLIER[15:0]</obj_property>
-         <obj_property name="Radix">REALRADIX</obj_property>
-         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
-         <obj_property name="radix_fractionWidth">12</obj_property>
-         <obj_property name="radix_otherWidth">0</obj_property>
-      </wvobject>
+   <wvobject fp_name="/gap_layer_tb/CLOCK_PERIOD" type="array">
+      <obj_property name="ElementShortName">CLOCK_PERIOD[31:0]</obj_property>
+      <obj_property name="ObjectShortName">CLOCK_PERIOD[31:0]</obj_property>
    </wvobject>
-   <wvobject fp_name="/gap_layer_tb/DUT/state_r" type="other">
-      <obj_property name="ElementShortName">state_r</obj_property>
-      <obj_property name="ObjectShortName">state_r</obj_property>
+   <wvobject fp_name="/gap_layer_tb/INPUT_SIZE" type="array">
+      <obj_property name="ElementShortName">INPUT_SIZE[31:0]</obj_property>
+      <obj_property name="ObjectShortName">INPUT_SIZE[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/gap_layer_tb/WORD_SIZE" type="array">
+      <obj_property name="ElementShortName">WORD_SIZE[31:0]</obj_property>
+      <obj_property name="ObjectShortName">WORD_SIZE[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/gap_layer_tb/N_SIZE" type="array">
+      <obj_property name="ElementShortName">N_SIZE[31:0]</obj_property>
+      <obj_property name="ObjectShortName">N_SIZE[31:0]</obj_property>
    </wvobject>
    <wvobject fp_name="/gap_layer_tb/DUT/count_r" type="array">
       <obj_property name="ElementShortName">count_r[2:0]</obj_property>
       <obj_property name="ObjectShortName">count_r[2:0]</obj_property>
-      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
    </wvobject>
 </wave_config>
