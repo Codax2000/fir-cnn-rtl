@@ -1,0 +1,485 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wave_config>
+   <wave_state>
+   </wave_state>
+   <db_ref_list>
+      <db_ref path="zyNet_matlab_tb_behav.wdb" id="1">
+         <top_modules>
+            <top_module name="glbl" />
+            <top_module name="zyNet_matlab_tb" />
+         </top_modules>
+      </db_ref>
+   </db_ref_list>
+   <zoom_setting>
+<<<<<<< Updated upstream
+      <ZoomStartTime time="1,800.502 ns"></ZoomStartTime>
+      <ZoomEndTime time="1,809.097 ns"></ZoomEndTime>
+      <Cursor1Time time="18,046.000 ns"></Cursor1Time>
+   </zoom_setting>
+   <column_width_setting>
+      <NameColumnWidth column_width="237"></NameColumnWidth>
+      <ValueColumnWidth column_width="87"></ValueColumnWidth>
+   </column_width_setting>
+   <WVObjectSize size="27" />
+=======
+      <ZoomStartTime time="3,575.368 ns"></ZoomStartTime>
+      <ZoomEndTime time="3,614.527 ns"></ZoomEndTime>
+      <Cursor1Time time="3,608.000 ns"></Cursor1Time>
+   </zoom_setting>
+   <column_width_setting>
+      <NameColumnWidth column_width="237"></NameColumnWidth>
+      <ValueColumnWidth column_width="95"></ValueColumnWidth>
+   </column_width_setting>
+   <WVObjectSize size="37" />
+>>>>>>> Stashed changes
+   <wvobject fp_name="/zyNet_matlab_tb/clk_i" type="logic">
+      <obj_property name="ElementShortName">clk_i</obj_property>
+      <obj_property name="ObjectShortName">clk_i</obj_property>
+   </wvobject>
+   <wvobject fp_name="/zyNet_matlab_tb/reset_i" type="logic">
+      <obj_property name="ElementShortName">reset_i</obj_property>
+      <obj_property name="ObjectShortName">reset_i</obj_property>
+   </wvobject>
+   <wvobject fp_name="/zyNet_matlab_tb/start_i" type="logic">
+      <obj_property name="ElementShortName">start_i</obj_property>
+      <obj_property name="ObjectShortName">start_i</obj_property>
+   </wvobject>
+   <wvobject fp_name="/zyNet_matlab_tb/data_i" type="array">
+      <obj_property name="ElementShortName">data_i[255:0][15:0]</obj_property>
+      <obj_property name="ObjectShortName">data_i[255:0][15:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/zyNet_matlab_tb/valid_i" type="logic">
+      <obj_property name="ElementShortName">valid_i</obj_property>
+      <obj_property name="ObjectShortName">valid_i</obj_property>
+   </wvobject>
+   <wvobject fp_name="/zyNet_matlab_tb/ready_o" type="logic">
+      <obj_property name="ElementShortName">ready_o</obj_property>
+      <obj_property name="ObjectShortName">ready_o</obj_property>
+   </wvobject>
+   <wvobject fp_name="/zyNet_matlab_tb/valid_o" type="logic">
+      <obj_property name="ElementShortName">valid_o</obj_property>
+      <obj_property name="ObjectShortName">valid_o</obj_property>
+   </wvobject>
+   <wvobject fp_name="/zyNet_matlab_tb/yumi_i" type="logic">
+      <obj_property name="ElementShortName">yumi_i</obj_property>
+      <obj_property name="ObjectShortName">yumi_i</obj_property>
+   </wvobject>
+   <wvobject fp_name="/zyNet_matlab_tb/data_o" type="array">
+      <obj_property name="ElementShortName">data_o[9:0][15:0]</obj_property>
+      <obj_property name="ObjectShortName">data_o[9:0][15:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/zyNet_matlab_tb/expected_outputs" type="array">
+<<<<<<< Updated upstream
+      <obj_property name="ElementShortName">expected_outputs[9:0][9:0][15:0]</obj_property>
+      <obj_property name="ObjectShortName">expected_outputs[9:0][9:0][15:0]</obj_property>
+=======
+      <obj_property name="ElementShortName">expected_outputs[7175:0][9:0][15:0]</obj_property>
+      <obj_property name="ObjectShortName">expected_outputs[7175:0][9:0][15:0]</obj_property>
+>>>>>>> Stashed changes
+   </wvobject>
+   <wvobject fp_name="/zyNet_matlab_tb/current_expected_output" type="array">
+      <obj_property name="ElementShortName">current_expected_output[9:0][15:0]</obj_property>
+      <obj_property name="ObjectShortName">current_expected_output[9:0][15:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/zyNet_matlab_tb/serial_out" type="array">
+      <obj_property name="ElementShortName">serial_out[15:0]</obj_property>
+      <obj_property name="ObjectShortName">serial_out[15:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/zyNet_matlab_tb/fifo_out" type="array">
+      <obj_property name="ElementShortName">fifo_out[15:0]</obj_property>
+      <obj_property name="ObjectShortName">fifo_out[15:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/zyNet_matlab_tb/full" type="logic">
+      <obj_property name="ElementShortName">full</obj_property>
+      <obj_property name="ObjectShortName">full</obj_property>
+   </wvobject>
+   <wvobject fp_name="/zyNet_matlab_tb/empty" type="logic">
+      <obj_property name="ElementShortName">empty</obj_property>
+      <obj_property name="ObjectShortName">empty</obj_property>
+   </wvobject>
+   <wvobject fp_name="/zyNet_matlab_tb/wen" type="logic">
+      <obj_property name="ElementShortName">wen</obj_property>
+      <obj_property name="ObjectShortName">wen</obj_property>
+   </wvobject>
+   <wvobject fp_name="/zyNet_matlab_tb/ren" type="logic">
+      <obj_property name="ElementShortName">ren</obj_property>
+      <obj_property name="ObjectShortName">ren</obj_property>
+   </wvobject>
+   <wvobject fp_name="/zyNet_matlab_tb/measured_outputs" type="array">
+      <obj_property name="ElementShortName">measured_outputs[31:0]</obj_property>
+      <obj_property name="ObjectShortName">measured_outputs[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/zyNet_matlab_tb/errors" type="array">
+      <obj_property name="ElementShortName">errors[31:0]</obj_property>
+      <obj_property name="ObjectShortName">errors[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="group55" type="group">
+      <obj_property name="label">PARAMS</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <wvobject fp_name="/zyNet_matlab_tb/NUM_TESTS" type="array">
+         <obj_property name="ElementShortName">NUM_TESTS[31:0]</obj_property>
+         <obj_property name="ObjectShortName">NUM_TESTS[31:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/zyNet_matlab_tb/INPUT_LAYER_HEIGHT" type="array">
+         <obj_property name="ElementShortName">INPUT_LAYER_HEIGHT[31:0]</obj_property>
+         <obj_property name="ObjectShortName">INPUT_LAYER_HEIGHT[31:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/zyNet_matlab_tb/OUTPUT_LAYER_HEIGHT" type="array">
+         <obj_property name="ElementShortName">OUTPUT_LAYER_HEIGHT[31:0]</obj_property>
+         <obj_property name="ObjectShortName">OUTPUT_LAYER_HEIGHT[31:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/zyNet_matlab_tb/WORD_SIZE" type="array">
+         <obj_property name="ElementShortName">WORD_SIZE[31:0]</obj_property>
+         <obj_property name="ObjectShortName">WORD_SIZE[31:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/zyNet_matlab_tb/INT_BITS" type="array">
+         <obj_property name="ElementShortName">INT_BITS[31:0]</obj_property>
+         <obj_property name="ObjectShortName">INT_BITS[31:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/zyNet_matlab_tb/CLOCK_PERIOD" type="array">
+         <obj_property name="ElementShortName">CLOCK_PERIOD[31:0]</obj_property>
+         <obj_property name="ObjectShortName">CLOCK_PERIOD[31:0]</obj_property>
+      </wvobject>
+   </wvobject>
+   <wvobject fp_name="group54" type="group">
+      <obj_property name="label">conv_layer_0</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <wvobject fp_name="/zyNet_matlab_tb/DUT/conv0_data_lo" type="array">
+         <obj_property name="ElementShortName">conv0_data_lo[255:0][112:0][15:0]</obj_property>
+         <obj_property name="ObjectShortName">conv0_data_lo[255:0][112:0][15:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/zyNet_matlab_tb/DUT/conv0_valid_lo" type="array">
+         <obj_property name="ElementShortName">conv0_valid_lo[255:0]</obj_property>
+         <obj_property name="ObjectShortName">conv0_valid_lo[255:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/zyNet_matlab_tb/DUT/fc_output0_data_lo" type="array">
+         <obj_property name="ElementShortName">fc_output0_data_lo[255:0][15:0]</obj_property>
+         <obj_property name="ObjectShortName">fc_output0_data_lo[255:0][15:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/zyNet_matlab_tb/DUT/fc_output0_wen_lo" type="array">
+         <obj_property name="ElementShortName">fc_output0_wen_lo[255:0]</obj_property>
+         <obj_property name="ObjectShortName">fc_output0_wen_lo[255:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/zyNet_matlab_tb/DUT/\genblk1[0].kernel /\genblk1[0].LU /mem_i" type="array">
+         <obj_property name="ElementShortName">mem_i[15:0]</obj_property>
+         <obj_property name="ObjectShortName">mem_i[15:0]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">12</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/zyNet_matlab_tb/DUT/\genblk1[0].kernel /\genblk1[0].LU /data_i" type="array">
+         <obj_property name="ElementShortName">data_i[15:0]</obj_property>
+         <obj_property name="ObjectShortName">data_i[15:0]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">12</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/zyNet_matlab_tb/DUT/\genblk1[0].kernel /\genblk1[0].LU /add_bias" type="logic">
+         <obj_property name="ElementShortName">add_bias</obj_property>
+         <obj_property name="ObjectShortName">add_bias</obj_property>
+      </wvobject>
+      <wvobject fp_name="/zyNet_matlab_tb/DUT/\genblk1[0].kernel /\genblk1[0].LU /sum_en" type="logic">
+         <obj_property name="ElementShortName">sum_en</obj_property>
+         <obj_property name="ObjectShortName">sum_en</obj_property>
+      </wvobject>
+      <wvobject fp_name="/zyNet_matlab_tb/DUT/\genblk1[0].kernel /\genblk1[0].LU /clk_i" type="logic">
+         <obj_property name="ElementShortName">clk_i</obj_property>
+         <obj_property name="ObjectShortName">clk_i</obj_property>
+      </wvobject>
+      <wvobject fp_name="/zyNet_matlab_tb/DUT/\genblk1[0].kernel /\genblk1[0].LU /reset_i" type="logic">
+         <obj_property name="ElementShortName">reset_i</obj_property>
+         <obj_property name="ObjectShortName">reset_i</obj_property>
+      </wvobject>
+      <wvobject fp_name="/zyNet_matlab_tb/DUT/\genblk1[0].kernel /\genblk1[0].LU /data_o" type="array">
+         <obj_property name="ElementShortName">data_o[15:0]</obj_property>
+         <obj_property name="ObjectShortName">data_o[15:0]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">12</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/zyNet_matlab_tb/DUT/\genblk1[0].kernel /\genblk1[0].LU /sum_n" type="array">
+         <obj_property name="ElementShortName">sum_n[31:0]</obj_property>
+         <obj_property name="ObjectShortName">sum_n[31:0]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">24</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/zyNet_matlab_tb/DUT/\genblk1[0].kernel /\genblk1[0].LU /sum_r" type="array">
+         <obj_property name="ElementShortName">sum_r[31:0]</obj_property>
+         <obj_property name="ObjectShortName">sum_r[31:0]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">24</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/zyNet_matlab_tb/DUT/\genblk1[0].kernel /\genblk1[0].LU /add_in" type="array">
+         <obj_property name="ElementShortName">add_in[31:0]</obj_property>
+         <obj_property name="ObjectShortName">add_in[31:0]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">24</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+   </wvobject>
+   <wvobject fp_name="group57" type="group">
+      <obj_property name="label">abs_layer_0</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <wvobject fp_name="/zyNet_matlab_tb/DUT/abs0_data_lo" type="array">
+         <obj_property name="ElementShortName">abs0_data_lo[255:0][15:0]</obj_property>
+         <obj_property name="ObjectShortName">abs0_data_lo[255:0][15:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/zyNet_matlab_tb/DUT/abs0_valid_lo" type="array">
+         <obj_property name="ElementShortName">abs0_valid_lo[255:0]</obj_property>
+         <obj_property name="ObjectShortName">abs0_valid_lo[255:0]</obj_property>
+      </wvobject>
+   </wvobject>
+   <wvobject fp_name="group62" type="group">
+      <obj_property name="label">gap_layer_0</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <wvobject fp_name="/zyNet_matlab_tb/DUT/gap0_data_lo" type="array">
+         <obj_property name="ElementShortName">gap0_data_lo[255:0][15:0]</obj_property>
+         <obj_property name="ObjectShortName">gap0_data_lo[255:0][15:0]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">12</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/zyNet_matlab_tb/DUT/gap0_valid_lo" type="array">
+         <obj_property name="ElementShortName">gap0_valid_lo[255:0]</obj_property>
+         <obj_property name="ObjectShortName">gap0_valid_lo[255:0]</obj_property>
+      </wvobject>
+   </wvobject>
+   <wvobject fp_name="group65" type="group">
+      <obj_property name="label">fc_layer_0</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <wvobject fp_name="/zyNet_matlab_tb/DUT/fc0_data_lo" type="array">
+         <obj_property name="ElementShortName">fc0_data_lo[255:0][15:0]</obj_property>
+         <obj_property name="ObjectShortName">fc0_data_lo[255:0][15:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/zyNet_matlab_tb/DUT/fc0_valid_lo" type="logic">
+         <obj_property name="ElementShortName">fc0_valid_lo</obj_property>
+         <obj_property name="ObjectShortName">fc0_valid_lo</obj_property>
+      </wvobject>
+   </wvobject>
+   <wvobject fp_name="group68" type="group">
+      <obj_property name="label">bn_layer_0</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+<<<<<<< Updated upstream
+=======
+      <obj_property name="isExpanded"></obj_property>
+>>>>>>> Stashed changes
+      <wvobject fp_name="/zyNet_matlab_tb/DUT/bn0_data_lo" type="array">
+         <obj_property name="ElementShortName">bn0_data_lo[15:0]</obj_property>
+         <obj_property name="ObjectShortName">bn0_data_lo[15:0]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">12</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/zyNet_matlab_tb/DUT/bn0_valid_lo" type="logic">
+         <obj_property name="ElementShortName">bn0_valid_lo</obj_property>
+         <obj_property name="ObjectShortName">bn0_valid_lo</obj_property>
+      </wvobject>
+   </wvobject>
+   <wvobject fp_name="group71" type="group">
+      <obj_property name="label">relu_layer_0</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <wvobject fp_name="/zyNet_matlab_tb/DUT/relu0_data_lo" type="array">
+         <obj_property name="ElementShortName">relu0_data_lo[15:0]</obj_property>
+         <obj_property name="ObjectShortName">relu0_data_lo[15:0]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">12</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/zyNet_matlab_tb/DUT/relu0_valid_lo" type="logic">
+         <obj_property name="ElementShortName">relu0_valid_lo</obj_property>
+         <obj_property name="ObjectShortName">relu0_valid_lo</obj_property>
+      </wvobject>
+   </wvobject>
+   <wvobject fp_name="group74" type="group">
+      <obj_property name="label">fc_layer_1</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="isExpanded"></obj_property>
+      <wvobject fp_name="/zyNet_matlab_tb/DUT/data_o" type="array">
+         <obj_property name="ElementShortName">data_o[9:0][15:0]</obj_property>
+         <obj_property name="ObjectShortName">data_o[9:0][15:0]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">12</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+         <obj_property name="isExpanded"></obj_property>
+         <wvobject fp_name="/zyNet_matlab_tb/DUT/data_o[9]" type="array">
+            <obj_property name="ElementShortName">[9][15:0]</obj_property>
+            <obj_property name="ObjectShortName">[9][15:0]</obj_property>
+            <obj_property name="Radix">REALRADIX</obj_property>
+            <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+            <obj_property name="radix_fractionWidth">12</obj_property>
+            <obj_property name="radix_otherWidth">0</obj_property>
+         </wvobject>
+         <wvobject fp_name="/zyNet_matlab_tb/DUT/data_o[8]" type="array">
+            <obj_property name="ElementShortName">[8][15:0]</obj_property>
+            <obj_property name="ObjectShortName">[8][15:0]</obj_property>
+            <obj_property name="Radix">REALRADIX</obj_property>
+            <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+            <obj_property name="radix_fractionWidth">12</obj_property>
+            <obj_property name="radix_otherWidth">0</obj_property>
+         </wvobject>
+         <wvobject fp_name="/zyNet_matlab_tb/DUT/data_o[7]" type="array">
+            <obj_property name="ElementShortName">[7][15:0]</obj_property>
+            <obj_property name="ObjectShortName">[7][15:0]</obj_property>
+            <obj_property name="Radix">REALRADIX</obj_property>
+            <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+            <obj_property name="radix_fractionWidth">12</obj_property>
+            <obj_property name="radix_otherWidth">0</obj_property>
+         </wvobject>
+         <wvobject fp_name="/zyNet_matlab_tb/DUT/data_o[6]" type="array">
+            <obj_property name="ElementShortName">[6][15:0]</obj_property>
+            <obj_property name="ObjectShortName">[6][15:0]</obj_property>
+            <obj_property name="Radix">REALRADIX</obj_property>
+            <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+            <obj_property name="radix_fractionWidth">12</obj_property>
+            <obj_property name="radix_otherWidth">0</obj_property>
+         </wvobject>
+         <wvobject fp_name="/zyNet_matlab_tb/DUT/data_o[5]" type="array">
+            <obj_property name="ElementShortName">[5][15:0]</obj_property>
+            <obj_property name="ObjectShortName">[5][15:0]</obj_property>
+            <obj_property name="Radix">REALRADIX</obj_property>
+            <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+            <obj_property name="radix_fractionWidth">12</obj_property>
+            <obj_property name="radix_otherWidth">0</obj_property>
+         </wvobject>
+         <wvobject fp_name="/zyNet_matlab_tb/DUT/data_o[4]" type="array">
+            <obj_property name="ElementShortName">[4][15:0]</obj_property>
+            <obj_property name="ObjectShortName">[4][15:0]</obj_property>
+            <obj_property name="Radix">REALRADIX</obj_property>
+            <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+            <obj_property name="radix_fractionWidth">12</obj_property>
+            <obj_property name="radix_otherWidth">0</obj_property>
+         </wvobject>
+         <wvobject fp_name="/zyNet_matlab_tb/DUT/data_o[3]" type="array">
+            <obj_property name="ElementShortName">[3][15:0]</obj_property>
+            <obj_property name="ObjectShortName">[3][15:0]</obj_property>
+            <obj_property name="Radix">REALRADIX</obj_property>
+            <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+            <obj_property name="radix_fractionWidth">12</obj_property>
+            <obj_property name="radix_otherWidth">0</obj_property>
+         </wvobject>
+         <wvobject fp_name="/zyNet_matlab_tb/DUT/data_o[2]" type="array">
+            <obj_property name="ElementShortName">[2][15:0]</obj_property>
+            <obj_property name="ObjectShortName">[2][15:0]</obj_property>
+            <obj_property name="Radix">REALRADIX</obj_property>
+            <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+            <obj_property name="radix_fractionWidth">12</obj_property>
+            <obj_property name="radix_otherWidth">0</obj_property>
+         </wvobject>
+         <wvobject fp_name="/zyNet_matlab_tb/DUT/data_o[1]" type="array">
+            <obj_property name="ElementShortName">[1][15:0]</obj_property>
+            <obj_property name="ObjectShortName">[1][15:0]</obj_property>
+            <obj_property name="Radix">REALRADIX</obj_property>
+            <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+            <obj_property name="radix_fractionWidth">12</obj_property>
+            <obj_property name="radix_otherWidth">0</obj_property>
+         </wvobject>
+         <wvobject fp_name="/zyNet_matlab_tb/DUT/data_o[0]" type="array">
+            <obj_property name="ElementShortName">[0][15:0]</obj_property>
+            <obj_property name="ObjectShortName">[0][15:0]</obj_property>
+            <obj_property name="Radix">REALRADIX</obj_property>
+            <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+            <obj_property name="radix_fractionWidth">12</obj_property>
+            <obj_property name="radix_otherWidth">0</obj_property>
+         </wvobject>
+      </wvobject>
+      <wvobject fp_name="/zyNet_matlab_tb/DUT/valid_o" type="logic">
+         <obj_property name="ElementShortName">valid_o</obj_property>
+         <obj_property name="ObjectShortName">valid_o</obj_property>
+      </wvobject>
+   </wvobject>
+<<<<<<< Updated upstream
+=======
+   <wvobject fp_name="/zyNet_matlab_tb/DUT/bn_layer_0/data_r_i" type="array">
+      <obj_property name="ElementShortName">data_r_i[15:0]</obj_property>
+      <obj_property name="ObjectShortName">data_r_i[15:0]</obj_property>
+      <obj_property name="Radix">REALRADIX</obj_property>
+      <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+      <obj_property name="radix_fractionWidth">12</obj_property>
+      <obj_property name="radix_otherWidth">0</obj_property>
+   </wvobject>
+   <wvobject fp_name="/zyNet_matlab_tb/DUT/bn_layer_0/mean_lo" type="array">
+      <obj_property name="ElementShortName">mean_lo[20:0]</obj_property>
+      <obj_property name="ObjectShortName">mean_lo[20:0]</obj_property>
+      <obj_property name="Radix">REALRADIX</obj_property>
+      <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+      <obj_property name="radix_fractionWidth">12</obj_property>
+      <obj_property name="radix_otherWidth">0</obj_property>
+   </wvobject>
+   <wvobject fp_name="/zyNet_matlab_tb/DUT/bn_layer_0/variance_lo" type="array">
+      <obj_property name="ElementShortName">variance_lo[20:0]</obj_property>
+      <obj_property name="ObjectShortName">variance_lo[20:0]</obj_property>
+      <obj_property name="Radix">REALRADIX</obj_property>
+      <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+      <obj_property name="radix_fractionWidth">12</obj_property>
+      <obj_property name="radix_otherWidth">0</obj_property>
+   </wvobject>
+   <wvobject fp_name="/zyNet_matlab_tb/DUT/bn_layer_0/scale_lo" type="array">
+      <obj_property name="ElementShortName">scale_lo[20:0]</obj_property>
+      <obj_property name="ObjectShortName">scale_lo[20:0]</obj_property>
+      <obj_property name="Radix">REALRADIX</obj_property>
+      <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+      <obj_property name="radix_fractionWidth">12</obj_property>
+      <obj_property name="radix_otherWidth">0</obj_property>
+   </wvobject>
+   <wvobject fp_name="/zyNet_matlab_tb/DUT/bn_layer_0/offset_lo" type="array">
+      <obj_property name="ElementShortName">offset_lo[20:0]</obj_property>
+      <obj_property name="ObjectShortName">offset_lo[20:0]</obj_property>
+      <obj_property name="Radix">REALRADIX</obj_property>
+      <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+      <obj_property name="radix_fractionWidth">12</obj_property>
+      <obj_property name="radix_otherWidth">0</obj_property>
+   </wvobject>
+   <wvobject fp_name="/zyNet_matlab_tb/DUT/bn_layer_0/data1" type="array">
+      <obj_property name="ElementShortName">data1[20:0]</obj_property>
+      <obj_property name="ObjectShortName">data1[20:0]</obj_property>
+      <obj_property name="Radix">REALRADIX</obj_property>
+      <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+      <obj_property name="radix_fractionWidth">12</obj_property>
+      <obj_property name="radix_otherWidth">0</obj_property>
+   </wvobject>
+   <wvobject fp_name="/zyNet_matlab_tb/DUT/bn_layer_0/data2" type="array">
+      <obj_property name="ElementShortName">data2[20:0]</obj_property>
+      <obj_property name="ObjectShortName">data2[20:0]</obj_property>
+      <obj_property name="Radix">REALRADIX</obj_property>
+      <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+      <obj_property name="radix_fractionWidth">12</obj_property>
+      <obj_property name="radix_otherWidth">0</obj_property>
+   </wvobject>
+   <wvobject fp_name="/zyNet_matlab_tb/DUT/bn_layer_0/data3" type="array">
+      <obj_property name="ElementShortName">data3[20:0]</obj_property>
+      <obj_property name="ObjectShortName">data3[20:0]</obj_property>
+      <obj_property name="Radix">REALRADIX</obj_property>
+      <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+      <obj_property name="radix_fractionWidth">12</obj_property>
+      <obj_property name="radix_otherWidth">0</obj_property>
+   </wvobject>
+   <wvobject fp_name="/zyNet_matlab_tb/DUT/bn_layer_0/data4" type="array">
+      <obj_property name="ElementShortName">data4[20:0]</obj_property>
+      <obj_property name="ObjectShortName">data4[20:0]</obj_property>
+      <obj_property name="Radix">REALRADIX</obj_property>
+      <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+      <obj_property name="radix_fractionWidth">12</obj_property>
+      <obj_property name="radix_otherWidth">0</obj_property>
+   </wvobject>
+   <wvobject fp_name="/zyNet_matlab_tb/DUT/bn_layer_0/data_n_o" type="array">
+      <obj_property name="ElementShortName">data_n_o[15:0]</obj_property>
+      <obj_property name="ObjectShortName">data_n_o[15:0]</obj_property>
+      <obj_property name="Radix">REALRADIX</obj_property>
+      <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+      <obj_property name="radix_fractionWidth">12</obj_property>
+      <obj_property name="radix_otherWidth">0</obj_property>
+   </wvobject>
+>>>>>>> Stashed changes
+</wave_config>

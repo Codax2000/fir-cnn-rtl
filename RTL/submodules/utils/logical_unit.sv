@@ -26,7 +26,8 @@ outputs:
 
 module logical_unit #(
     parameter WORD_SIZE=16,
-    parameter INT_BITS=8 ) (
+    parameter INT_BITS=8,
+    parameter FRAC_BITS=WORD_SIZE-INT_BITS) (
     
     input logic signed [WORD_SIZE-1:0] mem_i,
     input logic signed [WORD_SIZE-1:0] data_i,
@@ -56,13 +57,13 @@ module logical_unit #(
     end
 
     // accumulator combinational logic
-    assign add_in = add_bias ? mem_i : mem_i*data_i;
+    assign add_in = add_bias ? (mem_i<<FRAC_BITS) : mem_i*data_i;
     
     safe_alu #(
         .WORD_SIZE(2*WORD_SIZE),
         .N_SIZE(WORD_SIZE-INT_BITS),
         .OPERATION("add")
-    ) multiplier (
+    ) adder (
         .a_i(sum_r),
         .b_i(add_in),
         .data_o(sum_n)

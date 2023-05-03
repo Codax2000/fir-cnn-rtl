@@ -26,18 +26,21 @@ module zyNet #(
 // LAYER PARAMETERS AND WIRES
 
     // conv_layer_0
-    localparam INPUT_LAYER_HEIGHT = 256;
-    localparam KERNEL_HEIGHT_0 = 16;
+    localparam INPUT_LAYER_HEIGHT = 128; //128  16
+    localparam KERNEL_HEIGHT_0 = 16; //16  4
     localparam KERNEL_WIDTH_0 = 2;
-    localparam NUM_KERNELS = 256;
+    localparam NUM_KERNELS = 256; //256  8
+    localparam LAYER_HEIGHT_0 = INPUT_LAYER_HEIGHT - KERNEL_HEIGHT_0 + 1;
+    localparam LAYER_HEIGHT_1 = NUM_KERNELS;
+    localparam LAYER_HEIGHT_2 = 256; // 256  8
+    localparam LAYER_HEIGHT_3 = OUTPUT_SIZE;
+
     
     logic signed [NUM_KERNELS-1:0][INPUT_LAYER_HEIGHT - KERNEL_HEIGHT_0:0][WORD_SIZE-1:0] conv0_data_lo;
     logic [NUM_KERNELS-1:0] conv0_valid_lo;
     
     
     // fc_output_layer_0
-    localparam LAYER_HEIGHT_0 = INPUT_LAYER_HEIGHT - KERNEL_HEIGHT_0 + 1;
-    
     logic [NUM_KERNELS-1:0] fc_output0_ready_lo, fc_output0_wen_lo;
     logic signed [NUM_KERNELS-1:0] [WORD_SIZE-1:0] fc_output0_data_lo;
     
@@ -52,9 +55,7 @@ module zyNet #(
     logic signed [NUM_KERNELS-1:0] [WORD_SIZE-1:0] gap0_data_lo;
     
     
-    // fc_output_layer_1
-    localparam LAYER_HEIGHT_1 = 256;
-    
+    // fc_output_layer_1    
     logic fc_output1_ready_lo, fc_output1_wen_lo;
     logic signed [WORD_SIZE-1:0] fc_output1_data_lo;
     
@@ -64,9 +65,7 @@ module zyNet #(
     logic signed [WORD_SIZE-1:0] fifo0_data_lo;
     
     
-    // fc_layer_0
-    localparam LAYER_HEIGHT_2 = 256;
-    
+    // fc_layer_0    
     logic fc0_ren_lo, fc0_valid_lo;
     logic signed [LAYER_HEIGHT_2-1:0] [WORD_SIZE-1:0] fc0_data_lo;
     
@@ -86,9 +85,7 @@ module zyNet #(
     logic signed [WORD_SIZE-1:0] relu0_data_lo;
     
     
-    // fc_layer_1
-    localparam LAYER_HEIGHT_3 = OUTPUT_SIZE;
-    
+    // fc_layer_1    
     logic fc1_ren_lo, fc1_valid_lo;
     logic signed [LAYER_HEIGHT_3-1:0] [WORD_SIZE-1:0] fc1_data_lo;
     
@@ -273,7 +270,8 @@ module zyNet #(
         .INPUT_SIZE(LAYER_HEIGHT_2),
         .LAYER_NUMBER(0),
         .WORD_SIZE(WORD_SIZE),
-        .N_SIZE(WORD_SIZE-INT_BITS)
+        .N_SIZE(WORD_SIZE-INT_BITS),
+        .MEM_WORD_SIZE(WORD_SIZE+5)
     ) bn_layer_0 (
         // top level control
         .clk_i,

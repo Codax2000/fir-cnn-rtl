@@ -10,10 +10,12 @@ Interface: Uses a valid-ready handshakes. Is a helpful producer and consumer. Th
 Implementation: An internal counter tracks which mean/variance/scale/offset is applied to which data_r_i, and the counter automatically resets properly.
 
 parameters:
-  INPUT_SIZE   : number of inputs (the output size of the previous layer)
-  LAYER_NUMBER : the layer number (for automatic .mem file naming)
-  WORD_SIZE    : the number of bits of inputs/outputs
-  N_SIZE       : the n parameter for Qm.n fixed point notation
+  INPUT_SIZE    : number of inputs (the output size of the previous layer)
+  LAYER_NUMBER  : the layer number (for automatic .mem file naming)
+  WORD_SIZE     : the number of bits of inputs/outputs
+  N_SIZE        : the n parameter for Qm.n fixed point notation
+  MEM_WORD_SIZE : the number of bits for mem. Variances and means don't have L1/L2 regularization and may need 
+                  additional integer bits. Mem should be in Qm.n format or Q(MEM_WORD_SIZE-N_SIZE).(N_SIZE)
 
 input-outputs:
   clk_i    : input clock
@@ -33,7 +35,8 @@ module bn_layer #(
   parameter INPUT_SIZE=1,
   parameter LAYER_NUMBER=1,
   parameter WORD_SIZE=16,
-  parameter N_SIZE=14) (
+  parameter N_SIZE=12,
+  parameter MEM_WORD_SIZE=21) (
 
   // top level control
   input logic clk_i,
@@ -91,10 +94,10 @@ module bn_layer #(
   end
 
   // mean rom
-  logic signed [WORD_SIZE-1:0] mean_lo;
+  logic signed [MEM_WORD_SIZE-1:0] mean_lo;
   ROM_neuron #(
     .depth($clog2(INPUT_SIZE)),
-    .width(WORD_SIZE),
+    .width(MEM_WORD_SIZE),
     .neuron_type(2),
     .layer_number(LAYER_NUMBER),
     .neuron_number(0)
@@ -106,10 +109,10 @@ module bn_layer #(
   );
 
   // variance rom
-  logic signed [WORD_SIZE-1:0] variance_lo;
+  logic signed [MEM_WORD_SIZE-1:0] variance_lo;
   ROM_neuron #(
     .depth($clog2(INPUT_SIZE)),
-    .width(WORD_SIZE),
+    .width(MEM_WORD_SIZE),
     .neuron_type(2),
     .layer_number(LAYER_NUMBER),
     .neuron_number(1)
@@ -121,10 +124,10 @@ module bn_layer #(
   );
 
   // scale rom
-  logic signed [WORD_SIZE-1:0] scale_lo;
+  logic signed [MEM_WORD_SIZE-1:0] scale_lo;
   ROM_neuron #(
     .depth($clog2(INPUT_SIZE)),
-    .width(WORD_SIZE),
+    .width(MEM_WORD_SIZE),
     .neuron_type(2),
     .layer_number(LAYER_NUMBER),
     .neuron_number(2)
@@ -136,10 +139,10 @@ module bn_layer #(
   );
 
   // offset rom
-  logic signed [WORD_SIZE-1:0] offset_lo;
+  logic signed [MEM_WORD_SIZE-1:0] offset_lo;
   ROM_neuron #(
     .depth($clog2(INPUT_SIZE)),
-    .width(WORD_SIZE),
+    .width(MEM_WORD_SIZE),
     .neuron_type(2),
     .layer_number(LAYER_NUMBER),
     .neuron_number(3)
@@ -151,36 +154,47 @@ module bn_layer #(
   );
 
   // forward computation logic
-  logic signed [WORD_SIZE-1:0] data_n_o, data1, data2, data3;
+  logic signed [MEM_WORD_SIZE-1:0] data1, data2, data3, data4;
+  logic signed [WORD_SIZE-1:0] data_n_o;
   always_ff @(posedge clk_i) begin
     if (en_lo)
       data_r_o <= data_n_o;
     else
       data_r_o <= data_r_o;
   end
-  
-  safe_alu #(.WORD_SIZE(WORD_SIZE),.N_SIZE(N_SIZE),.OPERATION("sub")) sub1 (
-    .a_i(data_r_i),
+    
+  safe_alu #(.WORD_SIZE(MEM_WORD_SIZE),.N_SIZE(N_SIZE),.OPERATION("sub")) sub1 (
+    .a_i({{(MEM_WORD_SIZE-WORD_SIZE){data_r_i[WORD_SIZE-1]}},data_r_i}),
     .b_i(mean_lo),
     .data_o(data1)
   );
   
-  safe_alu #(.WORD_SIZE(WORD_SIZE),.N_SIZE(N_SIZE),.OPERATION("mult")) mult1 (
+  safe_alu #(.WORD_SIZE(MEM_WORD_SIZE),.N_SIZE(N_SIZE),.OPERATION("mult")) mult1 (
     .a_i(data1),
     .b_i(variance_lo),
     .data_o(data2)
   );
   
-  safe_alu #(.WORD_SIZE(WORD_SIZE),.N_SIZE(N_SIZE),.OPERATION("mult")) mult2 (
+  safe_alu #(.WORD_SIZE(MEM_WORD_SIZE),.N_SIZE(N_SIZE),.OPERATION("mult")) mult2 (
     .a_i(data2),
     .b_i(scale_lo),
     .data_o(data3)
   );
   
-  safe_alu #(.WORD_SIZE(WORD_SIZE),.N_SIZE(N_SIZE),.OPERATION("add")) add1 (
+  safe_alu #(.WORD_SIZE(MEM_WORD_SIZE),.N_SIZE(N_SIZE),.OPERATION("add")) add1 (
     .a_i(data3),
     .b_i(offset_lo),
-    .data_o(data_n_o)
+    .data_o(data4)
   );
+  
+  // output truncation logic
+  always_comb begin
+    data_n_o = data4[WORD_SIZE-1:0];
+
+    if (data4[MEM_WORD_SIZE-1] && !(&data4[MEM_WORD_SIZE-2:WORD_SIZE-1]))
+      data_n_o = {1'b1,{(WORD_SIZE-1){1'b0}}}; // underflow
+    if (!data4[MEM_WORD_SIZE-1] && |data4[MEM_WORD_SIZE-2:WORD_SIZE-1])
+      data_n_o = {1'b0,{(WORD_SIZE-1){1'b1}}}; // overflow
+  end
   
 endmodule
