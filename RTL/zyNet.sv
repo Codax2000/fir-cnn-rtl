@@ -273,7 +273,8 @@ module zyNet #(
         .INPUT_SIZE(LAYER_HEIGHT_2),
         .LAYER_NUMBER(0),
         .WORD_SIZE(WORD_SIZE),
-        .N_SIZE(WORD_SIZE-INT_BITS)
+        .N_SIZE(WORD_SIZE-INT_BITS),
+        .MEM_WORD_SIZE(WORD_SIZE+5)
     ) bn_layer_0 (
         // top level control
         .clk_i,

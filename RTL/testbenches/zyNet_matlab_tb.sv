@@ -17,7 +17,11 @@ Written .mif files are
 module zyNet_matlab_tb ();
 
     // TODO: Change test parameters as necessary
+<<<<<<< Updated upstream
     parameter NUM_TESTS = 35880;
+=======
+    parameter NUM_TESTS = 10;
+>>>>>>> Stashed changes
 
     // TODO: Set any necessary model parameters here
     parameter INPUT_LAYER_HEIGHT = 265; // 60 samples, 2 '0' elements on either side
@@ -129,8 +133,14 @@ module zyNet_matlab_tb ();
             start_i <= 1'b0;            @(posedge clk_i);
                                         @(posedge valid_o);
                                         @(posedge clk_i);
-            $fdisplay(measured_outputs, "%d,%h", i, data_o);
-            $fdisplay(errors, "%d,%h", i, data_o - current_expected_output);
+                                        
+            for (int j = 0; j < OUTPUT_LAYER_HEIGHT-1; j++) begin
+                $fwrite(measured_outputs, "%h,", data_o[j]);
+                $fwrite(errors, "%f,", $itor(data_o[j])/(2.0**WORD_SIZE-INT_BITS) - $itor(current_expected_output[j])/(2.0**WORD_SIZE-INT_BITS));
+            end
+            $fwrite(measured_outputs, "%h\n", data_o[OUTPUT_LAYER_HEIGHT-1]);
+            $fwrite(errors, "%f\n", $itor(data_o[OUTPUT_LAYER_HEIGHT-1])/(2.0**WORD_SIZE-INT_BITS) - $itor(current_expected_output[OUTPUT_LAYER_HEIGHT-1])/(2.0**WORD_SIZE-INT_BITS));
+            
             yumi_i <= 1'b1;             @(posedge clk_i);
             yumi_i <= 1'b0;             @(posedge clk_i);
         end
