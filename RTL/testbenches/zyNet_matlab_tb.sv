@@ -17,15 +17,7 @@ Written .mif files are
 module zyNet_matlab_tb ();
 
     // TODO: Change test parameters as necessary
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-    parameter NUM_TESTS = 35880;
-=======
-    parameter NUM_TESTS = 10;
->>>>>>> Stashed changes
-=======
     parameter NUM_TESTS = 7176;
->>>>>>> Stashed changes
 
     // TODO: Set any necessary model parameters here
     parameter INPUT_LAYER_HEIGHT = 256; // 60 samples, 2 '0' elements on either side  256 32

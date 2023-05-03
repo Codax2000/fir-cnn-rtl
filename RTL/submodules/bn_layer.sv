@@ -187,29 +187,14 @@ module bn_layer #(
     .data_o(data4)
   );
   
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-=======
-=======
->>>>>>> Stashed changes
   // output truncation logic
   always_comb begin
     data_n_o = data4[WORD_SIZE-1:0];
-  
-<<<<<<< Updated upstream
+
     if (data4[MEM_WORD_SIZE-1] && !(&data4[MEM_WORD_SIZE-2:WORD_SIZE-1]))
       data_n_o = {1'b1,{(WORD_SIZE-1){1'b0}}}; // underflow
     if (!data4[MEM_WORD_SIZE-1] && |data4[MEM_WORD_SIZE-2:WORD_SIZE-1])
       data_n_o = {1'b0,{(WORD_SIZE-1){1'b1}}}; // overflow
   end
   
->>>>>>> Stashed changes
-=======
-    if (data4[MEM_WORD_SIZE] && !(&data4[MEM_WORD_SIZE-1:WORD_SIZE-1]))
-      data_n_o = {1'b1,{(WORD_SIZE-1){1'b0}}}; // underflow
-    if (!data4[MEM_WORD_SIZE] && |data4[MEM_WORD_SIZE-1:WORD_SIZE-1])
-      data_n_o = {1'b0,{(WORD_SIZE-1){1'b1}}}; // overflow
-  end
-  
->>>>>>> Stashed changes
 endmodule
