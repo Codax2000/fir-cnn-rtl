@@ -3,4 +3,4 @@ project_1.cache/
 Vivado/
 zyNet/
 Scripts/data/*.html
-*.csv
+Scripts/data/error_data.csv
