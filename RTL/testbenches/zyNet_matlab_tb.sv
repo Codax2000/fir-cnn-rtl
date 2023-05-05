@@ -66,12 +66,11 @@ module zyNet_matlab_tb ();
         .data_o(serial_out)
     );
 
-    single_fifo #(
+    double_fifo #(
         .WORD_SIZE(WORD_SIZE)
     ) input_fifo (
         .clk_i,
         .reset_i,
-
         
         .wen_i(wen),
         .full_o(full),
@@ -118,13 +117,14 @@ module zyNet_matlab_tb ();
     initial begin
         $readmemh("test_inputs.mif", test_inputs);
         $readmemh("test_outputs_expected.mif", expected_outputs);
-        measured_outputs = $fopen("C:/Users/eugli/Documents/GitHub/fir-cnn-rtl/mem/test_values/test_outputs_actual.csv", "w");
-        errors = $fopen("C:/Users/eugli/Documents/GitHub/fir-cnn-rtl/mem/test_values/test_output_error.csv", "w");
+        // check these file paths and change them locally, or this will fail
+        measured_outputs = $fopen("C:/Users/alexk/Documents/Projects/fir-cnn-rtl/mem/test_values/test_outputs_actual.csv", "w");
+        errors = $fopen("C:/Users/alexk/Documents/Projects/fir-cnn-rtl/mem/test_values/test_outputs_errors.csv", "w");
         reset_i <= 1'b1;
         start_i <= 1'b0;
         yumi_i <= 1'b0;     @(posedge clk_i); @(posedge clk_i);
         reset_i <= 1'b0;    @(posedge clk_i);
-        for (int i = 0; i < NUM_TESTS; i++) begin
+        for (int i = 0; i < 400; i++) begin
             current_expected_output <= expected_outputs[i];
             data_i <= test_inputs[i];   @(posedge clk_i);
             valid_i <= 1'b1;            @(posedge clk_i);
@@ -133,13 +133,14 @@ module zyNet_matlab_tb ();
             start_i <= 1'b0;            @(posedge clk_i);
                                         @(posedge valid_o);
                                         @(posedge clk_i);
-                                        
-            for (int j = 0; j < OUTPUT_LAYER_HEIGHT-1; j++) begin
-                $fwrite(measured_outputs, "%h,", data_o[j]);
-                $fwrite(errors, "%f,", $itor(data_o[j])/(2.0**WORD_SIZE-INT_BITS) - $itor(current_expected_output[j])/(2.0**WORD_SIZE-INT_BITS));
+            $fwrite(measured_outputs, "%d", i); 
+            $fwrite(errors, "%d", i);                           
+            for (int j = 0; j < OUTPUT_LAYER_HEIGHT; j++) begin
+                $fwrite(measured_outputs, ",%h", data_o[j]);
+                $fwrite(errors, ",%f", ($itor(data_o[j])/(2.0**(WORD_SIZE-INT_BITS)) - $itor(current_expected_output[j])/(2.0**(WORD_SIZE-INT_BITS))) / ($itor(current_expected_output[j])/(2.0**(WORD_SIZE-INT_BITS))));
             end
-            $fwrite(measured_outputs, "%h\n", data_o[OUTPUT_LAYER_HEIGHT-1]);
-            $fwrite(errors, "%f\n", $itor(data_o[OUTPUT_LAYER_HEIGHT-1])/(2.0**WORD_SIZE-INT_BITS) - $itor(current_expected_output[OUTPUT_LAYER_HEIGHT-1])/(2.0**WORD_SIZE-INT_BITS));
+            $fwrite(measured_outputs, "\n");
+            $fwrite(errors, "\n");
             
             yumi_i <= 1'b1;             @(posedge clk_i);
             yumi_i <= 1'b0;             @(posedge clk_i);

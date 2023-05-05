@@ -19,11 +19,7 @@ module zyNet #(
     input logic yumi_i);
     
     
-    // output ready values to avoid synthesis errors
-    logic [NUM_KERNELS-1:0] ready_outs;
-    assign ready_o = ready_outs[0];
-    
-// LAYER PARAMETERS AND WIRES
+    // LAYER PARAMETERS AND WIRES
 
     // conv_layer_0
     localparam INPUT_LAYER_HEIGHT = 128; //128  16
@@ -34,7 +30,11 @@ module zyNet #(
     localparam LAYER_HEIGHT_1 = NUM_KERNELS;
     localparam LAYER_HEIGHT_2 = 256; // 256  8
     localparam LAYER_HEIGHT_3 = OUTPUT_SIZE;
-
+    
+    //  output ready values to avoid synthesis errors
+    logic [NUM_KERNELS-1:0] ready_outs;
+    assign ready_o = ready_outs[0];
+    
     
     logic signed [NUM_KERNELS-1:0][INPUT_LAYER_HEIGHT - KERNEL_HEIGHT_0:0][WORD_SIZE-1:0] conv0_data_lo;
     logic [NUM_KERNELS-1:0] conv0_valid_lo;
@@ -242,8 +242,8 @@ module zyNet #(
         .data_o(fc0_data_lo),
 
         // input for back-propagation, not currently used
-        .weight_i(),
-        .mem_wen_i()
+        .weight_i('0),
+        .mem_wen_i(1'b0)
     );
     
     
@@ -329,8 +329,8 @@ module zyNet #(
         .data_o,
 
         // input for back-propagation, not currently used
-        .weight_i(),
-        .mem_wen_i()
+        .weight_i('0),
+        .mem_wen_i(1'b0)
     );
     
 endmodule
