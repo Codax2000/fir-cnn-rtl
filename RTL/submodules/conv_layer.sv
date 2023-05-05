@@ -104,6 +104,7 @@ module conv_layer #(
                     ns = eREADY;
                 else
                     ns = eDONE;
+            default: ns = eREADY;
         endcase
     end
 
