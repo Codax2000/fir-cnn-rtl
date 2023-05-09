@@ -37,12 +37,12 @@ module zyNet_matlab_tb ();
 
     // output handshake
     logic valid_o, yumi_i;
-    logic [OUTPUT_LAYER_HEIGHT-1:0][WORD_SIZE-1:0] data_o;
+    logic signed [OUTPUT_LAYER_HEIGHT-1:0][WORD_SIZE-1:0] data_o;
 
     // values for testing
-    logic [INPUT_LAYER_HEIGHT-1:0][WORD_SIZE-1:0] test_inputs [NUM_TESTS-1:0];
-    logic [OUTPUT_LAYER_HEIGHT-1:0][WORD_SIZE-1:0] expected_outputs [NUM_TESTS-1:0];
-    logic [OUTPUT_LAYER_HEIGHT-1:0][WORD_SIZE-1:0] current_expected_output ;
+    logic signed [INPUT_LAYER_HEIGHT-1:0][WORD_SIZE-1:0] test_inputs [NUM_TESTS-1:0];
+    logic signed [OUTPUT_LAYER_HEIGHT-1:0][WORD_SIZE-1:0] expected_outputs [NUM_TESTS-1:0];
+    logic signed [OUTPUT_LAYER_HEIGHT-1:0][WORD_SIZE-1:0] current_expected_output ;
     
     // fc output layer and single fifo model the async FIFO that the FPGA will be writing to
     logic [WORD_SIZE-1:0] serial_out, fifo_out;
@@ -124,7 +124,9 @@ module zyNet_matlab_tb ();
         start_i <= 1'b0;
         yumi_i <= 1'b0;     @(posedge clk_i); @(posedge clk_i);
         reset_i <= 1'b0;    @(posedge clk_i);
-        for (int i = 0; i < 400; i++) begin
+
+        for (int i = 0; i < NUM_TESTS; i++) begin
+            $display("Running test %d",i);
             current_expected_output <= expected_outputs[i];
             data_i <= test_inputs[i];   @(posedge clk_i);
             valid_i <= 1'b1;            @(posedge clk_i);
@@ -133,15 +135,17 @@ module zyNet_matlab_tb ();
             start_i <= 1'b0;            @(posedge clk_i);
                                         @(posedge valid_o);
                                         @(posedge clk_i);
-            $fwrite(measured_outputs, "%d", i); 
-            $fwrite(errors, "%d", i);                           
-            for (int j = 0; j < OUTPUT_LAYER_HEIGHT; j++) begin
-                $fwrite(measured_outputs, ",%h", data_o[j]);
-                $fwrite(errors, ",%f", ($itor(data_o[j])/(2.0**(WORD_SIZE-INT_BITS)) - $itor(current_expected_output[j])/(2.0**(WORD_SIZE-INT_BITS))) / ($itor(current_expected_output[j])/(2.0**(WORD_SIZE-INT_BITS))));
+                                        
+            for (int j = 0; j < OUTPUT_LAYER_HEIGHT-1; j++) begin
+                $fwrite(measured_outputs, "%h,", data_o[j]);
+                
+                $fwrite(errors, "%f,", $itor(data_o[j])/(2.0**(WORD_SIZE-INT_BITS)) - $itor(current_expected_output[j])/(2.0**(WORD_SIZE-INT_BITS)));
+                $display("%b: %f-%f = %f,",current_expected_output[j],$itor(data_o[j])/(2.0**(WORD_SIZE-INT_BITS)),$itor(current_expected_output[j])/(2.0**(WORD_SIZE-INT_BITS)),$itor(data_o[j])/(2.0**(WORD_SIZE-INT_BITS)) - $itor(current_expected_output[j])/(2.0**(WORD_SIZE-INT_BITS)));
             end
-            $fwrite(measured_outputs, "\n");
-            $fwrite(errors, "\n");
-            
+            $fwrite(measured_outputs, "%h\n", data_o[OUTPUT_LAYER_HEIGHT-1]);
+            $fwrite(errors, "%f\n", $itor(data_o[OUTPUT_LAYER_HEIGHT-1])/(2.0**(WORD_SIZE-INT_BITS)) - $itor(current_expected_output[OUTPUT_LAYER_HEIGHT-1])/(2.0**(WORD_SIZE-INT_BITS)));
+            $display("%b: %f-%f = %f\n",current_expected_output[OUTPUT_LAYER_HEIGHT-1],$itor(data_o[OUTPUT_LAYER_HEIGHT-1])/(2.0**(WORD_SIZE-INT_BITS)),$itor(current_expected_output[OUTPUT_LAYER_HEIGHT-1])/(2.0**(WORD_SIZE-INT_BITS)),$itor(data_o[OUTPUT_LAYER_HEIGHT-1])/(2.0**(WORD_SIZE-INT_BITS)) - $itor(current_expected_output[OUTPUT_LAYER_HEIGHT-1])/(2.0**(WORD_SIZE-INT_BITS)));
+
             yumi_i <= 1'b1;             @(posedge clk_i);
             yumi_i <= 1'b0;             @(posedge clk_i);
         end
