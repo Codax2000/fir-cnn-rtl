@@ -26,7 +26,8 @@ outputs:
 
 module logical_unit #(
     parameter WORD_SIZE=16,
-    parameter INT_BITS=8 ) (
+    parameter INT_BITS=8,
+    parameter FRAC_BITS=WORD_SIZE-INT_BITS) (
     
     input logic signed [WORD_SIZE-1:0] mem_i,
     input logic signed [WORD_SIZE-1:0] data_i,
@@ -39,59 +40,44 @@ module logical_unit #(
 
     output logic signed [WORD_SIZE-1:0] data_o
     );
-
-    logic signed [WORD_SIZE-1:0] mult_result, add_in, sum_n, sum_r;
-    logic sum_carry_out;
-
-    safe_alu #(
-        .WORD_SIZE(WORD_SIZE),
-        .N_SIZE(WORD_SIZE-INT_BITS),
-        .OPERATION("mult")
-    ) multiplier (
-        .a_i(mem_i),
-        .b_i(data_i),
-        .data_o(mult_result)
-    );
-
-    assign add_in = add_bias ? mem_i : mult_result;
-    assign {sum_carry_out, sum_n} = {sum_r[WORD_SIZE-1], sum_r} + {add_in[WORD_SIZE-1], add_in};
-
-    // overflow logic
-    logic overflow, overflow_flag, underflow, underflow_flag;
-    overflow #(
-        .WORD_SIZE(WORD_SIZE),
-        .INT_BITS(INT_BITS)
-    ) overflow_tracker (
-        .sum_carry_out,
-        .sum_n,
-        .clk_i,
-        .reset_i,
     
-        .overflow,
-        .underflow,
-        .underflow_flag,
-        .overflow_flag
-    );
-
     
-    // output at clock edge
+    
+    
+    
+// DATAPATH
+
+    // accumulator register
+    logic signed [2*WORD_SIZE-1:0] sum_n, sum_r, add_in;
     always_ff @(posedge clk_i) begin
         if (reset_i)
             sum_r <= '0;
-        else if (sum_en) begin
-            if (overflow_flag || overflow && !underflow_flag) begin
-                sum_r[WORD_SIZE-1] <= 1'b0;
-                sum_r[WORD_SIZE-2:0] <= '1;
-            end else if (underflow_flag || underflow && !overflow_flag) begin
-                sum_r[WORD_SIZE-1] <= 1'b1;
-                sum_r[WORD_SIZE-2:0] <= '0;
-            end else
-                sum_r <= sum_n;
-        end else begin
-            sum_r <= sum_r;
-        end
+        else
+            sum_r <= sum_en ? sum_n: sum_r;
     end
+
+    // accumulator combinational logic
+    assign add_in = add_bias ? (mem_i<<FRAC_BITS) : mem_i*data_i;
     
-    assign data_o = sum_r;
+    safe_alu #(
+        .WORD_SIZE(2*WORD_SIZE),
+        .N_SIZE(WORD_SIZE-INT_BITS),
+        .OPERATION("add")
+    ) adder (
+        .a_i(sum_r),
+        .b_i(add_in),
+        .data_o(sum_n)
+    );
+    
+    // output logic
+    safe_alu #(
+        .WORD_SIZE(WORD_SIZE),
+        .N_SIZE(WORD_SIZE-INT_BITS),
+        .OPERATION("trunc")
+    ) truncator (
+        .a_i(sum_r),
+        .b_i(),
+        .data_o(data_o)
+    );
 
 endmodule

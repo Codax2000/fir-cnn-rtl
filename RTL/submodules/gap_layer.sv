@@ -107,26 +107,29 @@ module gap_layer #(
   end
 
 
-  // forward computation logic
-  logic signed [WORD_SIZE-1:0] data_n_o, data_mult;
+  // accumulator register
+  logic signed [2*WORD_SIZE-1:0] sum_r, sum_n, data_mult;
   always_ff @(posedge clk_i) begin
     if (en_lo)
-      data_r_o <= (count_r == 0) ? data_mult : data_n_o;
+      sum_r <= (count_r == 0) ? data_mult : sum_n;
     else
-      data_r_o <= data_r_o;
+      sum_r <= sum_r;
   end
   
-  safe_alu #(.WORD_SIZE(WORD_SIZE),.N_SIZE(N_SIZE),.OPERATION("mult")) mult1 (
-    .a_i(data_r_i),
-    .b_i(MULTIPLIER),
-    .data_o(data_mult)
-  );
+  // accumulation combinational logic
+  assign data_mult = data_r_i*MULTIPLIER;
   
-  
-  safe_alu #(.WORD_SIZE(WORD_SIZE),.N_SIZE(N_SIZE),.OPERATION("add")) add1 (
+  safe_alu #(.WORD_SIZE(2*WORD_SIZE),.N_SIZE(2*N_SIZE),.OPERATION("add")) add1 (
     .a_i(data_mult),
-    .b_i(data_r_o),
-    .data_o(data_n_o)
+    .b_i(sum_r),
+    .data_o(sum_n)
   );
   
+  // output logic
+  safe_alu #(.WORD_SIZE(WORD_SIZE),.N_SIZE(N_SIZE),.OPERATION("trunc")) trunc1 (
+    .a_i(sum_r),
+    .b_i(),
+    .data_o(data_r_o)
+  );
+
 endmodule
