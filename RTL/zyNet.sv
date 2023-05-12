@@ -41,9 +41,9 @@ module zyNet #(
     logic [NUM_KERNELS-1:0] conv0_valid_lo;
     
     
-    // fc_output_layer_0
-    logic [NUM_KERNELS-1:0] fc_output0_ready_lo, fc_output0_wen_lo;
-    logic signed [NUM_KERNELS-1:0] [WORD_SIZE-1:0] fc_output0_data_lo;
+//    // fc_output_layer_0
+//    logic [NUM_KERNELS-1:0] fc_output0_ready_lo, fc_output0_wen_lo;
+//    logic signed [NUM_KERNELS-1:0] [WORD_SIZE-1:0] fc_output0_data_lo;
     
     
     // abs_layer_0
@@ -120,26 +120,26 @@ module zyNet #(
                 
                 // helpful output interface
                 .valid_o(conv0_valid_lo[i]),
-                .yumi_i(fc_output0_ready_lo[i]),
+                .ready_i(abs0_ready_lo[i]),
                 .data_o(conv0_data_lo[i])
             );
 
 
-            fc_output_layer #(
-                .LAYER_HEIGHT(LAYER_HEIGHT_0),
-                .WORD_SIZE(WORD_SIZE)
-            ) fc_output_layer_0 (
-                .clk_i,
-                .reset_i,
+//            fc_output_layer #(
+//                .LAYER_HEIGHT(LAYER_HEIGHT_0),
+//                .WORD_SIZE(WORD_SIZE)
+//            ) fc_output_layer_0 (
+//                .clk_i,
+//                .reset_i,
                 
-                .valid_i(conv0_valid_lo[i]),
-                .ready_o(fc_output0_ready_lo[i]),
-                .data_i(conv0_data_lo[i]),
+//                .valid_i(conv0_valid_lo[i]),
+//                .ready_o(fc_output0_ready_lo[i]),
+//                .data_i(conv0_data_lo[i]),
             
-                .wen_o(fc_output0_wen_lo[i]),
-                .full_i(~abs0_ready_lo[i]),
-                .data_o(fc_output0_data_lo[i])
-            );
+//                .wen_o(fc_output0_wen_lo[i]),
+//                .full_i(~abs0_ready_lo[i]),
+//                .data_o(fc_output0_data_lo[i])
+//            );
 
 
             abs_layer #(
@@ -151,8 +151,8 @@ module zyNet #(
             
                 // handshake to prev layer
                 .ready_o(abs0_ready_lo[i]),
-                .valid_i(fc_output0_wen_lo[i]),
-                .data_r_i(fc_output0_data_lo[i]),
+                .valid_i(conv0_valid_lo[i]),
+                .data_r_i(conv0_data_lo[i]),
             
                 // handshake to next layer
                 .valid_o(abs0_valid_lo[i]),

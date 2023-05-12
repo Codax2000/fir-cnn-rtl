@@ -3,8 +3,9 @@
 Alex Knowlton & Eugene Liu
 5/11/2023
 
-Convolutional layer module. Outputs done when all layers finished and biased. On start,
-takes data in one word at a time and outputs data in parallel via valid-ready handshakes.
+Convolutional layer helper module. Consumes inputs serially and produces outputs in parallel.
+
+Interface: Is a helpful consumer and producer, using valid-ready handshakes.
 
 parameters:
     INPUT_LAYER_HEIGHT  : height of input layer (not total number of inputs, just the height)
@@ -33,21 +34,20 @@ outputs:
     valid_o : 1-bit : valid signal for output handshake
 */
 
-module convolver #(
+module convolve #(
 
     parameter INPUT_LAYER_HEIGHT=64,
     parameter KERNEL_HEIGHT=16,
-    parameter KERNEL_WIDTH=1, // 2 if using i and q, 1 if using only 1 channel
+    parameter KERNEL_WIDTH=1,
     parameter WORD_SIZE=16,
-    parameter INT_BITS=4, // integer bits in fixed-point arithmetic (default Q4.8)
+    parameter INT_BITS=4,
     parameter LAYER_NUMBER=1,
     parameter CONVOLUTION_NUMBER=0,
     
-    // derived parameters
+    // derived parameters. Don't need to touch!
     parameter KERNEL_SIZE = KERNEL_WIDTH*KERNEL_HEIGHT,
-    parameter NUM_CHUNKS  = $rtoi($ceil($itor(INPUT_LAYER_HEIGHT*KERNEL_WIDTH)/$itor(KERNEL_SIZE)))
-    
-    ) (
+    parameter NUM_SETS    = $rtoi($floor($itor(INPUT_LAYER_HEIGHT*KERNEL_WIDTH)/$itor(KERNEL_SIZE+1))),
+    parameter REMAINDER   = (INPUT_LAYER_HEIGHT*KERNEL_WIDTH)%(KERNEL_SIZE+1)) (
 
     // top-level signals
     input logic clk_i,
@@ -61,8 +61,9 @@ module convolver #(
     
     // helpful interface to next layer
     output logic valid_o,
-    input logic yumi_i,
-    output logic [KERNEL_HEIGHT:0][WORD_SIZE-1:0] data_o);
+    input logic ready_i,
+    output logic signed [KERNEL_HEIGHT:0][WORD_SIZE-1:0] data_o,
+    output logic [$clog2(KERNEL_SIZE+1)-1:0] data_size_o);
     
     
     
@@ -70,10 +71,8 @@ module convolver #(
     
 // CONTROLLER 
     
-    localparam NUM_ITERATIONS = KERNEL_HEIGHT * KERNEL_WIDTH;
-
     // controller states
-    typedef enum logic [1:0] {eREADY=2'b00, eSHIFT=2'b01, eBUSY=2'b10, eDONE=2'b11} state_e;
+    typedef enum logic [1:0] {eREADY=2'b00, eBUSY=2'b01, eDONE=2'b10} state_e;
     state_e state_n, state_r;
 
     // state register
@@ -84,20 +83,48 @@ module convolver #(
             state_r <= state_n;
     end
     
+    // control signals
+    logic [$clog2(KERNEL_SIZE+1)-1:0] mem_count_r;
+    logic [$clog2(NUM_SETS)-1:0] set_count_r;
+    logic is_last_mem, is_last_set;
+    
+    
     // next state logic
-    logic is_max_kernel, is_max_chunk;
     always_comb begin
         case (state_r)
-            eREADY: state_n = start_i ? eSHIFT : eREADY;
-            eSHIFT: state_n = (valid_i && is_max_kernel) ? eBUSY  : eSHIFT;
-            eBUSY:  state_n = (valid_i && is_max_kernel) ? eDONE  : eBUSY;
-            eDONE:  state_n = (yumi_i  && is_max_chunk ) ? eSHIFT : eDONE;
+            eREADY: state_n = start_i ? eBUSY : eREADY;
+            eBUSY: begin
+                case (set_count_r)
+                    0:        state_n = eBUSY;
+                    NUM_SETS: state_n = is_last_mem ? eDONE : eBUSY;
+                    default:  state_n = (is_last_mem && valid_i) ? eDONE : eBUSY;
+                endcase
+            end
+            eDONE: begin
+                if (ready_i)
+                    state_n = is_last_set ? eREADY : eBUSY;
+                else
+                    state_n = eDONE;
+            end
             default: state_n = eREADY;
         endcase
     end
     
+    
+    // output signal logic
+    assign ready_o = (state_r == eBUSY) && ((mem_count_r < REMAINDER) || (set_count_r < NUM_SETS));
+    assign valid_o = (state_r == eDONE);
+    
     // control signal logic
-    logic kernel_count_en, chunk_count_en, shift_reg_en_li, sum_en_li;
+    logic consume_en, produce_en, mem_count_en, set_count_en, reg_en_li, sum_en_li, add_bias_li;
+    assign consume_en = ready_o && valid_i;
+    assign produce_en = valid_o && ready_i;
+    
+    assign mem_count_en = (state_r == eBUSY && is_last_set && mem_count_r >= REMAINDER) || consume_en;
+    assign set_count_en = (state_r == eBUSY && set_count_r == 0 && is_last_mem) || produce_en;
+    assign reg_en_li    = mem_count_en;
+    assign sum_en_li    = set_count_r > 0 && (is_last_set && mem_count_r >= REMAINDER || consume_en);
+    assign add_bias_li  = is_last_mem;
     
     
     
@@ -106,37 +133,37 @@ module convolver #(
 // DATAPATH
     
     // kernel upcounter counts from 0 to KERNEL_SIZE
-    logic [$clog2(KERNEL_SIZE+1)-1:0] kernel_count_r, kernel_count_n;
+    logic [$clog2(KERNEL_SIZE+1)-1:0] mem_count_n;
     always_ff @(posedge clk_i) begin
-        kernel_count_r = kernel_count_n;
+        mem_count_r = mem_count_n;
     end
     
     always_comb begin
-        is_max_kernel = (kernel_count_r == KERNEL_SIZE+1);
+        is_last_mem = (mem_count_r == KERNEL_SIZE);
     
         if (reset_i)
-            kernel_count_n = '0;
-        else if (kernel_count_en)
-            kernel_count_n = is_max_kernel ? '0 : kernel_count_r+1;
+            mem_count_n = '0;
+        else if (mem_count_en)
+            mem_count_n = is_last_mem ? '0 : mem_count_r+1;
         else
-            kernel_count_n = kernel_count_r;
+            mem_count_n = mem_count_r;
     end
     
-    // chunk upcounter counts from 0 to NUM_CHUNKS
-    logic [$clog2(NUM_CHUNKS)-1:0] chunk_count_r, chunk_count_n;
+    // set upcounter counts from 0 to NUM_SETS
+    logic [$clog2(NUM_SETS)-1:0] set_count_n;
     always_ff @(posedge clk_i) begin
-        chunk_count_r = chunk_count_n;
+        set_count_r = set_count_n;
     end
     
     always_comb begin
-        is_max_chunk = (chunk_count_r == NUM_CHUNKS-1);
+        is_last_set = (set_count_r == NUM_SETS);
     
         if (reset_i)
-            chunk_count_n = '0;
-        else if (chunk_count_en)
-            chunk_count_n = is_max_chunk ? '0 : chunk_count_r+1;
+            set_count_n = '0;
+        else if (set_count_en)
+            set_count_n = is_last_set ? '0 : set_count_r+1;
         else
-            chunk_count_n = chunk_count_r;
+            set_count_n = set_count_r;
     end
     
     // shift register
@@ -145,11 +172,11 @@ module convolver #(
         .WORD_SIZE(WORD_SIZE),
         .REGISTER_LENGTH(KERNEL_SIZE+1)
     ) input_register (
-         .clk_i,
+        .clk_i,
         .reset_i,
     
         .data_i,
-        .shift_en_i(shift_reg_en_li),
+        .shift_en_i(consume_en),
 
         .data_o(shift_reg_lo)
     );
@@ -166,74 +193,32 @@ module convolver #(
         .reset_i,
         .clk_i,
         
-        .addr_i(kernel_count_r),
+        .addr_i(mem_count_n),
         .data_o(mem_lo)
     );
     
     // logical units (conv neurons)
     genvar i;
     generate
-        for (i=0; i<KERNEL_HEIGHT; i=i+1) begin
+        for (i=0; i<KERNEL_HEIGHT+1; i=i+1) begin
             logical_unit #(
                 .WORD_SIZE(WORD_SIZE),
                 .INT_BITS(INT_BITS)
             ) LU (
-                .reset_i(reset_i || is_max_kernel),
+                .clk_i,
+                .reset_i(reset_i || produce_en),
+                
                 .mem_i(mem_lo),
                 .data_i(shift_reg_lo[i*KERNEL_WIDTH]), // allow for multiple kernel widths
-                .add_bias(kernel_count_r == KERNEL_SIZE),
+                .add_bias(add_bias_li),
                 .sum_en(sum_en_li),
-                .clk_i,
 
                 .data_o(data_o[i])
             );
         end
     endgenerate
     
-    
-    
-    
-    assign ready_o = (ps == eCOMPUTE && !(shift_count == INPUT_LAYER_HEIGHT * KERNEL_WIDTH)) || ps == eSHIFT;
-    assign valid_o = ps == eDONE;
-
-
-    // transition signals for simplicity
-    logic end_shift_stage;
-    assign end_shift_stage = shift_count == KERNEL_WIDTH * (INPUT_LAYER_HEIGHT - KERNEL_HEIGHT + 1) - 1;
-
-    assign sum_en = ps == eCOMPUTE && ((valid_i && ready_o) || shift_count == INPUT_LAYER_HEIGHT * KERNEL_WIDTH);
-
-
-
-    // assign control logic
-    always_ff @(posedge clk_i) begin
-        add_bias <= mem_addr == KERNEL_HEIGHT * KERNEL_WIDTH;
-    end
-
-    up_counter_enabled #(
-        .WORD_SIZE($clog2(KERNEL_HEIGHT * KERNEL_WIDTH + 1)),
-        .INPUT_MAX(KERNEL_HEIGHT * KERNEL_WIDTH)
-    ) mem_counter (
-        .start_i(1'b1),
-        .clk_i,
-        .reset_i(reset_i || (valid_o && yumi_i)),      
-        .en_i((((valid_i && ready_o) || sum_en) && ps == eCOMPUTE) || end_shift_stage),         // enable count on input handshake
-
-        .data_o(mem_addr)
-    );
-
-    up_counter_enabled #(
-        .WORD_SIZE($clog2(INPUT_LAYER_HEIGHT * KERNEL_WIDTH + 1)),
-        .INPUT_MAX(INPUT_LAYER_HEIGHT * KERNEL_WIDTH)
-    ) shift_counter (
-        .start_i(1'b1),
-        .clk_i,
-        .reset_i(reset_i || (valid_o && yumi_i)),      // reset on either transition to next state
-        .en_i(valid_i && ready_o),         // enable count on input handshake
-
-        .data_o(shift_count)
-    );
-
-
+    // output logic
+    assign data_size_o = is_last_set ? REMAINDER : KERNEL_SIZE+1;
 
 endmodule
