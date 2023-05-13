@@ -70,7 +70,7 @@ module logical_unit #(
     dsp_macro_0 dut (
         .CLK(clk_i),
         .A(mem_i),
-        .B(data_i),
+        .B(add_bias ? 1<<FRAC_BITS : data_i),
         .SEL,
         
         .P(full_data)

@@ -7,7 +7,7 @@ Parallel-In-Serial-Out layer module. Consumes a variable number of words in para
 
 Interface: Uses valid-ready handshakes. Is a helpful producer and consumer.
 Implementation: An internal register file with a counter that sweeps its read address from 0 to data_size_i-1. data_size_i is 
-    registered with a successful handshake to the prev layer. The counter automatically resets to 0.
+    registered with a successful handshake to the prev layer. The counter automatically resets to 0 after the last word is produced.
 
 Parameters:
     MAX_INPUT_SIZE : number of maximum input words (dictates sizing of input data_i port)
@@ -118,7 +118,6 @@ module piso_layer #(
     
     // register file
     logic [MAX_INPUT_SIZE-1:0][WORD_SIZE-1:0] data_r;
-
     always_ff @(posedge clk_i) begin
         data_r = consume_en ? data_i : data_r;
     end

@@ -6,7 +6,7 @@ Alex Knowlton & Eugene Liu
 Convolutional layer module. Outputs done when all layers finished and biased. On start,
 takes data in one word at a time and outputs data in parallel via valid-ready handshakes.
 
-parameters:
+Parameters:
     INPUT_LAYER_HEIGHT  : height of input layer (not total number of inputs, just the height)
     KERNEL_WIDTH        : width of kernel used for computation
     KERNEL_HEIGHT       : height of kernel
@@ -14,23 +14,24 @@ parameters:
     INT_BITS            : the 'n' of n.m fixed point notation.
     LAYER_NUMBER        : layer number in neural net. used for finding the correct memory file for kernel
     CONVOLUTION_NUMBER  : kernel number. also used for finding the correct memory file
-
-inputs:
-    clk_i   : 1-bit : clock signal
-    reset_i : 1-bit : reset signal
-    start_i : 1-bit : signal to start computation (to delay computation until new outputs are received)
-
-    valid_i : 1-bit : valid signal for input handshake
-    yumi_i  : 1-bit : ready signal for output handshake
-
-    data_i  : n-bit : incoming data. size is WORD_SIZE
     
+Derived Parameters
+    KERNEL_SIZE : the number of weight learnables in a kernel
+    NUM_SETS    : the number of whole KERNEL_SIZE+1 word chunks (sets) that the input tensor can be divided into
+    REMAINDER   : the number of remaining words after dividing the input tensor into sets
 
-outputs:
-    data_o  : n-bit : outgoing data. packed array of [INPUT_LAYER_HEIGHT - KERNEL_HEIGHT + 1][WORD_SIZE] bits,
-                      where least significant word is equivalent to output[0], which should correlate to Rx[0].
-    ready_o : 1-bit : ready signal for input handshake
-    valid_o : 1-bit : valid signal for output handshake
+Inputs-Outputs
+    clk_i   : clock signal
+    reset_i : reset signal
+    start_i : signal to start computation (to delay computation until new outputs are received)
+
+    ready_o : handshake to prev layer. Indicates this layer is ready to recieve
+    valid_i : handshake to prev layer. Indicates prev layer has valid data
+    data_i  : handshake to prev layer. The parallel data from the prev layer to this layer
+    
+    valid_o : handshake to next layer. Indicates this layer has valid data
+    ready_i : handshake to next layer. Indicates next layer is ready to receive
+    data_o  : handshake to next layer. The data from this layer to the next layer
 */
 
 module conv_layer #(
@@ -45,8 +46,10 @@ module conv_layer #(
     
     // derived parameters. Don't need to touch!
     parameter KERNEL_SIZE = KERNEL_WIDTH*KERNEL_HEIGHT,
-    parameter NUM_SETS    = $rtoi($floor($itor(INPUT_LAYER_HEIGHT*KERNEL_WIDTH)/$itor(KERNEL_SIZE+1))),
-    parameter REMAINDER   = (INPUT_LAYER_HEIGHT*KERNEL_WIDTH)%(KERNEL_SIZE+1)) (
+    parameter SET_SIZE    = KERNEL_SIZE+KERNEL_WIDTH,
+    parameter NUM_SETS    = $rtoi($floor($itor(INPUT_LAYER_HEIGHT*KERNEL_WIDTH)/$itor(SET_SIZE))),
+    parameter REM_WORDS   = (INPUT_LAYER_HEIGHT*KERNEL_WIDTH)%(SET_SIZE),
+    parameter REM_OUTPUTS = REM_WORDS/KERNEL_WIDTH+2) (
     
     // top-level signals
     input logic clk_i,
@@ -99,7 +102,7 @@ module conv_layer #(
     );
     
     piso_layer #(
-        .MAX_INPUT_SIZE(KERNEL_SIZE+1),
+        .MAX_INPUT_SIZE(KERNEL_HEIGHT+1),
         .WORD_SIZE(WORD_SIZE)
     ) piso (
         // top-level control

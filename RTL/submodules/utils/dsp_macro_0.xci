@@ -11,7 +11,7 @@
         "GUI_Behaviour": [ { "value": "Coregen", "resolve_type": "user", "usage": "all" } ],
         "show_filtered": [ { "value": "false", "resolve_type": "user", "format": "bool", "usage": "all" } ],
         "instruction1": [ { "value": "A*B+P", "value_src": "user", "resolve_type": "user", "usage": "all" } ],
-        "instruction2": [ { "value": "A+P", "value_src": "user", "resolve_type": "user", "usage": "all" } ],
+        "instruction2": [ { "value": "A*B+P", "value_src": "user", "resolve_type": "user", "usage": "all" } ],
         "instruction3": [ { "value": "P", "value_src": "user", "resolve_type": "user", "usage": "all" } ],
         "instruction4": [ { "value": "0", "value_src": "user", "resolve_type": "user", "usage": "all" } ],
         "instruction5": [ { "value": "#", "resolve_type": "user", "usage": "all" } ],
@@ -147,7 +147,7 @@
         "C_HAS_PCOUT": [ { "value": "0", "resolve_type": "generated", "format": "long", "usage": "all" } ],
         "C_CONSTANT_1": [ { "value": "1", "resolve_type": "generated", "format": "long", "usage": "all" } ],
         "C_LATENCY": [ { "value": "128", "resolve_type": "generated", "format": "long", "usage": "all" } ],
-        "C_OPMODES": [ { "value": "000100101000010100000000,000100101000010100000001,000000000010000000000000,000000000000000000000000", "resolve_type": "generated", "usage": "all" } ],
+        "C_OPMODES": [ { "value": "000100101000010100000000,000100101000010100000000,000000000010000000000000,000000000000000000000000", "resolve_type": "generated", "usage": "all" } ],
         "C_REG_CONFIG": [ { "value": "00000000000000000000000000000100", "resolve_type": "generated", "usage": "all" } ],
         "C_TEST_CORE": [ { "value": "0", "resolve_type": "generated", "format": "long", "usage": "all" } ]
       },

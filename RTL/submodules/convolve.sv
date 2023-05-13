@@ -7,7 +7,7 @@ Convolutional layer helper module. Consumes inputs serially and produces outputs
 
 Interface: Is a helpful consumer and producer, using valid-ready handshakes.
 
-parameters:
+Parameters:
     INPUT_LAYER_HEIGHT  : height of input layer (not total number of inputs, just the height)
     KERNEL_WIDTH        : width of kernel used for computation
     KERNEL_HEIGHT       : height of kernel
@@ -15,23 +15,26 @@ parameters:
     INT_BITS            : the 'n' of n.m fixed point notation.
     LAYER_NUMBER        : layer number in neural net. used for finding the correct memory file for kernel
     CONVOLUTION_NUMBER  : kernel number. also used for finding the correct memory file
-
-inputs:
-    clk_i   : 1-bit : clock signal
-    reset_i : 1-bit : reset signal
-    start_i : 1-bit : signal to start computation (to delay computation until new outputs are received)
-
-    valid_i : 1-bit : valid signal for input handshake
-    yumi_i  : 1-bit : ready signal for output handshake
-
-    data_i  : n-bit : incoming data. size is WORD_SIZE
     
+Derived Parameters
+    KERNEL_SIZE : the number of weight learnables in a kernel
+    NUM_SETS    : the number of whole KERNEL_SIZE+1 word chunks (sets) that the input tensor can be divided into
+    REM_WORDS   : the number of remaining words after dividing the input tensor into sets
+    REM_OUTPUTS : the number of valid outputs that can be generated from REM_WORDS
 
-outputs:
-    data_o  : n-bit : outgoing data. packed array of [INPUT_LAYER_HEIGHT - KERNEL_HEIGHT + 1][WORD_SIZE] bits,
-                      where least significant word is equivalent to output[0], which should correlate to Rx[0].
-    ready_o : 1-bit : ready signal for input handshake
-    valid_o : 1-bit : valid signal for output handshake
+Inputs-Outputs
+    clk_i       : clock signal
+    reset_i     : reset signal
+    start_i     : signal to start computation (to delay computation until new outputs are received)
+
+    ready_o     : handshake to prev layer. Indicates this layer is ready to recieve
+    valid_i     : handshake to prev layer. Indicates prev layer has valid data
+    data_i      : handshake to prev layer. The parallel data from the prev layer to this layer
+    
+    valid_o     : handshake to next layer. Indicates this layer has valid data
+    ready_i     : handshake to next layer. Indicates next layer is ready to receive
+    data_o      : handshake to next layer. The data from this layer to the next layer
+    data_size_o : handshake to next layer. The number of valid words
 */
 
 module convolve #(
@@ -46,8 +49,10 @@ module convolve #(
     
     // derived parameters. Don't need to touch!
     parameter KERNEL_SIZE = KERNEL_WIDTH*KERNEL_HEIGHT,
-    parameter NUM_SETS    = $rtoi($floor($itor(INPUT_LAYER_HEIGHT*KERNEL_WIDTH)/$itor(KERNEL_SIZE+1))),
-    parameter REMAINDER   = (INPUT_LAYER_HEIGHT*KERNEL_WIDTH)%(KERNEL_SIZE+1)) (
+    parameter SET_SIZE    = KERNEL_SIZE+KERNEL_WIDTH,
+    parameter NUM_SETS    = $rtoi($floor($itor(INPUT_LAYER_HEIGHT*KERNEL_WIDTH)/$itor(SET_SIZE))),
+    parameter REM_WORDS   = (INPUT_LAYER_HEIGHT*KERNEL_WIDTH)%(SET_SIZE),
+    parameter REM_OUTPUTS = REM_WORDS/KERNEL_WIDTH+2) (
 
     // top-level signals
     input logic clk_i,
@@ -63,7 +68,7 @@ module convolve #(
     output logic valid_o,
     input logic ready_i,
     output logic signed [KERNEL_HEIGHT:0][WORD_SIZE-1:0] data_o,
-    output logic [$clog2(KERNEL_SIZE+1)-1:0] data_size_o);
+    output logic [$clog2(KERNEL_HEIGHT+1)-1:0] data_size_o);
     
     
     
@@ -84,9 +89,9 @@ module convolve #(
     end
     
     // control signals
-    logic [$clog2(KERNEL_SIZE+1)-1:0] mem_count_r;
+    logic [$clog2(SET_SIZE)-1:0] mem_count_r;
     logic [$clog2(NUM_SETS)-1:0] set_count_r;
-    logic is_last_mem, is_last_set;
+    logic is_last_mem, is_last_bias, is_last_set;
     
     
     // next state logic
@@ -112,7 +117,7 @@ module convolve #(
     
     
     // output signal logic
-    assign ready_o = (state_r == eBUSY) && ((mem_count_r < REMAINDER) || (set_count_r < NUM_SETS));
+    assign ready_o = (state_r == eBUSY) && ((mem_count_r < REM_WORDS) || (set_count_r < NUM_SETS));
     assign valid_o = (state_r == eDONE);
     
     // control signal logic
@@ -120,11 +125,11 @@ module convolve #(
     assign consume_en = ready_o && valid_i;
     assign produce_en = valid_o && ready_i;
     
-    assign mem_count_en = (state_r == eBUSY && is_last_set && mem_count_r >= REMAINDER) || consume_en;
+    assign mem_count_en = (state_r == eBUSY && is_last_set && mem_count_r >= REM_WORDS) || consume_en;
     assign set_count_en = (state_r == eBUSY && set_count_r == 0 && is_last_mem) || produce_en;
     assign reg_en_li    = mem_count_en;
-    assign sum_en_li    = set_count_r > 0 && (is_last_set && mem_count_r >= REMAINDER || consume_en);
-    assign add_bias_li  = is_last_mem;
+    assign sum_en_li    = set_count_r > 0 && mem_count_r <= KERNEL_SIZE && (is_last_set && mem_count_r >= REM_WORDS || consume_en);
+    assign add_bias_li  = is_last_bias;
     
     
     
@@ -132,14 +137,15 @@ module convolve #(
     
 // DATAPATH
     
-    // kernel upcounter counts from 0 to KERNEL_SIZE
-    logic [$clog2(KERNEL_SIZE+1)-1:0] mem_count_n;
+    // kernel upcounter counts from 0 to SET_SIZE
+    logic [$clog2(SET_SIZE)-1:0] mem_count_n;
     always_ff @(posedge clk_i) begin
         mem_count_r = mem_count_n;
     end
     
     always_comb begin
-        is_last_mem = (mem_count_r == KERNEL_SIZE);
+        is_last_bias = (mem_count_r == KERNEL_SIZE);
+        is_last_mem  = (mem_count_r == SET_SIZE-1);
     
         if (reset_i)
             mem_count_n = '0;
@@ -167,16 +173,16 @@ module convolve #(
     end
     
     // shift register
-    logic signed [KERNEL_SIZE:0][WORD_SIZE-1:0] shift_reg_lo;
+    logic signed [SET_SIZE-1:0][WORD_SIZE-1:0] shift_reg_lo;
     shift_register #(
         .WORD_SIZE(WORD_SIZE),
-        .REGISTER_LENGTH(KERNEL_SIZE+1)
+        .REGISTER_LENGTH(SET_SIZE)
     ) input_register (
         .clk_i,
         .reset_i,
     
         .data_i,
-        .shift_en_i(consume_en),
+        .shift_en_i(reg_en_li),
 
         .data_o(shift_reg_lo)
     );
@@ -219,6 +225,6 @@ module convolve #(
     endgenerate
     
     // output logic
-    assign data_size_o = is_last_set ? REMAINDER : KERNEL_SIZE+1;
+    assign data_size_o = is_last_set ? REM_OUTPUTS : KERNEL_HEIGHT+1;
 
 endmodule

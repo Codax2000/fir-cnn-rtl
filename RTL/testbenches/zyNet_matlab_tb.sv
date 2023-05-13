@@ -118,8 +118,8 @@ module zyNet_matlab_tb ();
         $readmemh("test_inputs.mif", test_inputs);
         $readmemh("test_outputs_expected.mif", expected_outputs);
         // check these file paths and change them locally, or this will fail
-        measured_outputs = $fopen("C:/Users/alexk/Documents/Projects/fir-cnn-rtl/mem/test_values/test_outputs_actual.csv", "w");
-        errors = $fopen("C:/Users/alexk/Documents/Projects/fir-cnn-rtl/mem/test_values/test_outputs_errors.csv", "w");
+        measured_outputs = $fopen("C:/Users/eugli/Documents/GitHub/fir-cnn-rtl/mem/test_values/test_outputs_actual.csv", "w");
+        errors = $fopen("C:/Users/eugli/Documents/GitHub/fir-cnn-rtl/mem/test_values/test_outputs_errors.csv", "w");
         reset_i <= 1'b1;
         start_i <= 1'b0;
         yumi_i <= 1'b0;     @(posedge clk_i); @(posedge clk_i);

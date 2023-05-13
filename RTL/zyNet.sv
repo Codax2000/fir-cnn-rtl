@@ -37,7 +37,7 @@ module zyNet #(
     assign ready_o = ready_outs[0];
     
     
-    logic signed [NUM_KERNELS-1:0][INPUT_LAYER_HEIGHT - KERNEL_HEIGHT_0:0][WORD_SIZE-1:0] conv0_data_lo;
+    logic signed [NUM_KERNELS-1:0][WORD_SIZE-1:0] conv0_data_lo;
     logic [NUM_KERNELS-1:0] conv0_valid_lo;
     
     
