@@ -3,81 +3,129 @@
 module bn_layer_tb ();
     
     parameter CLOCK_PERIOD = 10;
-    
-    parameter INPUT_SIZE=10;
+    parameter INPUT_SIZE=256;
     parameter WORD_SIZE=16;
     parameter N_SIZE=12;
-    parameter LAYER_NUM=1;
+    parameter LAYER_NUM=0;
+    
+    parameter NUM_TESTS = 7176*INPUT_SIZE;
+    parameter INPUT_LAYER_HEIGHT = 1; // 60 samples, 2 '0' elements on either side  256 32
+    parameter OUTPUT_LAYER_HEIGHT = 1;
+    parameter INT_BITS = 4;
+    
+    
+    
+    
+    
+// LOGIC SIGNALS
 
+    // control variables
+    logic clk_i, reset_i, start_i;
     
-// VARIABLES
+    // input handshake
+    logic [WORD_SIZE-1:0] data_i;
+    logic valid_i, ready_o;
+
+    // output handshake
+    logic valid_o, yumi_i;
+    logic signed [WORD_SIZE-1:0] data_o;
+
+    // values for testing
+    logic signed [WORD_SIZE-1:0] test_inputs [NUM_TESTS-1:0];
+    logic signed [WORD_SIZE-1:0] expected_outputs [NUM_TESTS-1:0];
+    logic signed [WORD_SIZE-1:0] current_expected_output ;
     
-    // input clock
-    logic clk_i;
-    initial begin
-        clk_i = 1'b1;
-        forever # (CLOCK_PERIOD / 2) clk_i = ~clk_i;
-    end
-    
-    logic reset_i;
-    
-    // handshake to prev layer
-    logic ready_o;
-    logic valid_i;
-    logic signed [WORD_SIZE-1:0] data_r_i;
-    
-    // handshake to next layer
-    logic valid_o;
-    logic ready_i;
-    logic signed [WORD_SIZE-1:0] data_r_o;
+    // fc output layer and single fifo model the async FIFO that the FPGA will be writing to
+    logic [WORD_SIZE-1:0] fifo_out;
+    logic empty, ren;
     
     
     
-// DEVICE UNDER TEST
+    
+    
+// DATAPATH
+
+    single_fifo #(
+        .WORD_SIZE(WORD_SIZE)
+    ) input_fifo (
+        .clk_i,
+        .reset_i,
+
+        
+        .wen_i(valid_i),
+        .full_o(ready_o),
+        .data_i(data_i),
+
+        
+        .ren_i(ren),
+        .data_o(fifo_out),
+        .empty_o(empty)
+    );
+
     bn_layer #(.INPUT_SIZE(INPUT_SIZE),
                .WORD_SIZE(WORD_SIZE),
                .N_SIZE(N_SIZE),
-               .LAYER_NUMBER(LAYER_NUM)
-    ) DUT (.*);
+               .LAYER_NUMBER(LAYER_NUM),
+               .MEM_WORD_SIZE(21)
+    ) DUT (        
+        // top level control
+        .clk_i,
+        .reset_i,
+        
+        // handshake to prev layer
+        .ready_o(ren),
+        .valid_i(!empty),
+        .data_r_i(fifo_out),
+        
+        // handshake to next layer
+        .valid_o,
+        .ready_i(yumi_i),
+        .data_r_o(data_o)
+    );
+    
+    
     
     
     
 // TESTBENCH
-    
-    initial begin
-        // initialize all inputs
-        reset_i <= 0; valid_i <= 0; ready_i <= 0;
-        
-        // reset
-        reset_i <= 1; @(posedge clk_i);@(posedge clk_i);@(posedge clk_i); reset_i <= 0; @(posedge clk_i);
-        
-        // state_r = eEMPTY
-        valid_i <= 1; data_r_i <= 16'b0000111011010010; @(posedge clk_i) // 0.732469473752462
-        
-        // state_r = eFULL, data_r_o = 0.732469473752462, valid_o = 1, ready_o = 0
-        data_r_i <= 16'b0000000101111111; @(posedge clk_i) // -0.621721030422373
-        
-        // state_r = eFULL, data_r_o = 0.732469473752462, valid_o = 1, ready_o = 0
-        ready_i <= 1; @(posedge clk_i)
-        
-        // state_r = eFULL, data_r_o = -0.621721030422373, valid_o = 1, ready_o = 1
-        data_r_i <= 16'b0000000010101101; @(posedge clk_i) // 0.773024276220328
-        data_r_i <= 16'b1111011101101001; @(posedge clk_i) // -0.917345614901317
-        data_r_i <= 16'b1111111110100101; @(posedge clk_i) // 0.251466403216965
-        data_r_i <= 16'b0000001111111000; @(posedge clk_i) // -0.535625366716028
-        data_r_i <= 16'b0000010110111011; @(posedge clk_i) // 1.08386757001342
-        data_r_i <= 16'b1111110010101000; @(posedge clk_i) // 0.560921617710491
-        data_r_i <= 16'b1111101111000010; @(posedge clk_i) // 0.113087525500705
-        
-        
-        //
-        valid_i <= 0; data_r_i <= 16'b0000111110011110; @(posedge clk_i) // -0.107299784013662
-        
-        // state_r = eEMPTY,
-        valid_i <= 1; 
 
+    initial begin
+        clk_i = 1'b1;
+        forever # (CLOCK_PERIOD / 2) clk_i = ~clk_i;
+    end
+
+    int measured_outputs, errors;
+    initial begin
+        $readmemh("test_bn_inputs.mif", test_inputs);
+        $readmemh("test_bn_outputs_expected.mif", expected_outputs);
+        measured_outputs = $fopen("C:/Users/eugli/Documents/GitHub/fir-cnn-rtl/mem/test_values/test_bn_outputs_actual.csv", "w");
+        errors = $fopen("C:/Users/eugli/Documents/GitHub/fir-cnn-rtl/mem/test_values/test_bn_output_error.csv", "w");
         
-        @(posedge clk_i); @(posedge clk_i)
+        reset_i <= 1'b1;
+        valid_i <= 1'b0;
+        start_i <= 1'b0;
+        yumi_i <= 1'b0;     @(posedge clk_i); @(posedge clk_i);
+        reset_i <= 1'b0;    @(posedge clk_i);
+        for (int i = 0; i < NUM_TESTS; i++) begin
+            $display("Running test %d",i);
+            current_expected_output <= expected_outputs[i];
+            data_i <= test_inputs[i];   @(posedge clk_i);
+            valid_i <= 1'b1;            @(posedge clk_i);
+            valid_i <= 1'b0;            @(posedge valid_o);
+                                        @(posedge clk_i);
+                                        
+
+            $fwrite(measured_outputs, "%h\n", data_o);
+            $fwrite(errors, "%f\n", $itor(data_o)/(2.0**(WORD_SIZE-INT_BITS)) - $itor(current_expected_output)/(2.0**(WORD_SIZE-INT_BITS)));
+            $display("%f-%f = %f\n",$itor(data_o)/(2.0**(WORD_SIZE-INT_BITS)),$itor(current_expected_output)/(2.0**(WORD_SIZE-INT_BITS)),$itor(data_o)/(2.0**(WORD_SIZE-INT_BITS)) - $itor(current_expected_output)/(2.0**(WORD_SIZE-INT_BITS)));
+
+            yumi_i <= 1'b1;             @(posedge clk_i);
+            yumi_i <= 1'b0;             @(posedge clk_i);
+        end
+
+        $fclose(measured_outputs);
+        $fclose(errors);
+
         $stop;
     end
     
