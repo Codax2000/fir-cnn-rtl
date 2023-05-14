@@ -111,8 +111,8 @@ module conv_layer_tb ();
          [f f]
          [5 6]] // try to trigger an overflow
         
-        Expected output: overflow on node 1, fine on node 0
-        7f_6e
+        Expected output: overflow on node 1 which comes down because of bias, fine on node 0
+        74_6e
         
     
         data_i <= 64'h06_08_0f_0f_02_01_01_03; // data for test case 2
@@ -147,10 +147,10 @@ module conv_layer_tb ();
                             @(posedge valid_o);
                             @(posedge clk_i);
         $display("Assert Test Case 2:");
-        assert(data_o == 16'h7f_6e)
+        assert(data_o == 16'h74_6e)
             $display("Test Case Passed");
         else
-            $display("Assertion Error 1: Expected %h, Received %h", 16'h7f_6e, data_o);  
+            $display("Assertion Error 1: Expected %h, Received %h", 16'h74_6e, data_o);  
                             @(posedge clk_i);               
 
         $stop;
