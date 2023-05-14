@@ -11,16 +11,22 @@ parameters:
     neuron_type: 1 or 0, 1 for fully-connected, 0 for convolutional
     layer_number: layer identifier
     neuron number: neuron identifier
+
+Added 5/14: compiler-dependent write data and write enable. TODO: implement using OpenRAM macro
 */
 
 module ROM_neuron #(parameter depth=3, width=8, neuron_type=0, layer_number=1, neuron_number=0) (
     input   logic reset_i,
     input  logic clk_i,
     input  logic [depth-1:0] addr_i,
+    `ifndef VIVADO
+    input logic [width-1:0] data_i,
+    input logic wen_i,
+    `endif
+
     output logic [width-1:0] data_o
     );
 
-    // TODO: Find out if parameters like this negatively impact synthesis
     localparam ascii_offset = 48;
 	localparam logic [7:0] neuron_type_p = neuron_type + ascii_offset;
     localparam logic [7:0] layer_number_p = layer_number + ascii_offset;
