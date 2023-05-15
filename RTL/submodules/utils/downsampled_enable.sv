@@ -5,7 +5,7 @@ the next enable signal will cause the output to be true. if INPUT_MAX = 1, will 
 */
 
 module downsampled_enable #(
-    parameter N = 1;
+    parameter N = 1
 ) (
     input logic clk_i,
     input logic reset_i,
@@ -15,7 +15,7 @@ module downsampled_enable #(
 
     generate
         if (N == 1 || N == 0)
-            en_o = 1'b1;
+            assign en_o = 1'b1;
         else begin
             logic [$clog2(N-1):0] count, next_count;
             
@@ -31,12 +31,12 @@ module downsampled_enable #(
 
             always_ff @(posedge clk_i) begin
                 if (reset_i)
-                    count <= N - 1;
+                    count <= '0;
                 else
                     count <= next_count;
             end
+            assign en_o = (count == '0) && en_i && !reset_i;
         end
-        assign en_o = count == '0;
     endgenerate
 
 endmodule

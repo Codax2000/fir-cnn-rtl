@@ -26,8 +26,7 @@ outputs:
 
 module logical_unit #(
     parameter WORD_SIZE=16,
-    parameter INT_BITS=8,
-    parameter FRAC_BITS=WORD_SIZE-INT_BITS) (
+    parameter INT_BITS=8) (
     
     input logic signed [WORD_SIZE-1:0] mem_i,
     input logic signed [WORD_SIZE-1:0] data_i,
@@ -40,7 +39,7 @@ module logical_unit #(
 
     output logic signed [WORD_SIZE-1:0] data_o
     );
-    
+    localparam FRAC_BITS=WORD_SIZE-INT_BITS;
     
     
     

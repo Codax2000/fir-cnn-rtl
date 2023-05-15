@@ -1,13 +1,12 @@
 `timescale 1ns / 1ps
-`ifndef SYNOPSIS
 `define VIVADO
-`endif
 
 module conv_layer_tb ();
 
     localparam WORD_SIZE = 8;
     localparam N_SIZE = 0;
-    parameter INPUT_LAYER_HEIGHT = 8;
+    localparam N_TESTS = 2;
+    parameter INPUT_LAYER_HEIGHT = 5;
     parameter KERNEL_HEIGHT = 3;
     parameter KERNEL_WIDTH = 2;
     parameter LAYER_NUMBER = 1;
@@ -64,34 +63,33 @@ module conv_layer_tb ();
     2 Test cases:
     
     Test Case 1 input:
-        [[1 5]
+        [[1 0]
+         [1 5]
          [3 2]
          [9 5]
          [0 1]]
 
         Expected output:
-        43_5c
+        43_5c_36
 
     Test Case 2 input:
-        [[3 1]
+        [[4 3]
+         [3 1]
          [1 2]
          [f f]
          [5 6]] // try to trigger an overflow
         
         Expected output: overflow on node 1 which comes down because of bias, fine on node 0
-        74_6e
-        
-        data_i <= 64'h01_00_05_09_02_03_05_01; // data for test case 1
-        data_i <= 64'h06_08_0f_0f_02_01_01_03; // data for test case 2
+        74_6e_34
     */
 
-    logic [N_TESTS-1:0][INPUT_LAYER_HEIGHT-KERNEL_HEIGHT:0][WORD_SIZE-1:0] expected_outputs;
-    logic [N_TESTS-1:0][INPUT_LAYER_HEIGHT-1:0][WORD_SIZE-1:0]             test_inputs;
-    logic [KERNEL_HEIGHT*KERNEL_WIDTH][WORD_SIZE-1:0]                      kernel_values;
+    logic [N_TESTS-1:0][INPUT_LAYER_HEIGHT-KERNEL_HEIGHT:0][WORD_SIZE-1:0]   expected_outputs;
+    logic [N_TESTS-1:0][INPUT_LAYER_HEIGHT*KERNEL_WIDTH-1:0][WORD_SIZE-1:0]  test_inputs;
+    logic [KERNEL_HEIGHT*KERNEL_WIDTH:0][WORD_SIZE-1:0]                      kernel_values;
 
-    assign expected_outputs = 32'h74_6e_43_5c;
-    assign test_inputs[0] = 64'h01_00_05_09_02_03_05_01;
-    assign test_inputs[1] = 64'h06_08_0f_0f_02_01_01_03;
+    assign expected_outputs = 48'h7f_6e_35__43_5c_36;
+    assign test_inputs[0] = 80'h01_00_05_09_02_03_05_01_00_01;
+    assign test_inputs[1] = 80'h06_08_0f_0f_02_01_01_03_03_04;
 
     `ifndef VIVADO
     initial begin
@@ -129,9 +127,9 @@ module conv_layer_tb ();
     endtask
 
     task receive_data(input logic [WORD_SIZE-1:0] expected_value);
-        $display("%t: Receiving data:", $realtime, data);
         @(negedge clk_i)
-        $assert(expected_value == data_o)
+        $display("%t: Receiving data: Expecting %h, Received %h", $realtime, expected_value, data_o);
+        assert(expected_value == data_o)
             else $display("%t: Assertion Error: Expected %h, Received %h", $realtime, expected_value, data_o);
         @(posedge clk_i);
     endtask
@@ -141,6 +139,8 @@ module conv_layer_tb ();
         .LAYER_HEIGHT(INPUT_LAYER_HEIGHT*KERNEL_WIDTH),
         .WORD_SIZE(WORD_SIZE)
     ) input_layer (
+        .clk_i,
+        .reset_i,
         .valid_i(fcin_valid_i),
         .ready_o(fcin_ready_o),
         .data_i(fcin_data_i),
@@ -156,7 +156,7 @@ module conv_layer_tb ();
         .reset_i,
 
         .wen_i(fcin_wen_o),
-        .data_i(fcin_data_i),
+        .data_i(fcin_data_o),
         .full_o(fcin_full_i),
 
         .ren_i(yumi_o),
@@ -172,7 +172,23 @@ module conv_layer_tb ();
         .N_SIZE(N_SIZE),
         .LAYER_NUMBER(LAYER_NUMBER),
         .N_CONVOLUTIONS(N_CONVOLUTIONS)
-    ) DUT (.*);
+    ) DUT (
+        .clk_i,
+        .reset_i,
+    
+        // still need start signal
+        .start_i,
+
+        // demanding input interface
+        .valid_i,
+        .yumi_o,
+        .data_i,
+    
+        // demanding output interface
+        .valid_o,
+        .ready_i,
+        .data_o
+    );
 
 
     
@@ -181,6 +197,7 @@ module conv_layer_tb ();
         ready_i <= 1'b0;
         start_i <= 1'b0;
         reset_i <= 1'b1;    @(posedge clk_i);
+        reset_i <= 1'b0;    @(posedge clk_i);
         
         // if running in VCS, need to write kernel values to memory
         `ifndef VIVADO
@@ -188,16 +205,18 @@ module conv_layer_tb ();
             write_mem(kernel_values[i], 1, i);
         end
         `endif
-        for (int j = 0; j < 2; j++) begin
+        for (int j = 0; j < N_TESTS; j++) begin
             repeat(2) @(posedge clk_i);
-            start_i <= 1'b1; repeat(2) @(posedge clk_i);
+            start_i <= 1'b1; @(posedge clk_i);
+            start_i <= 1'b0; @(posedge clk_i);
             send_data(test_inputs[j]);
-            for (int i = 0; i < 2; i ++) begin
+            for (int i = 0; i < INPUT_LAYER_HEIGHT - KERNEL_HEIGHT + 1; i ++) begin
                 ready_i <= 1'b1;
                 @(posedge valid_o)
                 receive_data(expected_outputs[j][i]);
             end
         end
+        repeat(2) @(posedge clk_i);
         $stop;
     end
 

@@ -5,8 +5,8 @@ Alex Knowlton & Eugene Liu
 
 Convolutional layer module. When start is asserted, handshakes in data with ready/valid
 interface and outputs data also with a ready-valid handshake. 
-NOTE: Ensure that size of input data is at least 2 words greater than kernel size, or there will be
-undefined behavior.
+NOTE: Ensure that height of input data is at least 2 words greater than kernel height, or the layer
+      will hand and not work properly.
 
 parameters:
     INPUT_LAYER_HEIGHT  : height of input layer (not total number of inputs, just the height), default 64
@@ -56,12 +56,12 @@ module conv_layer #(
     // still need start signal
     input logic start_i,
     
-    // compiler-dependent write port for RAMs, connection logic handled in datapath generate loop
-    `ifndef VIVADO
-    input logic [$clog2(N_CONVOLUTIONS+1)+$clog2(KERNEL_HEIGHT*KERNEL_WIDTH+1)-1:0] mem_addr_i,
-    input logic wen_i,
-    input logic [WORD_SIZE-1:0] mem_data_i,
-    `endif
+    // uncomment for VCS or if Vivado starts working
+//    `ifndef VIVADO
+//    input logic [$clog2(N_CONVOLUTIONS+1)+$clog2(KERNEL_HEIGHT*KERNEL_WIDTH+1)-1:0] mem_addr_i,
+//    input logic wen_i,
+//    input logic [WORD_SIZE-1:0] mem_data_i,
+//    `endif
 
     // demanding input interface
     input logic valid_i,
@@ -73,9 +73,7 @@ module conv_layer #(
     input logic ready_i,
     output logic [N_CONVOLUTIONS-1:0][WORD_SIZE-1:0] data_o
     
-    
     );
-    
     
     ////  START CONTROL LOGIC FSM   ////
     // counter registers for memory addresses and logic signals
@@ -104,7 +102,7 @@ module conv_layer #(
                 else
                     ns_e = eREADY;
             eSHIFT_IN:
-                if (mem_count_n == '0)
+                if ((mem_count_n == KERNEL_WIDTH * KERNEL_HEIGHT + 1) && (mem_count_r == KERNEL_WIDTH * KERNEL_HEIGHT))
                     ns_e = eFULL;
                 else
                     ns_e = eSHIFT_IN;
@@ -146,15 +144,15 @@ module conv_layer #(
     // control memory addresses, IO logic signals, shift, consumed counter, and output handshake downsampler
 
     // next memory address, counter is reset if not in correct state so don't worry about that
-    // make sure shift works properly in all four shifting states
+    // counter takes 1 extra cycle to allow output handshake to happen
     always_comb begin
         if (shift) begin
-            if (mem_count_n == KERNEL_SIZE)
+            if (mem_count_n == KERNEL_SIZE + 1)
                 mem_count_n = 0;
             else
                 mem_count_n = mem_count_r + 1;
         end else
-            mem_count_n = mem_count_n;
+            mem_count_n = mem_count_r;
     end
 
     // consumed counter - dependent on handshake in only, for clarity
@@ -214,7 +212,7 @@ module conv_layer #(
                 yumi_o = 1'b0;
             end
             eSHIFT_IN: begin
-                yumi_o = 1'b1;
+                yumi_o = valid_i;
                 shift = handshake_in;
                 valid_o = 1'b0;
             end
@@ -258,8 +256,8 @@ module conv_layer #(
     logic add_bias_li, sum_en_li;
     always_comb begin
         if (shift) begin
-            add_bias_li = mem_count_n == '0;
-            sum_en_li = mem_count_n != 1; // TODO: Check timing and logic on this one
+            add_bias_li = mem_count_r == KERNEL_SIZE;
+            sum_en_li = mem_count_r != KERNEL_SIZE + 1; // TODO: Check timing and logic on this one
         end else
             {add_bias_li, sum_en_li} = 2'b00;
     end
@@ -267,6 +265,33 @@ module conv_layer #(
 
     //// BEGIN DATAPATH ////
     logic [N_CONVOLUTIONS-1:0][KERNEL_HEIGHT:0][WORD_SIZE-1:0] alu_data_lo;
+
+    // add_bias shift register
+    logic [KERNEL_WIDTH*KERNEL_HEIGHT-1:0] shift_add_bias_lo;
+    shift_register #(
+        .WORD_SIZE(1),
+        .REGISTER_LENGTH(KERNEL_HEIGHT*KERNEL_WIDTH)
+    ) add_bias_shift_register (
+        .data_i(add_bias_li),
+        .shift_en_i(shift),
+        .clk_i,
+        .reset_i(reset_i || (ps_e == eREADY)),
+        .data_o(shift_add_bias_lo)
+    );
+
+    // sum_en shift register
+    // add_bias shift register
+    logic [KERNEL_WIDTH*KERNEL_HEIGHT-1:0] shift_sum_en_lo;
+    shift_register #(
+        .WORD_SIZE(1),
+        .REGISTER_LENGTH(KERNEL_HEIGHT*KERNEL_WIDTH)
+    ) sum_en_shift_register (
+        .data_i(sum_en_li),
+        .shift_en_i(shift),
+        .clk_i,
+        .reset_i(reset_i || (ps_e == eREADY)),
+        .data_o(shift_sum_en_lo)
+    );
 
     genvar i, j;
     generate
@@ -285,46 +310,21 @@ module conv_layer #(
                 .data_o(shift_data_lo)
             );
 
-            // add_bias shift register
-            logic [KERNEL_WIDTH*KERNEL_HEIGHT-1:0] shift_add_bias_lo;
-            shift_register #(
-                .WORD_SIZE(WORD_SIZE),
-                .REGISTER_LENGTH(KERNEL_HEIGHT*KERNEL_WIDTH)
-            ) add_bias_shift_register (
-                .data_i(add_bias_li),
-                .shift_en_i(shift),
-                .clk_i,
-                .reset_i,
-                .data_o(shift_add_bias_lo)
-            );
-
-            // sum_en shift register
-            // add_bias shift register
-            logic [KERNEL_WIDTH*KERNEL_HEIGHT-1:0] shift_sum_en_lo;
-            shift_register #(
-                .WORD_SIZE(WORD_SIZE),
-                .REGISTER_LENGTH(KERNEL_HEIGHT*KERNEL_WIDTH)
-            ) sum_en_shift_register (
-                .data_i(sum_en_lo),
-                .shift_en_i(shift),
-                .clk_i,
-                .reset_i,
-                .data_o(shift_sum_en_lo)
-            );
 
             // kernel RAM
             logic [$clog2(KERNEL_SIZE+1)-1:0] mem_addr_li;
-
-            `ifndef VIVADO
-            logic wen_li;
-            localparam max_mem_index_lp = $clog2(N_CONVOLUTIONS+1)+$clog2(KERNEL_HEIGHT*KERNEL_WIDTH+1)-1;
-            assign wen_li = wen_i && (mem_addr_i[max_mem_index_lp:max_mem_index_lp-$clog2(N_CONVOLUTIONS+1)] == i + 1);
             
-            // if using synopsis, we are using a 1RW RAM, so connect addresses differently
-            assign mem_addr_li = wen_i ? mem_addr_i[$clog2(KERNEL_HEIGHT*KERNEL_WIDTH+1)-1:0] : mem_count_n;
-            `else
-            assign mem_addr_li = mem_count_n;
-            `endif
+            // these lines don't compile rn because Vivado is stupid, uncomment for VCS simulation
+//            `ifdef VIVADO
+            assign mem_addr_li = mem_count_n;            
+//            `else
+//            logic wen_li;
+//            localparam max_mem_index_lp = $clog2(N_CONVOLUTIONS+1)+$clog2(KERNEL_HEIGHT*KERNEL_WIDTH+1)-1;
+//            assign wen_li = wen_i && (mem_addr_i[max_mem_index_lp:max_mem_index_lp-$clog2(N_CONVOLUTIONS+1)] == i + 1);
+            
+//            // if using synopsis, we are using a 1RW RAM, so connect addresses differently
+//            assign mem_addr_li = wen_i ? mem_addr_i[$clog2(KERNEL_HEIGHT*KERNEL_WIDTH+1)-1:0] : mem_count_n;
+//            `endif
 
             ROM_neuron #(
                 .depth($clog2(KERNEL_SIZE+1)),
@@ -334,11 +334,11 @@ module conv_layer #(
                 .neuron_number(i)
             ) weight_mem (
                 
-                // compiler-dependent connection
-                `ifndef VIVADO
-                .wen_i(wen_li),
-                .data_i(mem_data_i),
-                `endif
+//                // compiler-dependent connection, uncomment if using VCS or if Vivado works properly
+//                `ifndef VIVADO
+//                .wen_i(wen_li),
+//                .data_i(mem_data_i),
+//                `endif
 
                 .addr_i(mem_addr_li),
                 .data_o(mem_data_lo),
@@ -363,25 +363,27 @@ module conv_layer #(
                 .data_o(alu_data_lo[i][0])
             );
             for (j = 0; j < KERNEL_HEIGHT; j++) begin
+                localparam shift_register_index = KERNEL_HEIGHT*KERNEL_WIDTH - 1 - (j * KERNEL_WIDTH + 1);
                 logical_unit #(
-                .WORD_SIZE(WORD_SIZE),
+                    .WORD_SIZE(WORD_SIZE),
                     .INT_BITS(WORD_SIZE-N_SIZE)
                 ) subsidiary_alu (
-                    .mem_i(mem_data_lo[j * KERNEL_WIDTH + 1]),
+                    // indices necessary because shift register shifts in from the most significant to the least significant
+                    .mem_i(shift_data_lo[shift_register_index]),
                     .data_i,
         
-                    .add_bias(shift_add_bias_lo[k * KERNEL_WIDTH + 1]),
-                    .sum_en(shift_sum_en_lo[j * KERNEL_WIDTH + 1]),
+                    .add_bias(shift && shift_add_bias_lo[shift_register_index]),
+                    .sum_en(shift && shift_sum_en_lo[shift_register_index]),
         
                     .clk_i,
-                    .reset_i(reset_i || (ps_e == eREADY) || (handshake_out && ~sum_en_li)),
+                    .reset_i(reset_i || (ps_e == eREADY) || (handshake_out && !(shift && shift_sum_en_lo[shift_register_index]))),
 
                     .data_o(alu_data_lo[i][j+1])
             );
             end
 
             // assign output data
-            assign data_o[i] = alu_data_lo[i][mem_addr_li];
+            assign data_o[i] = alu_data_lo[i][mem_count_n >> (KERNEL_WIDTH - 1)];
         end
     endgenerate
 
