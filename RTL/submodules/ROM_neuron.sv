@@ -19,10 +19,10 @@ module ROM_neuron #(parameter depth=3, width=8, neuron_type=0, layer_number=1, n
     input   logic reset_i,
     input  logic clk_i,
     input  logic [depth-1:0] addr_i,
-    `ifndef VIVADO
-    input logic [width-1:0] data_i,
-    input logic wen_i,
-    `endif
+//    `ifndef VIVADO
+//    input logic [width-1:0] data_i,
+//    input logic wen_i,
+//    `endif
 
     output logic [width-1:0] data_o
     );

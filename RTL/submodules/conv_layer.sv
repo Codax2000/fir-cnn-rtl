@@ -47,7 +47,7 @@ module conv_layer #(
     parameter KERNEL_WIDTH=2,
     parameter WORD_SIZE=16,
     parameter N_SIZE=12,
-    parameter LAYER_NUMBER=1,
+    parameter LAYER_NUMBER=0,
     parameter N_CONVOLUTIONS=256) (
     
     // top-level signals
