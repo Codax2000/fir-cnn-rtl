@@ -1,6 +1,6 @@
 `timescale 1ns / 1ps
 /**
-Alex Knowlton
+Alex Knowlton & Eugene Liu
 2/28/2023
 
 Convolutional layer module. When start is asserted, handshakes in data with ready/valid
@@ -33,7 +33,7 @@ helpful output interface
     data_o  : n-bit : outgoing data. size is WORD_SIZE
 
 OPTIONAL INPUTS:
-if VIVADO is not defined, then add optional write port for the RAM. Add separate data_i port for RAM:
+if VIVADO is not defined (using `define VIVADO), then add optional write port for the RAM. Add separate data_i port for RAM:
     addr_i  : n-bit : RAM address to write to. size is address width of RAM + $clog2(N_CONVOLUTIONS + 1)
     mem_data_i: n-bit: data to write to memory. size is WORD_SIZE
     wen_i   : 1-bit : write-enable bit
@@ -48,7 +48,7 @@ module conv_layer #(
     parameter WORD_SIZE=16,
     parameter N_SIZE=12,
     parameter LAYER_NUMBER=1,
-    parameter N_CONVOLUTIONS) (
+    parameter N_CONVOLUTIONS=256) (
     
     input logic clk_i,
     input logic reset_i,
@@ -88,7 +88,7 @@ module conv_layer #(
 
     // handshake signals
     // handshake in and out are just combination of valid and ready, shift_en is dependent on current state
-    logic handshake_in, handshake_out, shift_en;
+    logic handshake_in, handshake_out, shift;
     assign handshake_in = valid_i && yumi_o;
     assign handshake_out = valid_o && ready_i;
 
@@ -128,6 +128,7 @@ module conv_layer #(
                 else
                     ns_e = eSHIFT_OUT_2;
             default:
+                ns_e = eREADY;
         endcase
     end
 
@@ -190,7 +191,7 @@ module conv_layer #(
         .N(KERNEL_WIDTH)
     ) handshake_out_enabler (
         .clk_i,
-        .reset_i(reset_i || (ps_e != eFULL)) // reset on non-handshake-out states
+        .reset_i(reset_i || (ps_e != eFULL)), // reset on non-handshake-out states
         .en_i(handshake_in),
         .en_o(handshake_out_en)
     );
@@ -202,16 +203,22 @@ module conv_layer #(
     // problem 2: handshakes out happen only every KERNEL_WIDTH clock cycles
     always_comb begin
         case (ps_e)
-            default, // should never happen but good to have
-            eREADY:
+            default: begin // should never happen but this matches eREADY
                 shift = 1'b0;
-                ready_o = 1'b0;
+                valid_o = 1'b0;
                 yumi_o = 1'b0;
-            eSHIFT_IN:
+            end
+            eREADY: begin
+                shift = 1'b0;
+                valid_o = 1'b0;
+                yumi_o = 1'b0;
+            end
+            eSHIFT_IN: begin
                 yumi_o = 1'b1;
                 shift = handshake_in;
-                ready_o = 1'b0;
-            eFULL: // this gets tricky, since it depends on handshake_out_en too
+                valid_o = 1'b0;
+            end
+            eFULL: begin// this gets tricky, since it depends on handshake_out_en too
                 if (handshake_out_en) begin
                     if (valid_i && ready_i) begin
                         shift = 1'b1;
@@ -227,7 +234,8 @@ module conv_layer #(
                     yumi_o = valid_i;
                     shift = handshake_in;
                 end
-            eSHIFT_OUT_1:
+            end
+            eSHIFT_OUT_1: begin
                 yumi_o = 1'b0;
                 if (KERNEL_WIDTH == 1) begin
                     valid_o = ready_i;
@@ -236,10 +244,12 @@ module conv_layer #(
                     valid_o = 1'b0;
                     shift = 1'b1;
                 end
-            eSHIFT_OUT_2: // always handshake out on this state
+            end
+            eSHIFT_OUT_2: begin // always handshake out on this state
                 yumi_o = 1'b0;
                 valid_o = ready_i;
                 shift = handshake_out; // shouldn't matter but have here to avoid inferring a latch
+            end
         endcase
     end
 
@@ -257,6 +267,7 @@ module conv_layer #(
 
     //// BEGIN DATAPATH ////
     logic [N_CONVOLUTIONS-1:0][KERNEL_HEIGHT:0][WORD_SIZE-1:0] alu_data_lo;
+
     genvar i, j;
     generate
         for (i = 0; i < N_CONVOLUTIONS; i++) begin
@@ -307,10 +318,10 @@ module conv_layer #(
             `ifndef VIVADO
             logic wen_li;
             localparam max_mem_index_lp = $clog2(N_CONVOLUTIONS+1)+$clog2(KERNEL_HEIGHT*KERNEL_WIDTH+1)-1;
-            assign wen_li == wen_i && (mem_addr_i[max_mem_index_lp:max_mem_index_lp-$clog2(N_CONVOLUTIONS+1)] == i + 1);
-
+            assign wen_li = wen_i && (mem_addr_i[max_mem_index_lp:max_mem_index_lp-$clog2(N_CONVOLUTIONS+1)] == i + 1);
+            
             // if using synopsis, we are using a 1RW RAM, so connect addresses differently
-            assign mem_addr_li = wen ? mem_addr_i[$clog2(KERNEL_HEIGHT*KERNEL_WIDTH+1)-1:0] : mem_count_n;
+            assign mem_addr_li = wen_i ? mem_addr_i[$clog2(KERNEL_HEIGHT*KERNEL_WIDTH+1)-1:0] : mem_count_n;
             `else
             assign mem_addr_li = mem_count_n;
             `endif
@@ -318,7 +329,7 @@ module conv_layer #(
             ROM_neuron #(
                 .depth($clog2(KERNEL_SIZE+1)),
                 .width(WORD_SIZE),
-                .neuron_type=0,
+                .neuron_type(0),
                 .layer_number(LAYER_NUMBER),
                 .neuron_number(i)
             ) weight_mem (
@@ -338,7 +349,7 @@ module conv_layer #(
             // generate ALUs
             logical_unit #(
                 .WORD_SIZE(WORD_SIZE),
-                .INT_BITS=(WORD_SIZE-N_SIZE)
+                .INT_BITS(WORD_SIZE-N_SIZE)
             ) first_alu (
                 .mem_i(mem_data_lo),
                 .data_i,
@@ -354,7 +365,7 @@ module conv_layer #(
             for (j = 0; j < KERNEL_HEIGHT; j++) begin
                 logical_unit #(
                 .WORD_SIZE(WORD_SIZE),
-                    .INT_BITS=(WORD_SIZE-N_SIZE)
+                    .INT_BITS(WORD_SIZE-N_SIZE)
                 ) subsidiary_alu (
                     .mem_i(mem_data_lo[j * KERNEL_WIDTH + 1]),
                     .data_i,
@@ -368,6 +379,9 @@ module conv_layer #(
                     .data_o(alu_data_lo[i][j+1])
             );
             end
+
+            // assign output data
+            assign data_o[i] = alu_data_lo[i][mem_addr_li];
         end
     endgenerate
 
