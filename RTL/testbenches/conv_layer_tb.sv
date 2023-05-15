@@ -3,7 +3,7 @@
 
 module conv_layer_tb ();
 
-    localparam WORD_SIZE = 8;
+    localparam WORD_SIZE = 16;
     localparam N_SIZE = 0;
     localparam N_TESTS = 2;
     parameter INPUT_LAYER_HEIGHT = 5;
@@ -87,9 +87,9 @@ module conv_layer_tb ();
     logic [N_TESTS-1:0][INPUT_LAYER_HEIGHT*KERNEL_WIDTH-1:0][WORD_SIZE-1:0]  test_inputs;
     logic [KERNEL_HEIGHT*KERNEL_WIDTH:0][WORD_SIZE-1:0]                      kernel_values;
 
-    assign expected_outputs = 48'h7f_6e_35__43_5c_36;
-    assign test_inputs[0] = 80'h01_00_05_09_02_03_05_01_00_01;
-    assign test_inputs[1] = 80'h06_08_0f_0f_02_01_01_03_03_04;
+    assign expected_outputs = 96'h0092_006e_0035__0043_005c_0036;
+    assign test_inputs[0] = 160'h0001_0000_0005_0009_0002_0003_0005_0001_0000_0001;
+    assign test_inputs[1] = 160'h0006_0005_000f_000f_0002_0001_0001_0003_0003_0004;
 
     `ifndef VIVADO
     initial begin

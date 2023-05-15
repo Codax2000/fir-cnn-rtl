@@ -11,13 +11,13 @@
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="1,275.148 ns"></ZoomStartTime>
-      <ZoomEndTime time="1,556.649 ns"></ZoomEndTime>
-      <Cursor1Time time="1,347.064 ns"></Cursor1Time>
+      <ZoomStartTime time="0.000 ns"></ZoomStartTime>
+      <ZoomEndTime time="1,600.000 ns"></ZoomEndTime>
+      <Cursor1Time time="1,600.000 ns"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
       <NameColumnWidth column_width="222"></NameColumnWidth>
-      <ValueColumnWidth column_width="79"></ValueColumnWidth>
+      <ValueColumnWidth column_width="75"></ValueColumnWidth>
    </column_width_setting>
    <WVObjectSize size="7" />
    <wvobject fp_name="/conv_layer_tb/clk_i" type="logic">
@@ -40,8 +40,8 @@
          <obj_property name="ObjectShortName">ready_o</obj_property>
       </wvobject>
       <wvobject fp_name="/conv_layer_tb/input_layer/data_i" type="array">
-         <obj_property name="ElementShortName">data_i[9:0][7:0]</obj_property>
-         <obj_property name="ObjectShortName">data_i[9:0][7:0]</obj_property>
+         <obj_property name="ElementShortName">data_i[9:0][15:0]</obj_property>
+         <obj_property name="ObjectShortName">data_i[9:0][15:0]</obj_property>
       </wvobject>
       <wvobject fp_name="/conv_layer_tb/input_layer/wen_o" type="logic">
          <obj_property name="ElementShortName">wen_o</obj_property>
@@ -52,8 +52,8 @@
          <obj_property name="ObjectShortName">full_i</obj_property>
       </wvobject>
       <wvobject fp_name="/conv_layer_tb/input_layer/data_o" type="array">
-         <obj_property name="ElementShortName">data_o[7:0]</obj_property>
-         <obj_property name="ObjectShortName">data_o[7:0]</obj_property>
+         <obj_property name="ElementShortName">data_o[15:0]</obj_property>
+         <obj_property name="ObjectShortName">data_o[15:0]</obj_property>
       </wvobject>
    </wvobject>
    <wvobject fp_name="group39" type="group">
@@ -68,8 +68,8 @@
          <obj_property name="ObjectShortName">full_o</obj_property>
       </wvobject>
       <wvobject fp_name="/conv_layer_tb/input_fifo/data_i" type="array">
-         <obj_property name="ElementShortName">data_i[7:0]</obj_property>
-         <obj_property name="ObjectShortName">data_i[7:0]</obj_property>
+         <obj_property name="ElementShortName">data_i[15:0]</obj_property>
+         <obj_property name="ObjectShortName">data_i[15:0]</obj_property>
       </wvobject>
       <wvobject fp_name="/conv_layer_tb/input_fifo/empty_o" type="logic">
          <obj_property name="ElementShortName">empty_o</obj_property>
@@ -80,13 +80,14 @@
          <obj_property name="ObjectShortName">ren_i</obj_property>
       </wvobject>
       <wvobject fp_name="/conv_layer_tb/input_fifo/data_o" type="array">
-         <obj_property name="ElementShortName">data_o[7:0]</obj_property>
-         <obj_property name="ObjectShortName">data_o[7:0]</obj_property>
+         <obj_property name="ElementShortName">data_o[15:0]</obj_property>
+         <obj_property name="ObjectShortName">data_o[15:0]</obj_property>
       </wvobject>
    </wvobject>
    <wvobject fp_name="group46" type="group">
       <obj_property name="label">DUT Signals</obj_property>
       <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="isExpanded"></obj_property>
       <wvobject fp_name="/conv_layer_tb/DUT/start_i" type="logic">
          <obj_property name="ElementShortName">start_i</obj_property>
          <obj_property name="ObjectShortName">start_i</obj_property>
@@ -103,8 +104,8 @@
             <obj_property name="ObjectShortName">yumi_o</obj_property>
          </wvobject>
          <wvobject fp_name="/conv_layer_tb/DUT/data_i" type="array">
-            <obj_property name="ElementShortName">data_i[7:0]</obj_property>
-            <obj_property name="ObjectShortName">data_i[7:0]</obj_property>
+            <obj_property name="ElementShortName">data_i[15:0]</obj_property>
+            <obj_property name="ObjectShortName">data_i[15:0]</obj_property>
          </wvobject>
       </wvobject>
       <wvobject fp_name="group49" type="group">
@@ -120,8 +121,8 @@
             <obj_property name="ObjectShortName">ready_i</obj_property>
          </wvobject>
          <wvobject fp_name="/conv_layer_tb/DUT/data_o" type="array">
-            <obj_property name="ElementShortName">data_o[0:0][7:0]</obj_property>
-            <obj_property name="ObjectShortName">data_o[0:0][7:0]</obj_property>
+            <obj_property name="ElementShortName">data_o[0:0][15:0]</obj_property>
+            <obj_property name="ObjectShortName">data_o[0:0][15:0]</obj_property>
             <obj_property name="isExpanded"></obj_property>
          </wvobject>
       </wvobject>
@@ -189,8 +190,8 @@
          <obj_property name="label">Data Signals</obj_property>
          <obj_property name="DisplayName">label</obj_property>
          <wvobject fp_name="/conv_layer_tb/DUT/alu_data_lo" type="array">
-            <obj_property name="ElementShortName">alu_data_lo[0:0][3:0][7:0]</obj_property>
-            <obj_property name="ObjectShortName">alu_data_lo[0:0][3:0][7:0]</obj_property>
+            <obj_property name="ElementShortName">alu_data_lo[0:0][3:0][15:0]</obj_property>
+            <obj_property name="ObjectShortName">alu_data_lo[0:0][3:0][15:0]</obj_property>
          </wvobject>
          <wvobject fp_name="/conv_layer_tb/DUT/shift_sum_en_lo" type="array">
             <obj_property name="ElementShortName">shift_sum_en_lo[5:0]</obj_property>
@@ -205,12 +206,12 @@
          <obj_property name="label">ALU 1 Signal Set</obj_property>
          <obj_property name="DisplayName">label</obj_property>
          <wvobject fp_name="/conv_layer_tb/DUT/\genblk1[0].first_alu /mem_i" type="array">
-            <obj_property name="ElementShortName">mem_i[7:0]</obj_property>
-            <obj_property name="ObjectShortName">mem_i[7:0]</obj_property>
+            <obj_property name="ElementShortName">mem_i[15:0]</obj_property>
+            <obj_property name="ObjectShortName">mem_i[15:0]</obj_property>
          </wvobject>
          <wvobject fp_name="/conv_layer_tb/DUT/\genblk1[0].first_alu /data_i" type="array">
-            <obj_property name="ElementShortName">data_i[7:0]</obj_property>
-            <obj_property name="ObjectShortName">data_i[7:0]</obj_property>
+            <obj_property name="ElementShortName">data_i[15:0]</obj_property>
+            <obj_property name="ObjectShortName">data_i[15:0]</obj_property>
          </wvobject>
          <wvobject fp_name="/conv_layer_tb/DUT/\genblk1[0].first_alu /add_bias" type="logic">
             <obj_property name="ElementShortName">add_bias</obj_property>
@@ -229,20 +230,12 @@
             <obj_property name="ObjectShortName">reset_i</obj_property>
          </wvobject>
          <wvobject fp_name="/conv_layer_tb/DUT/\genblk1[0].first_alu /data_o" type="array">
-            <obj_property name="ElementShortName">data_o[7:0]</obj_property>
-            <obj_property name="ObjectShortName">data_o[7:0]</obj_property>
-         </wvobject>
-         <wvobject fp_name="/conv_layer_tb/DUT/\genblk1[0].first_alu /sum_n" type="array">
-            <obj_property name="ElementShortName">sum_n[15:0]</obj_property>
-            <obj_property name="ObjectShortName">sum_n[15:0]</obj_property>
+            <obj_property name="ElementShortName">data_o[15:0]</obj_property>
+            <obj_property name="ObjectShortName">data_o[15:0]</obj_property>
          </wvobject>
          <wvobject fp_name="/conv_layer_tb/DUT/\genblk1[0].first_alu /sum_r" type="array">
-            <obj_property name="ElementShortName">sum_r[15:0]</obj_property>
-            <obj_property name="ObjectShortName">sum_r[15:0]</obj_property>
-         </wvobject>
-         <wvobject fp_name="/conv_layer_tb/DUT/\genblk1[0].first_alu /add_in" type="array">
-            <obj_property name="ElementShortName">add_in[15:0]</obj_property>
-            <obj_property name="ObjectShortName">add_in[15:0]</obj_property>
+            <obj_property name="ElementShortName">sum_r[31:0]</obj_property>
+            <obj_property name="ObjectShortName">sum_r[31:0]</obj_property>
          </wvobject>
       </wvobject>
       <wvobject fp_name="/conv_layer_tb/DUT/shift_add_bias_lo" type="array">
@@ -257,13 +250,13 @@
          <obj_property name="label">ALU 2 Signal Set</obj_property>
          <obj_property name="DisplayName">label</obj_property>
          <wvobject fp_name="/conv_layer_tb/DUT/\genblk1[0].genblk1[0].subsidiary_alu /mem_i" type="array">
-            <obj_property name="ElementShortName">mem_i[7:0]</obj_property>
-            <obj_property name="ObjectShortName">mem_i[7:0]</obj_property>
+            <obj_property name="ElementShortName">mem_i[15:0]</obj_property>
+            <obj_property name="ObjectShortName">mem_i[15:0]</obj_property>
             <obj_property name="Radix">HEXRADIX</obj_property>
          </wvobject>
          <wvobject fp_name="/conv_layer_tb/DUT/\genblk1[0].genblk1[0].subsidiary_alu /data_i" type="array">
-            <obj_property name="ElementShortName">data_i[7:0]</obj_property>
-            <obj_property name="ObjectShortName">data_i[7:0]</obj_property>
+            <obj_property name="ElementShortName">data_i[15:0]</obj_property>
+            <obj_property name="ObjectShortName">data_i[15:0]</obj_property>
          </wvobject>
          <wvobject fp_name="/conv_layer_tb/DUT/\genblk1[0].genblk1[0].subsidiary_alu /add_bias" type="logic">
             <obj_property name="ElementShortName">add_bias</obj_property>
@@ -282,21 +275,13 @@
             <obj_property name="ObjectShortName">reset_i</obj_property>
          </wvobject>
          <wvobject fp_name="/conv_layer_tb/DUT/\genblk1[0].genblk1[0].subsidiary_alu /data_o" type="array">
-            <obj_property name="ElementShortName">data_o[7:0]</obj_property>
-            <obj_property name="ObjectShortName">data_o[7:0]</obj_property>
-         </wvobject>
-         <wvobject fp_name="/conv_layer_tb/DUT/\genblk1[0].genblk1[0].subsidiary_alu /sum_n" type="array">
-            <obj_property name="ElementShortName">sum_n[15:0]</obj_property>
-            <obj_property name="ObjectShortName">sum_n[15:0]</obj_property>
+            <obj_property name="ElementShortName">data_o[15:0]</obj_property>
+            <obj_property name="ObjectShortName">data_o[15:0]</obj_property>
          </wvobject>
          <wvobject fp_name="/conv_layer_tb/DUT/\genblk1[0].genblk1[0].subsidiary_alu /sum_r" type="array">
-            <obj_property name="ElementShortName">sum_r[15:0]</obj_property>
-            <obj_property name="ObjectShortName">sum_r[15:0]</obj_property>
+            <obj_property name="ElementShortName">sum_r[31:0]</obj_property>
+            <obj_property name="ObjectShortName">sum_r[31:0]</obj_property>
             <obj_property name="Radix">HEXRADIX</obj_property>
-         </wvobject>
-         <wvobject fp_name="/conv_layer_tb/DUT/\genblk1[0].genblk1[0].subsidiary_alu /add_in" type="array">
-            <obj_property name="ElementShortName">add_in[15:0]</obj_property>
-            <obj_property name="ObjectShortName">add_in[15:0]</obj_property>
          </wvobject>
       </wvobject>
       <wvobject fp_name="group112" type="group">
@@ -315,16 +300,16 @@
             <obj_property name="ObjectShortName">addr_i[2:0]</obj_property>
          </wvobject>
          <wvobject fp_name="/conv_layer_tb/DUT/\genblk1[0].weight_mem /data_i" type="array">
-            <obj_property name="ElementShortName">data_i[7:0]</obj_property>
-            <obj_property name="ObjectShortName">data_i[7:0]</obj_property>
+            <obj_property name="ElementShortName">data_i[15:0]</obj_property>
+            <obj_property name="ObjectShortName">data_i[15:0]</obj_property>
          </wvobject>
          <wvobject fp_name="/conv_layer_tb/DUT/\genblk1[0].weight_mem /wen_i" type="logic">
             <obj_property name="ElementShortName">wen_i</obj_property>
             <obj_property name="ObjectShortName">wen_i</obj_property>
          </wvobject>
          <wvobject fp_name="/conv_layer_tb/DUT/\genblk1[0].weight_mem /data_o" type="array">
-            <obj_property name="ElementShortName">data_o[7:0]</obj_property>
-            <obj_property name="ObjectShortName">data_o[7:0]</obj_property>
+            <obj_property name="ElementShortName">data_o[15:0]</obj_property>
+            <obj_property name="ObjectShortName">data_o[15:0]</obj_property>
          </wvobject>
       </wvobject>
       <wvobject fp_name="group193" type="group">
@@ -359,14 +344,54 @@
          <obj_property name="label">Output Data Signals</obj_property>
          <obj_property name="DisplayName">label</obj_property>
          <wvobject fp_name="/conv_layer_tb/DUT/alu_data_lo" type="array">
-            <obj_property name="ElementShortName">alu_data_lo[0:0][3:0][7:0]</obj_property>
-            <obj_property name="ObjectShortName">alu_data_lo[0:0][3:0][7:0]</obj_property>
+            <obj_property name="ElementShortName">alu_data_lo[0:0][3:0][15:0]</obj_property>
+            <obj_property name="ObjectShortName">alu_data_lo[0:0][3:0][15:0]</obj_property>
             <obj_property name="isExpanded"></obj_property>
-            <wvobject fp_name="/conv_layer_tb/DUT/alu_data_lo[0]" type="array">
-               <obj_property name="ElementShortName">[0][3:0][7:0]</obj_property>
-               <obj_property name="ObjectShortName">[0][3:0][7:0]</obj_property>
-               <obj_property name="isExpanded"></obj_property>
-            </wvobject>
+         </wvobject>
+      </wvobject>
+      <wvobject fp_name="group338" type="group">
+         <obj_property name="label">ALU 3 Signal Set</obj_property>
+         <obj_property name="DisplayName">label</obj_property>
+         <obj_property name="isExpanded"></obj_property>
+         <wvobject fp_name="/conv_layer_tb/DUT/\genblk1[0].genblk1[1].subsidiary_alu /mem_i" type="array">
+            <obj_property name="ElementShortName">mem_i[15:0]</obj_property>
+            <obj_property name="ObjectShortName">mem_i[15:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/conv_layer_tb/DUT/\genblk1[0].genblk1[1].subsidiary_alu /data_i" type="array">
+            <obj_property name="ElementShortName">data_i[15:0]</obj_property>
+            <obj_property name="ObjectShortName">data_i[15:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/conv_layer_tb/DUT/\genblk1[0].genblk1[1].subsidiary_alu /add_bias" type="logic">
+            <obj_property name="ElementShortName">add_bias</obj_property>
+            <obj_property name="ObjectShortName">add_bias</obj_property>
+         </wvobject>
+         <wvobject fp_name="/conv_layer_tb/DUT/\genblk1[0].genblk1[1].subsidiary_alu /sum_en" type="logic">
+            <obj_property name="ElementShortName">sum_en</obj_property>
+            <obj_property name="ObjectShortName">sum_en</obj_property>
+         </wvobject>
+         <wvobject fp_name="/conv_layer_tb/DUT/\genblk1[0].genblk1[1].subsidiary_alu /clk_i" type="logic">
+            <obj_property name="ElementShortName">clk_i</obj_property>
+            <obj_property name="ObjectShortName">clk_i</obj_property>
+         </wvobject>
+         <wvobject fp_name="/conv_layer_tb/DUT/\genblk1[0].genblk1[1].subsidiary_alu /reset_i" type="logic">
+            <obj_property name="ElementShortName">reset_i</obj_property>
+            <obj_property name="ObjectShortName">reset_i</obj_property>
+         </wvobject>
+         <wvobject fp_name="/conv_layer_tb/DUT/\genblk1[0].genblk1[1].subsidiary_alu /data_o" type="array">
+            <obj_property name="ElementShortName">data_o[15:0]</obj_property>
+            <obj_property name="ObjectShortName">data_o[15:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/conv_layer_tb/DUT/\genblk1[0].genblk1[1].subsidiary_alu /SEL" type="array">
+            <obj_property name="ElementShortName">SEL[1:0]</obj_property>
+            <obj_property name="ObjectShortName">SEL[1:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/conv_layer_tb/DUT/\genblk1[0].genblk1[1].subsidiary_alu /full_data" type="array">
+            <obj_property name="ElementShortName">full_data[47:0]</obj_property>
+            <obj_property name="ObjectShortName">full_data[47:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/conv_layer_tb/DUT/\genblk1[0].genblk1[1].subsidiary_alu /sum_r" type="array">
+            <obj_property name="ElementShortName">sum_r[31:0]</obj_property>
+            <obj_property name="ObjectShortName">sum_r[31:0]</obj_property>
          </wvobject>
       </wvobject>
    </wvobject>
@@ -382,14 +407,13 @@
          <obj_property name="ObjectShortName">yumi_o</obj_property>
       </wvobject>
       <wvobject fp_name="/conv_layer_tb/DUT/data_i" type="array">
-         <obj_property name="ElementShortName">data_i[7:0]</obj_property>
-         <obj_property name="ObjectShortName">data_i[7:0]</obj_property>
+         <obj_property name="ElementShortName">data_i[15:0]</obj_property>
+         <obj_property name="ObjectShortName">data_i[15:0]</obj_property>
       </wvobject>
    </wvobject>
    <wvobject fp_name="group49" type="group">
       <obj_property name="label">Output Handshake</obj_property>
       <obj_property name="DisplayName">label</obj_property>
-      <obj_property name="isExpanded"></obj_property>
       <wvobject fp_name="/conv_layer_tb/DUT/valid_o" type="logic">
          <obj_property name="ElementShortName">valid_o</obj_property>
          <obj_property name="ObjectShortName">valid_o</obj_property>
@@ -399,8 +423,8 @@
          <obj_property name="ObjectShortName">ready_i</obj_property>
       </wvobject>
       <wvobject fp_name="/conv_layer_tb/DUT/data_o" type="array">
-         <obj_property name="ElementShortName">data_o[0:0][7:0]</obj_property>
-         <obj_property name="ObjectShortName">data_o[0:0][7:0]</obj_property>
+         <obj_property name="ElementShortName">data_o[0:0][15:0]</obj_property>
+         <obj_property name="ObjectShortName">data_o[0:0][15:0]</obj_property>
       </wvobject>
    </wvobject>
 </wave_config>
