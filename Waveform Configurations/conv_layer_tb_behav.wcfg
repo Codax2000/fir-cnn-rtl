@@ -11,180 +11,103 @@
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="0.000 ns"></ZoomStartTime>
-      <ZoomEndTime time="2,600.000 ns"></ZoomEndTime>
-      <Cursor1Time time="2,000.000 ns"></Cursor1Time>
+      <ZoomStartTime time="1,275.148 ns"></ZoomStartTime>
+      <ZoomEndTime time="1,556.649 ns"></ZoomEndTime>
+      <Cursor1Time time="1,347.064 ns"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
-      <NameColumnWidth column_width="177"></NameColumnWidth>
-      <ValueColumnWidth column_width="118"></ValueColumnWidth>
+      <NameColumnWidth column_width="222"></NameColumnWidth>
+      <ValueColumnWidth column_width="79"></ValueColumnWidth>
    </column_width_setting>
-   <WVObjectSize size="15" />
-   <wave_markers>
-      <marker time="3250351" label="" />
-   </wave_markers>
-   <wvobject fp_name="/conv_layer_tb/test_input_serializer/valid_i" type="logic">
-      <obj_property name="ElementShortName">valid_i</obj_property>
-      <obj_property name="ObjectShortName">valid_i</obj_property>
+   <WVObjectSize size="7" />
+   <wvobject fp_name="/conv_layer_tb/clk_i" type="logic">
+      <obj_property name="ElementShortName">clk_i</obj_property>
+      <obj_property name="ObjectShortName">clk_i</obj_property>
    </wvobject>
-   <wvobject fp_name="/conv_layer_tb/test_input_serializer/ready_o" type="logic">
-      <obj_property name="ElementShortName">ready_o</obj_property>
-      <obj_property name="ObjectShortName">ready_o</obj_property>
+   <wvobject fp_name="/conv_layer_tb/reset_i" type="logic">
+      <obj_property name="ElementShortName">reset_i</obj_property>
+      <obj_property name="ObjectShortName">reset_i</obj_property>
    </wvobject>
-   <wvobject fp_name="/conv_layer_tb/test_input_serializer/data_i" type="array">
-      <obj_property name="ElementShortName">data_i[7:0][7:0]</obj_property>
-      <obj_property name="ObjectShortName">data_i[7:0][7:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="group277" type="group">
-      <obj_property name="label">Input Layer</obj_property>
+   <wvobject fp_name="group29" type="group">
+      <obj_property name="label">Input Layer Signals</obj_property>
       <obj_property name="DisplayName">label</obj_property>
-      <wvobject fp_name="/conv_layer_tb/test_input_serializer/clk_i" type="logic">
-         <obj_property name="ElementShortName">clk_i</obj_property>
-         <obj_property name="ObjectShortName">clk_i</obj_property>
-      </wvobject>
-      <wvobject fp_name="/conv_layer_tb/test_input_serializer/reset_i" type="logic">
-         <obj_property name="ElementShortName">reset_i</obj_property>
-         <obj_property name="ObjectShortName">reset_i</obj_property>
-      </wvobject>
-      <wvobject fp_name="/conv_layer_tb/test_input_serializer/valid_i" type="logic">
+      <wvobject fp_name="/conv_layer_tb/input_layer/valid_i" type="logic">
          <obj_property name="ElementShortName">valid_i</obj_property>
          <obj_property name="ObjectShortName">valid_i</obj_property>
       </wvobject>
-      <wvobject fp_name="/conv_layer_tb/test_input_serializer/ready_o" type="logic">
+      <wvobject fp_name="/conv_layer_tb/input_layer/ready_o" type="logic">
          <obj_property name="ElementShortName">ready_o</obj_property>
          <obj_property name="ObjectShortName">ready_o</obj_property>
       </wvobject>
-      <wvobject fp_name="/conv_layer_tb/test_input_serializer/data_i" type="array">
-         <obj_property name="ElementShortName">data_i[7:0][7:0]</obj_property>
-         <obj_property name="ObjectShortName">data_i[7:0][7:0]</obj_property>
+      <wvobject fp_name="/conv_layer_tb/input_layer/data_i" type="array">
+         <obj_property name="ElementShortName">data_i[9:0][7:0]</obj_property>
+         <obj_property name="ObjectShortName">data_i[9:0][7:0]</obj_property>
       </wvobject>
-      <wvobject fp_name="/conv_layer_tb/test_input_serializer/wen_o" type="logic">
+      <wvobject fp_name="/conv_layer_tb/input_layer/wen_o" type="logic">
          <obj_property name="ElementShortName">wen_o</obj_property>
          <obj_property name="ObjectShortName">wen_o</obj_property>
       </wvobject>
-      <wvobject fp_name="/conv_layer_tb/test_input_serializer/full_i" type="logic">
+      <wvobject fp_name="/conv_layer_tb/input_layer/full_i" type="logic">
          <obj_property name="ElementShortName">full_i</obj_property>
          <obj_property name="ObjectShortName">full_i</obj_property>
       </wvobject>
-      <wvobject fp_name="/conv_layer_tb/test_input_serializer/data_o" type="array">
+      <wvobject fp_name="/conv_layer_tb/input_layer/data_o" type="array">
          <obj_property name="ElementShortName">data_o[7:0]</obj_property>
          <obj_property name="ObjectShortName">data_o[7:0]</obj_property>
       </wvobject>
-      <wvobject fp_name="/conv_layer_tb/test_input_serializer/output_addr" type="array">
-         <obj_property name="ElementShortName">output_addr[3:0]</obj_property>
-         <obj_property name="ObjectShortName">output_addr[3:0]</obj_property>
-      </wvobject>
-      <wvobject fp_name="/conv_layer_tb/test_input_serializer/current_data" type="array">
-         <obj_property name="ElementShortName">current_data[7:0][7:0]</obj_property>
-         <obj_property name="ObjectShortName">current_data[7:0][7:0]</obj_property>
-      </wvobject>
-      <wvobject fp_name="/conv_layer_tb/test_input_serializer/ps" type="other">
-         <obj_property name="ElementShortName">ps</obj_property>
-         <obj_property name="ObjectShortName">ps</obj_property>
-      </wvobject>
-      <wvobject fp_name="/conv_layer_tb/test_input_serializer/ns" type="other">
-         <obj_property name="ElementShortName">ns</obj_property>
-         <obj_property name="ObjectShortName">ns</obj_property>
-      </wvobject>
    </wvobject>
-   <wvobject fp_name="/conv_layer_tb/test_input_serializer/wen_o" type="logic">
-      <obj_property name="ElementShortName">wen_o</obj_property>
-      <obj_property name="ObjectShortName">wen_o</obj_property>
-   </wvobject>
-   <wvobject fp_name="/conv_layer_tb/test_input_serializer/full_i" type="logic">
-      <obj_property name="ElementShortName">full_i</obj_property>
-      <obj_property name="ObjectShortName">full_i</obj_property>
-   </wvobject>
-   <wvobject fp_name="/conv_layer_tb/test_input_serializer/data_o" type="array">
-      <obj_property name="ElementShortName">data_o[7:0]</obj_property>
-      <obj_property name="ObjectShortName">data_o[7:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="group278" type="group">
-      <obj_property name="label">FIFO</obj_property>
+   <wvobject fp_name="group39" type="group">
+      <obj_property name="label">FIFO Signals</obj_property>
       <obj_property name="DisplayName">label</obj_property>
-      <wvobject fp_name="/conv_layer_tb/middle_fifo/wen_i" type="logic">
+      <wvobject fp_name="/conv_layer_tb/input_fifo/wen_i" type="logic">
          <obj_property name="ElementShortName">wen_i</obj_property>
          <obj_property name="ObjectShortName">wen_i</obj_property>
       </wvobject>
-      <wvobject fp_name="/conv_layer_tb/middle_fifo/ren_i" type="logic">
-         <obj_property name="ElementShortName">ren_i</obj_property>
-         <obj_property name="ObjectShortName">ren_i</obj_property>
-      </wvobject>
-      <wvobject fp_name="/conv_layer_tb/middle_fifo/data_i" type="array">
-         <obj_property name="ElementShortName">data_i[7:0]</obj_property>
-         <obj_property name="ObjectShortName">data_i[7:0]</obj_property>
-      </wvobject>
-      <wvobject fp_name="/conv_layer_tb/middle_fifo/full_o" type="logic">
+      <wvobject fp_name="/conv_layer_tb/input_fifo/full_o" type="logic">
          <obj_property name="ElementShortName">full_o</obj_property>
          <obj_property name="ObjectShortName">full_o</obj_property>
       </wvobject>
-      <wvobject fp_name="/conv_layer_tb/middle_fifo/empty_o" type="logic">
+      <wvobject fp_name="/conv_layer_tb/input_fifo/data_i" type="array">
+         <obj_property name="ElementShortName">data_i[7:0]</obj_property>
+         <obj_property name="ObjectShortName">data_i[7:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/conv_layer_tb/input_fifo/empty_o" type="logic">
          <obj_property name="ElementShortName">empty_o</obj_property>
          <obj_property name="ObjectShortName">empty_o</obj_property>
       </wvobject>
-      <wvobject fp_name="/conv_layer_tb/middle_fifo/data_o" type="array">
+      <wvobject fp_name="/conv_layer_tb/input_fifo/ren_i" type="logic">
+         <obj_property name="ElementShortName">ren_i</obj_property>
+         <obj_property name="ObjectShortName">ren_i</obj_property>
+      </wvobject>
+      <wvobject fp_name="/conv_layer_tb/input_fifo/data_o" type="array">
          <obj_property name="ElementShortName">data_o[7:0]</obj_property>
          <obj_property name="ObjectShortName">data_o[7:0]</obj_property>
       </wvobject>
-      <wvobject fp_name="/conv_layer_tb/middle_fifo/data_contained" type="array">
-         <obj_property name="ElementShortName">data_contained[1:0]</obj_property>
-         <obj_property name="ObjectShortName">data_contained[1:0]</obj_property>
-      </wvobject>
-      <wvobject fp_name="/conv_layer_tb/middle_fifo/next_data_contained" type="array">
-         <obj_property name="ElementShortName">next_data_contained[1:0]</obj_property>
-         <obj_property name="ObjectShortName">next_data_contained[1:0]</obj_property>
-      </wvobject>
-      <wvobject fp_name="/conv_layer_tb/middle_fifo/mid_data" type="array">
-         <obj_property name="ElementShortName">mid_data[7:0]</obj_property>
-         <obj_property name="ObjectShortName">mid_data[7:0]</obj_property>
-      </wvobject>
-      <wvobject fp_name="/conv_layer_tb/middle_fifo/next_mid_data" type="array">
-         <obj_property name="ElementShortName">next_mid_data[7:0]</obj_property>
-         <obj_property name="ObjectShortName">next_mid_data[7:0]</obj_property>
-      </wvobject>
-      <wvobject fp_name="/conv_layer_tb/middle_fifo/next_data_out" type="array">
-         <obj_property name="ElementShortName">next_data_out[7:0]</obj_property>
-         <obj_property name="ObjectShortName">next_data_out[7:0]</obj_property>
-      </wvobject>
-      <wvobject fp_name="/conv_layer_tb/middle_fifo/shift" type="logic">
-         <obj_property name="ElementShortName">shift</obj_property>
-         <obj_property name="ObjectShortName">shift</obj_property>
-      </wvobject>
    </wvobject>
-   <wvobject fp_name="/conv_layer_tb/middle_fifo/ren_i" type="logic">
-      <obj_property name="ElementShortName">ren_i</obj_property>
-      <obj_property name="ObjectShortName">ren_i</obj_property>
-   </wvobject>
-   <wvobject fp_name="/conv_layer_tb/middle_fifo/empty_o" type="logic">
-      <obj_property name="ElementShortName">empty_o</obj_property>
-      <obj_property name="ObjectShortName">empty_o</obj_property>
-   </wvobject>
-   <wvobject fp_name="/conv_layer_tb/middle_fifo/data_o" type="array">
-      <obj_property name="ElementShortName">data_o[7:0]</obj_property>
-      <obj_property name="ObjectShortName">data_o[7:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="group279" type="group">
-      <obj_property name="label">DUT</obj_property>
+   <wvobject fp_name="group46" type="group">
+      <obj_property name="label">DUT Signals</obj_property>
       <obj_property name="DisplayName">label</obj_property>
-      <obj_property name="isExpanded"></obj_property>
-      <wvobject fp_name="group298" type="group">
+      <wvobject fp_name="/conv_layer_tb/DUT/start_i" type="logic">
+         <obj_property name="ElementShortName">start_i</obj_property>
+         <obj_property name="ObjectShortName">start_i</obj_property>
+      </wvobject>
+      <wvobject fp_name="group48" type="group">
          <obj_property name="label">Input Handshake</obj_property>
          <obj_property name="DisplayName">label</obj_property>
-         <obj_property name="isExpanded"></obj_property>
          <wvobject fp_name="/conv_layer_tb/DUT/valid_i" type="logic">
             <obj_property name="ElementShortName">valid_i</obj_property>
             <obj_property name="ObjectShortName">valid_i</obj_property>
          </wvobject>
-         <wvobject fp_name="/conv_layer_tb/DUT/ready_o" type="logic">
-            <obj_property name="ElementShortName">ready_o</obj_property>
-            <obj_property name="ObjectShortName">ready_o</obj_property>
+         <wvobject fp_name="/conv_layer_tb/DUT/yumi_o" type="logic">
+            <obj_property name="ElementShortName">yumi_o</obj_property>
+            <obj_property name="ObjectShortName">yumi_o</obj_property>
          </wvobject>
          <wvobject fp_name="/conv_layer_tb/DUT/data_i" type="array">
             <obj_property name="ElementShortName">data_i[7:0]</obj_property>
             <obj_property name="ObjectShortName">data_i[7:0]</obj_property>
          </wvobject>
       </wvobject>
-      <wvobject fp_name="group299" type="group">
+      <wvobject fp_name="group49" type="group">
          <obj_property name="label">Output Handshake</obj_property>
          <obj_property name="DisplayName">label</obj_property>
          <obj_property name="isExpanded"></obj_property>
@@ -192,103 +115,292 @@
             <obj_property name="ElementShortName">valid_o</obj_property>
             <obj_property name="ObjectShortName">valid_o</obj_property>
          </wvobject>
-         <wvobject fp_name="/conv_layer_tb/DUT/yumi_i" type="logic">
-            <obj_property name="ElementShortName">yumi_i</obj_property>
-            <obj_property name="ObjectShortName">yumi_i</obj_property>
+         <wvobject fp_name="/conv_layer_tb/DUT/ready_i" type="logic">
+            <obj_property name="ElementShortName">ready_i</obj_property>
+            <obj_property name="ObjectShortName">ready_i</obj_property>
          </wvobject>
          <wvobject fp_name="/conv_layer_tb/DUT/data_o" type="array">
-            <obj_property name="ElementShortName">data_o[1:0][7:0]</obj_property>
-            <obj_property name="ObjectShortName">data_o[1:0][7:0]</obj_property>
+            <obj_property name="ElementShortName">data_o[0:0][7:0]</obj_property>
+            <obj_property name="ObjectShortName">data_o[0:0][7:0]</obj_property>
+            <obj_property name="isExpanded"></obj_property>
          </wvobject>
       </wvobject>
-      <wvobject fp_name="/conv_layer_tb/DUT/ps" type="array">
-         <obj_property name="ElementShortName">ps[1:0]</obj_property>
-         <obj_property name="ObjectShortName">ps[1:0]</obj_property>
+      <wvobject fp_name="/conv_layer_tb/DUT/ns_e" type="array">
+         <obj_property name="ElementShortName">ns_e[2:0]</obj_property>
+         <obj_property name="ObjectShortName">ns_e[2:0]</obj_property>
       </wvobject>
-      <wvobject fp_name="/conv_layer_tb/DUT/ns" type="array">
-         <obj_property name="ElementShortName">ns[1:0]</obj_property>
-         <obj_property name="ObjectShortName">ns[1:0]</obj_property>
+      <wvobject fp_name="/conv_layer_tb/DUT/ps_e" type="array">
+         <obj_property name="ElementShortName">ps_e[2:0]</obj_property>
+         <obj_property name="ObjectShortName">ps_e[2:0]</obj_property>
       </wvobject>
-      <wvobject fp_name="/conv_layer_tb/DUT/add_bias" type="logic">
-         <obj_property name="ElementShortName">add_bias</obj_property>
-         <obj_property name="ObjectShortName">add_bias</obj_property>
-      </wvobject>
-      <wvobject fp_name="/conv_layer_tb/DUT/sum_en" type="logic">
-         <obj_property name="ElementShortName">sum_en</obj_property>
-         <obj_property name="ObjectShortName">sum_en</obj_property>
-      </wvobject>
-      <wvobject fp_name="/conv_layer_tb/DUT/mem_addr" type="array">
-         <obj_property name="ElementShortName">mem_addr[2:0]</obj_property>
-         <obj_property name="ObjectShortName">mem_addr[2:0]</obj_property>
-      </wvobject>
-      <wvobject fp_name="/conv_layer_tb/DUT/mem_out" type="array">
-         <obj_property name="ElementShortName">mem_out[7:0]</obj_property>
-         <obj_property name="ObjectShortName">mem_out[7:0]</obj_property>
-      </wvobject>
-      <wvobject fp_name="/conv_layer_tb/DUT/shift_count" type="array">
-         <obj_property name="ElementShortName">shift_count[3:0]</obj_property>
-         <obj_property name="ObjectShortName">shift_count[3:0]</obj_property>
-      </wvobject>
-      <wvobject fp_name="/conv_layer_tb/DUT/shift_reg_out" type="array">
-         <obj_property name="ElementShortName">shift_reg_out[3:0][7:0]</obj_property>
-         <obj_property name="ObjectShortName">shift_reg_out[3:0][7:0]</obj_property>
-      </wvobject>
-      <wvobject fp_name="/conv_layer_tb/DUT/end_shift_stage" type="logic">
-         <obj_property name="ElementShortName">end_shift_stage</obj_property>
-         <obj_property name="ObjectShortName">end_shift_stage</obj_property>
-      </wvobject>
-      <wvobject fp_name="group107" type="group">
-         <obj_property name="label">LU 0</obj_property>
+      <wvobject fp_name="group59" type="group">
+         <obj_property name="label">Control Signals</obj_property>
          <obj_property name="DisplayName">label</obj_property>
-         <obj_property name="isExpanded"></obj_property>
-         <wvobject fp_name="/conv_layer_tb/DUT/\genblk1[0].LU /mem_i" type="array">
+         <wvobject fp_name="/conv_layer_tb/DUT/handshake_out_en" type="logic">
+            <obj_property name="ElementShortName">handshake_out_en</obj_property>
+            <obj_property name="ObjectShortName">handshake_out_en</obj_property>
+         </wvobject>
+         <wvobject fp_name="/conv_layer_tb/DUT/add_bias_li" type="logic">
+            <obj_property name="ElementShortName">add_bias_li</obj_property>
+            <obj_property name="ObjectShortName">add_bias_li</obj_property>
+         </wvobject>
+         <wvobject fp_name="/conv_layer_tb/DUT/sum_en_li" type="logic">
+            <obj_property name="ElementShortName">sum_en_li</obj_property>
+            <obj_property name="ObjectShortName">sum_en_li</obj_property>
+         </wvobject>
+      </wvobject>
+      <wvobject fp_name="group62" type="group">
+         <obj_property name="label">Address Counters</obj_property>
+         <obj_property name="DisplayName">label</obj_property>
+         <wvobject fp_name="/conv_layer_tb/DUT/mem_count_r" type="array">
+            <obj_property name="ElementShortName">mem_count_r[2:0]</obj_property>
+            <obj_property name="ObjectShortName">mem_count_r[2:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/conv_layer_tb/DUT/mem_count_n" type="array">
+            <obj_property name="ElementShortName">mem_count_n[2:0]</obj_property>
+            <obj_property name="ObjectShortName">mem_count_n[2:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/conv_layer_tb/DUT/consumed_count_r" type="array">
+            <obj_property name="ElementShortName">consumed_count_r[3:0]</obj_property>
+            <obj_property name="ObjectShortName">consumed_count_r[3:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/conv_layer_tb/DUT/consumed_count_n" type="array">
+            <obj_property name="ElementShortName">consumed_count_n[3:0]</obj_property>
+            <obj_property name="ObjectShortName">consumed_count_n[3:0]</obj_property>
+         </wvobject>
+      </wvobject>
+      <wvobject fp_name="group67" type="group">
+         <obj_property name="label">Concatenated Handshakes</obj_property>
+         <obj_property name="DisplayName">label</obj_property>
+         <wvobject fp_name="/conv_layer_tb/DUT/handshake_in" type="logic">
+            <obj_property name="ElementShortName">handshake_in</obj_property>
+            <obj_property name="ObjectShortName">handshake_in</obj_property>
+         </wvobject>
+         <wvobject fp_name="/conv_layer_tb/DUT/handshake_out" type="logic">
+            <obj_property name="ElementShortName">handshake_out</obj_property>
+            <obj_property name="ObjectShortName">handshake_out</obj_property>
+         </wvobject>
+         <wvobject fp_name="/conv_layer_tb/DUT/shift" type="logic">
+            <obj_property name="ElementShortName">shift</obj_property>
+            <obj_property name="ObjectShortName">shift</obj_property>
+         </wvobject>
+      </wvobject>
+      <wvobject fp_name="group86" type="group">
+         <obj_property name="label">Data Signals</obj_property>
+         <obj_property name="DisplayName">label</obj_property>
+         <wvobject fp_name="/conv_layer_tb/DUT/alu_data_lo" type="array">
+            <obj_property name="ElementShortName">alu_data_lo[0:0][3:0][7:0]</obj_property>
+            <obj_property name="ObjectShortName">alu_data_lo[0:0][3:0][7:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/conv_layer_tb/DUT/shift_sum_en_lo" type="array">
+            <obj_property name="ElementShortName">shift_sum_en_lo[5:0]</obj_property>
+            <obj_property name="ObjectShortName">shift_sum_en_lo[5:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/conv_layer_tb/DUT/shift_add_bias_lo" type="array">
+            <obj_property name="ElementShortName">shift_add_bias_lo[5:0]</obj_property>
+            <obj_property name="ObjectShortName">shift_add_bias_lo[5:0]</obj_property>
+         </wvobject>
+      </wvobject>
+      <wvobject fp_name="group101" type="group">
+         <obj_property name="label">ALU 1 Signal Set</obj_property>
+         <obj_property name="DisplayName">label</obj_property>
+         <wvobject fp_name="/conv_layer_tb/DUT/\genblk1[0].first_alu /mem_i" type="array">
             <obj_property name="ElementShortName">mem_i[7:0]</obj_property>
             <obj_property name="ObjectShortName">mem_i[7:0]</obj_property>
          </wvobject>
-         <wvobject fp_name="/conv_layer_tb/DUT/\genblk1[0].LU /data_i" type="array">
+         <wvobject fp_name="/conv_layer_tb/DUT/\genblk1[0].first_alu /data_i" type="array">
             <obj_property name="ElementShortName">data_i[7:0]</obj_property>
             <obj_property name="ObjectShortName">data_i[7:0]</obj_property>
          </wvobject>
-         <wvobject fp_name="/conv_layer_tb/DUT/\genblk1[0].LU /add_bias" type="logic">
+         <wvobject fp_name="/conv_layer_tb/DUT/\genblk1[0].first_alu /add_bias" type="logic">
             <obj_property name="ElementShortName">add_bias</obj_property>
             <obj_property name="ObjectShortName">add_bias</obj_property>
          </wvobject>
-         <wvobject fp_name="/conv_layer_tb/DUT/\genblk1[0].LU /sum_en" type="logic">
+         <wvobject fp_name="/conv_layer_tb/DUT/\genblk1[0].first_alu /sum_en" type="logic">
             <obj_property name="ElementShortName">sum_en</obj_property>
             <obj_property name="ObjectShortName">sum_en</obj_property>
          </wvobject>
-         <wvobject fp_name="/conv_layer_tb/DUT/\genblk1[0].LU /data_o" type="array">
+         <wvobject fp_name="/conv_layer_tb/DUT/\genblk1[0].first_alu /clk_i" type="logic">
+            <obj_property name="ElementShortName">clk_i</obj_property>
+            <obj_property name="ObjectShortName">clk_i</obj_property>
+         </wvobject>
+         <wvobject fp_name="/conv_layer_tb/DUT/\genblk1[0].first_alu /reset_i" type="logic">
+            <obj_property name="ElementShortName">reset_i</obj_property>
+            <obj_property name="ObjectShortName">reset_i</obj_property>
+         </wvobject>
+         <wvobject fp_name="/conv_layer_tb/DUT/\genblk1[0].first_alu /data_o" type="array">
             <obj_property name="ElementShortName">data_o[7:0]</obj_property>
             <obj_property name="ObjectShortName">data_o[7:0]</obj_property>
          </wvobject>
-         <wvobject fp_name="/conv_layer_tb/DUT/\genblk1[0].LU /mult_result" type="array">
-            <obj_property name="ElementShortName">mult_result[7:0]</obj_property>
-            <obj_property name="ObjectShortName">mult_result[7:0]</obj_property>
+         <wvobject fp_name="/conv_layer_tb/DUT/\genblk1[0].first_alu /sum_n" type="array">
+            <obj_property name="ElementShortName">sum_n[15:0]</obj_property>
+            <obj_property name="ObjectShortName">sum_n[15:0]</obj_property>
          </wvobject>
-         <wvobject fp_name="/conv_layer_tb/DUT/\genblk1[0].LU /add_in" type="array">
-            <obj_property name="ElementShortName">add_in[7:0]</obj_property>
-            <obj_property name="ObjectShortName">add_in[7:0]</obj_property>
+         <wvobject fp_name="/conv_layer_tb/DUT/\genblk1[0].first_alu /sum_r" type="array">
+            <obj_property name="ElementShortName">sum_r[15:0]</obj_property>
+            <obj_property name="ObjectShortName">sum_r[15:0]</obj_property>
          </wvobject>
-         <wvobject fp_name="/conv_layer_tb/DUT/\genblk1[0].LU /sum_n" type="array">
-            <obj_property name="ElementShortName">sum_n[7:0]</obj_property>
-            <obj_property name="ObjectShortName">sum_n[7:0]</obj_property>
+         <wvobject fp_name="/conv_layer_tb/DUT/\genblk1[0].first_alu /add_in" type="array">
+            <obj_property name="ElementShortName">add_in[15:0]</obj_property>
+            <obj_property name="ObjectShortName">add_in[15:0]</obj_property>
          </wvobject>
-         <wvobject fp_name="/conv_layer_tb/DUT/\genblk1[0].LU /sum_r" type="array">
-            <obj_property name="ElementShortName">sum_r[7:0]</obj_property>
-            <obj_property name="ObjectShortName">sum_r[7:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/conv_layer_tb/DUT/shift_add_bias_lo" type="array">
+         <obj_property name="ElementShortName">shift_add_bias_lo[5:0]</obj_property>
+         <obj_property name="ObjectShortName">shift_add_bias_lo[5:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/conv_layer_tb/DUT/shift_sum_en_lo" type="array">
+         <obj_property name="ElementShortName">shift_sum_en_lo[5:0]</obj_property>
+         <obj_property name="ObjectShortName">shift_sum_en_lo[5:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="group207" type="group">
+         <obj_property name="label">ALU 2 Signal Set</obj_property>
+         <obj_property name="DisplayName">label</obj_property>
+         <wvobject fp_name="/conv_layer_tb/DUT/\genblk1[0].genblk1[0].subsidiary_alu /mem_i" type="array">
+            <obj_property name="ElementShortName">mem_i[7:0]</obj_property>
+            <obj_property name="ObjectShortName">mem_i[7:0]</obj_property>
+            <obj_property name="Radix">HEXRADIX</obj_property>
+         </wvobject>
+         <wvobject fp_name="/conv_layer_tb/DUT/\genblk1[0].genblk1[0].subsidiary_alu /data_i" type="array">
+            <obj_property name="ElementShortName">data_i[7:0]</obj_property>
+            <obj_property name="ObjectShortName">data_i[7:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/conv_layer_tb/DUT/\genblk1[0].genblk1[0].subsidiary_alu /add_bias" type="logic">
+            <obj_property name="ElementShortName">add_bias</obj_property>
+            <obj_property name="ObjectShortName">add_bias</obj_property>
+         </wvobject>
+         <wvobject fp_name="/conv_layer_tb/DUT/\genblk1[0].genblk1[0].subsidiary_alu /sum_en" type="logic">
+            <obj_property name="ElementShortName">sum_en</obj_property>
+            <obj_property name="ObjectShortName">sum_en</obj_property>
+         </wvobject>
+         <wvobject fp_name="/conv_layer_tb/DUT/\genblk1[0].genblk1[0].subsidiary_alu /clk_i" type="logic">
+            <obj_property name="ElementShortName">clk_i</obj_property>
+            <obj_property name="ObjectShortName">clk_i</obj_property>
+         </wvobject>
+         <wvobject fp_name="/conv_layer_tb/DUT/\genblk1[0].genblk1[0].subsidiary_alu /reset_i" type="logic">
+            <obj_property name="ElementShortName">reset_i</obj_property>
+            <obj_property name="ObjectShortName">reset_i</obj_property>
+         </wvobject>
+         <wvobject fp_name="/conv_layer_tb/DUT/\genblk1[0].genblk1[0].subsidiary_alu /data_o" type="array">
+            <obj_property name="ElementShortName">data_o[7:0]</obj_property>
+            <obj_property name="ObjectShortName">data_o[7:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/conv_layer_tb/DUT/\genblk1[0].genblk1[0].subsidiary_alu /sum_n" type="array">
+            <obj_property name="ElementShortName">sum_n[15:0]</obj_property>
+            <obj_property name="ObjectShortName">sum_n[15:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/conv_layer_tb/DUT/\genblk1[0].genblk1[0].subsidiary_alu /sum_r" type="array">
+            <obj_property name="ElementShortName">sum_r[15:0]</obj_property>
+            <obj_property name="ObjectShortName">sum_r[15:0]</obj_property>
+            <obj_property name="Radix">HEXRADIX</obj_property>
+         </wvobject>
+         <wvobject fp_name="/conv_layer_tb/DUT/\genblk1[0].genblk1[0].subsidiary_alu /add_in" type="array">
+            <obj_property name="ElementShortName">add_in[15:0]</obj_property>
+            <obj_property name="ObjectShortName">add_in[15:0]</obj_property>
+         </wvobject>
+      </wvobject>
+      <wvobject fp_name="group112" type="group">
+         <obj_property name="label">Memory Signal Set</obj_property>
+         <obj_property name="DisplayName">label</obj_property>
+         <wvobject fp_name="/conv_layer_tb/DUT/\genblk1[0].weight_mem /reset_i" type="logic">
+            <obj_property name="ElementShortName">reset_i</obj_property>
+            <obj_property name="ObjectShortName">reset_i</obj_property>
+         </wvobject>
+         <wvobject fp_name="/conv_layer_tb/DUT/\genblk1[0].weight_mem /clk_i" type="logic">
+            <obj_property name="ElementShortName">clk_i</obj_property>
+            <obj_property name="ObjectShortName">clk_i</obj_property>
+         </wvobject>
+         <wvobject fp_name="/conv_layer_tb/DUT/\genblk1[0].weight_mem /addr_i" type="array">
+            <obj_property name="ElementShortName">addr_i[2:0]</obj_property>
+            <obj_property name="ObjectShortName">addr_i[2:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/conv_layer_tb/DUT/\genblk1[0].weight_mem /data_i" type="array">
+            <obj_property name="ElementShortName">data_i[7:0]</obj_property>
+            <obj_property name="ObjectShortName">data_i[7:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/conv_layer_tb/DUT/\genblk1[0].weight_mem /wen_i" type="logic">
+            <obj_property name="ElementShortName">wen_i</obj_property>
+            <obj_property name="ObjectShortName">wen_i</obj_property>
+         </wvobject>
+         <wvobject fp_name="/conv_layer_tb/DUT/\genblk1[0].weight_mem /data_o" type="array">
+            <obj_property name="ElementShortName">data_o[7:0]</obj_property>
+            <obj_property name="ObjectShortName">data_o[7:0]</obj_property>
+         </wvobject>
+      </wvobject>
+      <wvobject fp_name="group193" type="group">
+         <obj_property name="label">Handshake Enable Signal Set</obj_property>
+         <obj_property name="DisplayName">label</obj_property>
+         <wvobject fp_name="/conv_layer_tb/DUT/handshake_out_enabler/clk_i" type="logic">
+            <obj_property name="ElementShortName">clk_i</obj_property>
+            <obj_property name="ObjectShortName">clk_i</obj_property>
+         </wvobject>
+         <wvobject fp_name="/conv_layer_tb/DUT/handshake_out_enabler/reset_i" type="logic">
+            <obj_property name="ElementShortName">reset_i</obj_property>
+            <obj_property name="ObjectShortName">reset_i</obj_property>
+         </wvobject>
+         <wvobject fp_name="/conv_layer_tb/DUT/handshake_out_enabler/en_i" type="logic">
+            <obj_property name="ElementShortName">en_i</obj_property>
+            <obj_property name="ObjectShortName">en_i</obj_property>
+         </wvobject>
+         <wvobject fp_name="/conv_layer_tb/DUT/handshake_out_enabler/en_o" type="logic">
+            <obj_property name="ElementShortName">en_o</obj_property>
+            <obj_property name="ObjectShortName">en_o</obj_property>
+         </wvobject>
+         <wvobject fp_name="/conv_layer_tb/DUT/handshake_out_enabler/\genblk1.count " type="array">
+            <obj_property name="ElementShortName">\genblk1.count [0:0]</obj_property>
+            <obj_property name="ObjectShortName">\genblk1.count [0:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/conv_layer_tb/DUT/handshake_out_enabler/\genblk1.next_count " type="array">
+            <obj_property name="ElementShortName">\genblk1.next_count [0:0]</obj_property>
+            <obj_property name="ObjectShortName">\genblk1.next_count [0:0]</obj_property>
+         </wvobject>
+      </wvobject>
+      <wvobject fp_name="group201" type="group">
+         <obj_property name="label">Output Data Signals</obj_property>
+         <obj_property name="DisplayName">label</obj_property>
+         <wvobject fp_name="/conv_layer_tb/DUT/alu_data_lo" type="array">
+            <obj_property name="ElementShortName">alu_data_lo[0:0][3:0][7:0]</obj_property>
+            <obj_property name="ObjectShortName">alu_data_lo[0:0][3:0][7:0]</obj_property>
+            <obj_property name="isExpanded"></obj_property>
+            <wvobject fp_name="/conv_layer_tb/DUT/alu_data_lo[0]" type="array">
+               <obj_property name="ElementShortName">[0][3:0][7:0]</obj_property>
+               <obj_property name="ObjectShortName">[0][3:0][7:0]</obj_property>
+               <obj_property name="isExpanded"></obj_property>
+            </wvobject>
          </wvobject>
       </wvobject>
    </wvobject>
-   <wvobject fp_name="/conv_layer_tb/DUT/start_i" type="logic">
-      <obj_property name="ElementShortName">start_i</obj_property>
-      <obj_property name="ObjectShortName">start_i</obj_property>
+   <wvobject fp_name="group48" type="group">
+      <obj_property name="label">Input Handshake</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <wvobject fp_name="/conv_layer_tb/DUT/valid_i" type="logic">
+         <obj_property name="ElementShortName">valid_i</obj_property>
+         <obj_property name="ObjectShortName">valid_i</obj_property>
+      </wvobject>
+      <wvobject fp_name="/conv_layer_tb/DUT/yumi_o" type="logic">
+         <obj_property name="ElementShortName">yumi_o</obj_property>
+         <obj_property name="ObjectShortName">yumi_o</obj_property>
+      </wvobject>
+      <wvobject fp_name="/conv_layer_tb/DUT/data_i" type="array">
+         <obj_property name="ElementShortName">data_i[7:0]</obj_property>
+         <obj_property name="ObjectShortName">data_i[7:0]</obj_property>
+      </wvobject>
    </wvobject>
-   <wvobject fp_name="/conv_layer_tb/DUT/clk_i" type="logic">
-      <obj_property name="ElementShortName">clk_i</obj_property>
-      <obj_property name="ObjectShortName">clk_i</obj_property>
-   </wvobject>
-   <wvobject fp_name="/conv_layer_tb/DUT/reset_i" type="logic">
-      <obj_property name="ElementShortName">reset_i</obj_property>
-      <obj_property name="ObjectShortName">reset_i</obj_property>
+   <wvobject fp_name="group49" type="group">
+      <obj_property name="label">Output Handshake</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="isExpanded"></obj_property>
+      <wvobject fp_name="/conv_layer_tb/DUT/valid_o" type="logic">
+         <obj_property name="ElementShortName">valid_o</obj_property>
+         <obj_property name="ObjectShortName">valid_o</obj_property>
+      </wvobject>
+      <wvobject fp_name="/conv_layer_tb/DUT/ready_i" type="logic">
+         <obj_property name="ElementShortName">ready_i</obj_property>
+         <obj_property name="ObjectShortName">ready_i</obj_property>
+      </wvobject>
+      <wvobject fp_name="/conv_layer_tb/DUT/data_o" type="array">
+         <obj_property name="ElementShortName">data_o[0:0][7:0]</obj_property>
+         <obj_property name="ObjectShortName">data_o[0:0][7:0]</obj_property>
+      </wvobject>
    </wvobject>
 </wave_config>

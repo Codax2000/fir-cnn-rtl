@@ -107,11 +107,7 @@ module logical_unit #(
     input logic reset_i,
 
     output logic signed [WORD_SIZE-1:0] data_o
-    );
-    
-    
-    
-    
+    );    
     
 // DATAPATH
 
