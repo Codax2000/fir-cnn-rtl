@@ -6,7 +6,7 @@ Alex Knowlton & Eugene Liu
 Convolutional layer module. When start is asserted, handshakes in data with ready/valid
 interface and outputs data also with a ready-valid handshake. 
 NOTE: Ensure that height of input data is at least 2 words greater than kernel height, or the layer
-      will hand and not work properly.
+      will hang and not work properly.
 
 parameters:
     INPUT_LAYER_HEIGHT  : height of input layer (not total number of inputs, just the height), default 64
@@ -27,7 +27,7 @@ demanding input interface:
     yumi_o  : 1-bit : ready signal for input handshake
     data_i  : n-bit : incoming data. size is WORD_SIZE
     
-helpful output interface
+demanding output interface
     ready_i : 1-bit : ready signal for output handshake
     valid_o : 1-bit : valid signal for output handshake
     data_o  : n-bit : outgoing data. size is WORD_SIZE
@@ -50,10 +50,9 @@ module conv_layer #(
     parameter LAYER_NUMBER=1,
     parameter N_CONVOLUTIONS=256) (
     
+    // top-level signals
     input logic clk_i,
     input logic reset_i,
-    
-    // still need start signal
     input logic start_i,
     
     // uncomment for VCS or if Vivado starts working
@@ -386,6 +385,5 @@ module conv_layer #(
             assign data_o[i] = alu_data_lo[i][mem_count_n >> (KERNEL_WIDTH - 1)];
         end
     endgenerate
-
 
 endmodule
