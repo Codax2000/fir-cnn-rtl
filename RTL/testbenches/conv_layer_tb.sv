@@ -1,5 +1,7 @@
 `timescale 1ns / 1ps
+`ifndef SYNOPSIS
 `define VIVADO
+`endif
 
 module conv_layer_tb ();
 
@@ -39,7 +41,8 @@ module conv_layer_tb ();
     
     // demanding output interface
     logic valid_o, ready_i;
-    logic [N_CONVOLUTIONS-1:0][WORD_SIZE-1:0] data_o;
+    // no packed arrays as IO, or they will get screwed up in synthesis
+    logic [(N_CONVOLUTIONS*WORD_SIZE)-1:0] data_o;
 
     assign valid_i = !not_valid_i;
 
@@ -202,6 +205,7 @@ module conv_layer_tb ();
         // if running in VCS, need to write kernel values to memory
         `ifndef VIVADO
         for (int i = 0; i < KERNEL_HEIGHT*KERNEL_WIDTH+1; i++) begin
+            $display("Writing %h to address %h", kernel_values[i], i);
             write_mem(kernel_values[i], 1, i);
         end
         `endif

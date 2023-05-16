@@ -1,4 +1,8 @@
 `timescale 1ns / 1ps
+`ifndef SYNOPSIS
+`define VIVADO
+`endif
+
 /**
 Alex Knowlton & Eugene Liu
 2/28/2023
@@ -42,13 +46,14 @@ if VIVADO is not defined (using `define VIVADO), then add optional write port fo
 
 module conv_layer #(
 
-    parameter INPUT_LAYER_HEIGHT=64,
-    parameter KERNEL_HEIGHT=5,
+    // parameters match those for testing, make sure to pass the right ones from top level
+    parameter INPUT_LAYER_HEIGHT=5,
+    parameter KERNEL_HEIGHT=3,
     parameter KERNEL_WIDTH=2,
     parameter WORD_SIZE=16,
-    parameter N_SIZE=12,
-    parameter LAYER_NUMBER=0,
-    parameter N_CONVOLUTIONS=256) (
+    parameter N_SIZE=0,
+    parameter LAYER_NUMBER=1,
+    parameter N_CONVOLUTIONS=1) (
     
     // top-level signals
     input logic clk_i,
@@ -56,11 +61,11 @@ module conv_layer #(
     input logic start_i,
     
     // uncomment for VCS or if Vivado starts working
-//    `ifndef VIVADO
-//    input logic [$clog2(N_CONVOLUTIONS+1)+$clog2(KERNEL_HEIGHT*KERNEL_WIDTH+1)-1:0] mem_addr_i,
-//    input logic wen_i,
-//    input logic [WORD_SIZE-1:0] mem_data_i,
-//    `endif
+   `ifndef VIVADO
+   input logic [$clog2(N_CONVOLUTIONS+1)+$clog2(KERNEL_HEIGHT*KERNEL_WIDTH+1)-1:0] mem_addr_i,
+   input logic wen_i,
+   input logic [WORD_SIZE-1:0] mem_data_i,
+   `endif
 
     // demanding input interface
     input logic valid_i,
@@ -70,7 +75,8 @@ module conv_layer #(
     // demanding output interface
     output logic valid_o,
     input logic ready_i,
-    output logic [N_CONVOLUTIONS-1:0][WORD_SIZE-1:0] data_o
+    // no packed arrays as IO, or they will get screwed up in synthesis
+    output logic [(N_CONVOLUTIONS*WORD_SIZE)-1:0] data_o
     
     );
     
@@ -141,6 +147,7 @@ module conv_layer #(
 
     ////   BEGIN SUBSIDIARY CONTROL LOGIC ////
     // control memory addresses, IO logic signals, shift, consumed counter, and output handshake downsampler
+    // added 5/16: new output address counter to track which ALU has the correct data
 
     // next memory address, counter is reset if not in correct state so don't worry about that
     // counter takes 1 extra cycle to allow output handshake to happen
@@ -192,6 +199,26 @@ module conv_layer #(
         .en_i(handshake_in),
         .en_o(handshake_out_en)
     );
+
+    // output address counter
+    logic [$clog2(KERNEL_HEIGHT+1)-1:0] output_addr_r, output_addr_n;
+    always_comb begin
+        if (handshake_out) begin
+            if (output_addr_r == KERNEL_HEIGHT)
+                output_addr_n = '0;
+            else
+                output_addr_n = output_addr_r + 1;
+        end else begin
+            output_addr_n = output_addr_r;
+        end
+    end
+
+    always_ff @(posedge clk_i) begin
+        if (reset_i || ps_e == eREADY)
+            output_addr_r <= '0;
+        else
+            output_addr_r <= output_addr_n;
+    end
 
     // combinational block for shift, ready_o, yumi_o
     // these signals all vary from state to state, but super important to get right
@@ -314,16 +341,16 @@ module conv_layer #(
             logic [$clog2(KERNEL_SIZE+1)-1:0] mem_addr_li;
             
             // these lines don't compile rn because Vivado is stupid, uncomment for VCS simulation
-//            `ifdef VIVADO
+           `ifdef VIVADO
             assign mem_addr_li = mem_count_n;            
-//            `else
-//            logic wen_li;
-//            localparam max_mem_index_lp = $clog2(N_CONVOLUTIONS+1)+$clog2(KERNEL_HEIGHT*KERNEL_WIDTH+1)-1;
-//            assign wen_li = wen_i && (mem_addr_i[max_mem_index_lp:max_mem_index_lp-$clog2(N_CONVOLUTIONS+1)] == i + 1);
+           `else
+           logic wen_li;
+           localparam max_mem_index_lp = $clog2(N_CONVOLUTIONS+1)+$clog2(KERNEL_HEIGHT*KERNEL_WIDTH+1)-1;
+           assign wen_li = wen_i && (mem_addr_i[max_mem_index_lp:max_mem_index_lp-$clog2(N_CONVOLUTIONS+1)] == i + 1);
             
-//            // if using synopsis, we are using a 1RW RAM, so connect addresses differently
-//            assign mem_addr_li = wen_i ? mem_addr_i[$clog2(KERNEL_HEIGHT*KERNEL_WIDTH+1)-1:0] : mem_count_n;
-//            `endif
+           // if using synopsis, we are using a 1RW RAM, so connect addresses differently
+           assign mem_addr_li = wen_i ? mem_addr_i[$clog2(KERNEL_HEIGHT*KERNEL_WIDTH+1)-1:0] : mem_count_n;
+           `endif
 
             ROM_neuron #(
                 .depth($clog2(KERNEL_SIZE+1)),
@@ -333,11 +360,11 @@ module conv_layer #(
                 .neuron_number(i)
             ) weight_mem (
                 
-//                // compiler-dependent connection, uncomment if using VCS or if Vivado works properly
-//                `ifndef VIVADO
-//                .wen_i(wen_li),
-//                .data_i(mem_data_i),
-//                `endif
+               // compiler-dependent connection, uncomment if using VCS or if Vivado works properly
+               `ifndef VIVADO
+               .wen_i(wen_li),
+               .data_i(mem_data_i),
+               `endif
 
                 .addr_i(mem_addr_li),
                 .data_o(mem_data_lo),
@@ -382,7 +409,7 @@ module conv_layer #(
             end
 
             // assign output data
-            assign data_o[i] = alu_data_lo[i][mem_count_n >> (KERNEL_WIDTH - 1)];
+            assign data_o[WORD_SIZE*i+WORD_SIZE-1:i*WORD_SIZE] = alu_data_lo[i][output_addr_r];
         end
     endgenerate
 
