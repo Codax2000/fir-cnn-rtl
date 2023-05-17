@@ -3,3 +3,4 @@ project_1.cache/
 Vivado/
 zyNet/
 Scripts/data/
+RTL/constraints/synth_hold.rpx

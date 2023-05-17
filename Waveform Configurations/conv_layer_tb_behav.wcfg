@@ -12,12 +12,12 @@
    </db_ref_list>
    <zoom_setting>
       <ZoomStartTime time="0.000 ns"></ZoomStartTime>
-      <ZoomEndTime time="1,600.000 ns"></ZoomEndTime>
-      <Cursor1Time time="1,600.000 ns"></Cursor1Time>
+      <ZoomEndTime time="2,000.001 ns"></ZoomEndTime>
+      <Cursor1Time time="766.938 ns"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
       <NameColumnWidth column_width="222"></NameColumnWidth>
-      <ValueColumnWidth column_width="75"></ValueColumnWidth>
+      <ValueColumnWidth column_width="71"></ValueColumnWidth>
    </column_width_setting>
    <WVObjectSize size="7" />
    <wvobject fp_name="/conv_layer_tb/clk_i" type="logic">
@@ -111,7 +111,6 @@
       <wvobject fp_name="group49" type="group">
          <obj_property name="label">Output Handshake</obj_property>
          <obj_property name="DisplayName">label</obj_property>
-         <obj_property name="isExpanded"></obj_property>
          <wvobject fp_name="/conv_layer_tb/DUT/valid_o" type="logic">
             <obj_property name="ElementShortName">valid_o</obj_property>
             <obj_property name="ObjectShortName">valid_o</obj_property>
@@ -121,8 +120,8 @@
             <obj_property name="ObjectShortName">ready_i</obj_property>
          </wvobject>
          <wvobject fp_name="/conv_layer_tb/DUT/data_o" type="array">
-            <obj_property name="ElementShortName">data_o[0:0][15:0]</obj_property>
-            <obj_property name="ObjectShortName">data_o[0:0][15:0]</obj_property>
+            <obj_property name="ElementShortName">data_o[15:0]</obj_property>
+            <obj_property name="ObjectShortName">data_o[15:0]</obj_property>
             <obj_property name="isExpanded"></obj_property>
          </wvobject>
       </wvobject>
@@ -137,10 +136,6 @@
       <wvobject fp_name="group59" type="group">
          <obj_property name="label">Control Signals</obj_property>
          <obj_property name="DisplayName">label</obj_property>
-         <wvobject fp_name="/conv_layer_tb/DUT/handshake_out_en" type="logic">
-            <obj_property name="ElementShortName">handshake_out_en</obj_property>
-            <obj_property name="ObjectShortName">handshake_out_en</obj_property>
-         </wvobject>
          <wvobject fp_name="/conv_layer_tb/DUT/add_bias_li" type="logic">
             <obj_property name="ElementShortName">add_bias_li</obj_property>
             <obj_property name="ObjectShortName">add_bias_li</obj_property>
@@ -173,14 +168,6 @@
       <wvobject fp_name="group67" type="group">
          <obj_property name="label">Concatenated Handshakes</obj_property>
          <obj_property name="DisplayName">label</obj_property>
-         <wvobject fp_name="/conv_layer_tb/DUT/handshake_in" type="logic">
-            <obj_property name="ElementShortName">handshake_in</obj_property>
-            <obj_property name="ObjectShortName">handshake_in</obj_property>
-         </wvobject>
-         <wvobject fp_name="/conv_layer_tb/DUT/handshake_out" type="logic">
-            <obj_property name="ElementShortName">handshake_out</obj_property>
-            <obj_property name="ObjectShortName">handshake_out</obj_property>
-         </wvobject>
          <wvobject fp_name="/conv_layer_tb/DUT/shift" type="logic">
             <obj_property name="ElementShortName">shift</obj_property>
             <obj_property name="ObjectShortName">shift</obj_property>
@@ -299,14 +286,6 @@
             <obj_property name="ElementShortName">addr_i[2:0]</obj_property>
             <obj_property name="ObjectShortName">addr_i[2:0]</obj_property>
          </wvobject>
-         <wvobject fp_name="/conv_layer_tb/DUT/\genblk1[0].weight_mem /data_i" type="array">
-            <obj_property name="ElementShortName">data_i[15:0]</obj_property>
-            <obj_property name="ObjectShortName">data_i[15:0]</obj_property>
-         </wvobject>
-         <wvobject fp_name="/conv_layer_tb/DUT/\genblk1[0].weight_mem /wen_i" type="logic">
-            <obj_property name="ElementShortName">wen_i</obj_property>
-            <obj_property name="ObjectShortName">wen_i</obj_property>
-         </wvobject>
          <wvobject fp_name="/conv_layer_tb/DUT/\genblk1[0].weight_mem /data_o" type="array">
             <obj_property name="ElementShortName">data_o[15:0]</obj_property>
             <obj_property name="ObjectShortName">data_o[15:0]</obj_property>
@@ -315,29 +294,18 @@
       <wvobject fp_name="group193" type="group">
          <obj_property name="label">Handshake Enable Signal Set</obj_property>
          <obj_property name="DisplayName">label</obj_property>
-         <wvobject fp_name="/conv_layer_tb/DUT/handshake_out_enabler/clk_i" type="logic">
-            <obj_property name="ElementShortName">clk_i</obj_property>
-            <obj_property name="ObjectShortName">clk_i</obj_property>
+         <obj_property name="isExpanded"></obj_property>
+         <wvobject fp_name="/conv_layer_tb/DUT/handshake_in_count_r" type="array">
+            <obj_property name="ElementShortName">handshake_in_count_r[1:0]</obj_property>
+            <obj_property name="ObjectShortName">handshake_in_count_r[1:0]</obj_property>
          </wvobject>
-         <wvobject fp_name="/conv_layer_tb/DUT/handshake_out_enabler/reset_i" type="logic">
-            <obj_property name="ElementShortName">reset_i</obj_property>
-            <obj_property name="ObjectShortName">reset_i</obj_property>
+         <wvobject fp_name="/conv_layer_tb/DUT/handshake_in_count_n" type="array">
+            <obj_property name="ElementShortName">handshake_in_count_n[1:0]</obj_property>
+            <obj_property name="ObjectShortName">handshake_in_count_n[1:0]</obj_property>
          </wvobject>
-         <wvobject fp_name="/conv_layer_tb/DUT/handshake_out_enabler/en_i" type="logic">
-            <obj_property name="ElementShortName">en_i</obj_property>
-            <obj_property name="ObjectShortName">en_i</obj_property>
-         </wvobject>
-         <wvobject fp_name="/conv_layer_tb/DUT/handshake_out_enabler/en_o" type="logic">
-            <obj_property name="ElementShortName">en_o</obj_property>
-            <obj_property name="ObjectShortName">en_o</obj_property>
-         </wvobject>
-         <wvobject fp_name="/conv_layer_tb/DUT/handshake_out_enabler/\genblk1.count " type="array">
-            <obj_property name="ElementShortName">\genblk1.count [0:0]</obj_property>
-            <obj_property name="ObjectShortName">\genblk1.count [0:0]</obj_property>
-         </wvobject>
-         <wvobject fp_name="/conv_layer_tb/DUT/handshake_out_enabler/\genblk1.next_count " type="array">
-            <obj_property name="ElementShortName">\genblk1.next_count [0:0]</obj_property>
-            <obj_property name="ObjectShortName">\genblk1.next_count [0:0]</obj_property>
+         <wvobject fp_name="/conv_layer_tb/DUT/valid_o_enable" type="logic">
+            <obj_property name="ElementShortName">valid_o_enable</obj_property>
+            <obj_property name="ObjectShortName">valid_o_enable</obj_property>
          </wvobject>
       </wvobject>
       <wvobject fp_name="group201" type="group">
@@ -423,8 +391,8 @@
          <obj_property name="ObjectShortName">ready_i</obj_property>
       </wvobject>
       <wvobject fp_name="/conv_layer_tb/DUT/data_o" type="array">
-         <obj_property name="ElementShortName">data_o[0:0][15:0]</obj_property>
-         <obj_property name="ObjectShortName">data_o[0:0][15:0]</obj_property>
+         <obj_property name="ElementShortName">data_o[15:0]</obj_property>
+         <obj_property name="ObjectShortName">data_o[15:0]</obj_property>
       </wvobject>
    </wvobject>
 </wave_config>

@@ -90,10 +90,8 @@ module conv_layer #(
     logic [$clog2(INPUT_SIZE)-1:0] consumed_count_r, consumed_count_n;
 
     // handshake signals
-    // handshake in and out are just combination of valid and ready, shift_en is dependent on current state
-    logic handshake_in, handshake_out, shift;
-    assign handshake_in = valid_i && yumi_o;
-    assign handshake_out = valid_o && ready_i;
+    // shift_en is dependent on current state
+    logic shift;
 
     // FSM states
     enum logic [2:0] {eREADY=3'b000, eSHIFT_IN=3'b001, eFULL=3'b011, eSHIFT_OUT_1=3'b010, eSHIFT_OUT_2=3'b110} ps_e, ns_e;
@@ -107,12 +105,12 @@ module conv_layer #(
                 else
                     ns_e = eREADY;
             eSHIFT_IN:
-                if ((mem_count_n == KERNEL_WIDTH * KERNEL_HEIGHT + 1) && (mem_count_r == KERNEL_WIDTH * KERNEL_HEIGHT))
+                if ((mem_count_r == KERNEL_SIZE) && (mem_count_n == KERNEL_SIZE + 1))
                     ns_e = eFULL;
                 else
                     ns_e = eSHIFT_IN;
             eFULL:
-                if (consumed_count_n == 0) // TODO: make sure that this is the correct timing
+                if (consumed_count_n == 0)
                     ns_e = eSHIFT_OUT_1;
                 else    
                     ns_e = eFULL;
@@ -120,13 +118,13 @@ module conv_layer #(
                 if (KERNEL_WIDTH != 1) // should synthesize to always true, so makes this block simpler
                     ns_e = eSHIFT_OUT_2;
                 else begin
-                    if (handshake_out)
+                    if (ready_i)
                         ns_e = eSHIFT_OUT_2;
                     else
                         ns_e = eSHIFT_OUT_1;
                 end
             eSHIFT_OUT_2: // always have to handshake out the last piece of data
-                if (handshake_out)
+                if (ready_i)
                     ns_e = eREADY;
                 else
                     ns_e = eSHIFT_OUT_2;
@@ -147,13 +145,12 @@ module conv_layer #(
 
     ////   BEGIN SUBSIDIARY CONTROL LOGIC ////
     // control memory addresses, IO logic signals, shift, consumed counter, and output handshake downsampler
-    // added 5/16: new output address counter to track which ALU has the correct data
 
     // next memory address, counter is reset if not in correct state so don't worry about that
     // counter takes 1 extra cycle to allow output handshake to happen
     always_comb begin
         if (shift) begin
-            if (mem_count_n == KERNEL_SIZE + 1)
+            if (mem_count_r == KERNEL_SIZE + 1)
                 mem_count_n = 0;
             else
                 mem_count_n = mem_count_r + 1;
@@ -164,7 +161,7 @@ module conv_layer #(
     // consumed counter - dependent on handshake in only, for clarity
     // make sure shift, valid_o, ready_o are properly dependent on each other depending on state
     always_comb begin
-        if (handshake_in) begin
+        if (((ps_e == eSHIFT_IN) && valid_i) || (ps_e == eFULL && shift)) begin
             if (consumed_count_r == INPUT_SIZE - 1)
                 consumed_count_n = 0;
             else
@@ -189,21 +186,34 @@ module conv_layer #(
     //            clock cycles, so we need a counter to help keep track. As simple as 1 bit with KERNEL_WIDTH=2,
     //            so not expensive, especially since it's shared across all layers. If KERNEL_WIDTH=1, this should
     //            always be true. Handled by a sub-module.
-    logic handshake_out_en;
-
-    downsampled_enable #(
-        .N(KERNEL_WIDTH)
-    ) handshake_out_enabler (
-        .clk_i,
-        .reset_i(reset_i || (ps_e != eFULL)), // reset on non-handshake-out states
-        .en_i(handshake_in),
-        .en_o(handshake_out_en)
-    );
+    // NOTE: Need to avoid combinational loops here. Be sure to ONLY depend on handshake_out_en, valid_i
+    //       ready_i, ps_e, even if it makes for longer expressions. This only enables valid_o, let the handshakes
+    //       deal with timing and synchronization
+    logic valid_o_enable;
+    logic [$clog2(KERNEL_WIDTH+1)-1:0] handshake_in_count_r, handshake_in_count_n;
+    assign valid_o_enable = handshake_in_count_r == '0 && valid_i;
+    always_comb begin
+        if (shift) begin
+            if (handshake_in_count_r == KERNEL_WIDTH - 1)
+                handshake_in_count_n = '0;
+            else
+                handshake_in_count_n = handshake_in_count_r + 1;
+        end else begin
+            handshake_in_count_n = handshake_in_count_r;
+        end
+    end
+    
+    always_ff @(posedge clk_i) begin
+        if (reset_i || (ps_e != eFULL))
+            handshake_in_count_r <= '0;
+        else
+            handshake_in_count_r <= handshake_in_count_n;    
+    end
 
     // output address counter
     logic [$clog2(KERNEL_HEIGHT+1)-1:0] output_addr_r, output_addr_n;
     always_comb begin
-        if (handshake_out) begin
+        if (valid_o && ready_i) begin
             if (output_addr_r == KERNEL_HEIGHT)
                 output_addr_n = '0;
             else
@@ -239,31 +249,19 @@ module conv_layer #(
             end
             eSHIFT_IN: begin
                 yumi_o = valid_i;
-                shift = handshake_in;
+                shift = valid_i;
                 valid_o = 1'b0;
             end
             eFULL: begin// this gets tricky, since it depends on handshake_out_en too
-                if (handshake_out_en) begin
-                    if (valid_i && ready_i) begin
-                        shift = 1'b1;
-                        yumi_o = 1'b1;
-                        valid_o = 1'b1;
-                    end else begin
-                        shift = 1'b0;
-                        yumi_o = 1'b0;
-                        valid_o = 1'b0;
-                    end
-                end else begin // cannot handshake out, since no handshake out is enabled
-                    valid_o = 1'b0;
-                    yumi_o = valid_i;
-                    shift = handshake_in;
-                end
+                shift = (valid_o_enable && valid_i && ready_i) || (!valid_o_enable && ready_i);
+                valid_o = valid_o_enable && ready_i && valid_i;
+                yumi_o = (valid_o_enable && valid_i && ready_i) || (!valid_o_enable && valid_i);
             end
             eSHIFT_OUT_1: begin
                 yumi_o = 1'b0;
                 if (KERNEL_WIDTH == 1) begin
                     valid_o = ready_i;
-                    shift = handshake_out;
+                    shift = ready_i;
                 end else begin
                     valid_o = 1'b0;
                     shift = 1'b1;
@@ -272,7 +270,7 @@ module conv_layer #(
             eSHIFT_OUT_2: begin // always handshake out on this state
                 yumi_o = 1'b0;
                 valid_o = ready_i;
-                shift = handshake_out; // shouldn't matter but have here to avoid inferring a latch
+                shift = ready_i; // shouldn't matter but have here to avoid inferring a latch
             end
         endcase
     end
@@ -384,7 +382,7 @@ module conv_layer #(
                 .sum_en(sum_en_li),
     
                 .clk_i,
-                .reset_i(reset_i || (ps_e == eREADY) || (handshake_out && ~sum_en_li)),
+                .reset_i(reset_i || (ps_e == eREADY) || (valid_o && ready_i && ~sum_en_li)),
 
                 .data_o(alu_data_lo[i][0])
             );
@@ -402,7 +400,7 @@ module conv_layer #(
                     .sum_en(shift && shift_sum_en_lo[shift_register_index]),
         
                     .clk_i,
-                    .reset_i(reset_i || (ps_e == eREADY) || (handshake_out && !(shift && shift_sum_en_lo[shift_register_index]))),
+                    .reset_i(reset_i || (ps_e == eREADY) || (shift && !shift_sum_en_lo[shift_register_index])),
 
                     .data_o(alu_data_lo[i][j+1])
             );

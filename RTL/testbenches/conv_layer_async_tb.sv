@@ -14,20 +14,7 @@ module conv_layer_tb ();
     parameter LAYER_NUMBER = 1;
     parameter N_CONVOLUTIONS = 1;
 
-    //// INPUT LAYER VALUES ////
-    // helpful handshake to prev layer
-    logic fcin_valid_i, fcin_ready_o;
-    logic [INPUT_LAYER_HEIGHT*KERNEL_WIDTH-1:0][WORD_SIZE-1:0] fcin_data_i;
 
-    // demanding handshake to next layer
-    logic fcin_wen_o, fcin_full_i;
-    logic [WORD_SIZE-1:0] fcin_data_o;
-
-    logic not_valid_i;
-
-    //// DUT VALUES ////
-    logic clk_i, reset_i, start_i;
-    
     // VCS (not Vivado) good stress-test of 1 convolution write port
     `ifndef VIVADO
     logic [$clog2(N_CONVOLUTIONS+1)+$clog2(KERNEL_HEIGHT*KERNEL_WIDTH+1)-1:0] mem_addr_i;
@@ -118,55 +105,7 @@ module conv_layer_tb ();
     endtask
     `endif
 
-    task send_data(input logic [INPUT_LAYER_HEIGHT*KERNEL_WIDTH-1:0][WORD_SIZE-1:0] data);
-        $display("%t: Sending %x to input layer", $realtime, data);
-        @(negedge clk_i)
-        fcin_valid_i <= 1'b1;
-        fcin_data_i <= data;
-        
-        @(posedge clk_i)
-        fcin_valid_i <= 1'b0;
-        fcin_data_o <= 'x;
-    endtask
-
-    task receive_data(input logic [WORD_SIZE-1:0] expected_value);
-        @(negedge clk_i)
-        $display("%t: Receiving data: Expecting %h, Received %h", $realtime, expected_value, data_o);
-        assert(expected_value == data_o)
-            else $display("%t: Assertion Error: Expected %h, Received %h", $realtime, expected_value, data_o);
-        @(posedge clk_i);
-    endtask
-
-    //// GENERATE DEVICES ////
-    fc_output_layer #(
-        .LAYER_HEIGHT(INPUT_LAYER_HEIGHT*KERNEL_WIDTH),
-        .WORD_SIZE(WORD_SIZE)
-    ) input_layer (
-        .clk_i,
-        .reset_i,
-        .valid_i(fcin_valid_i),
-        .ready_o(fcin_ready_o),
-        .data_i(fcin_data_i),
-        .wen_o(fcin_wen_o),
-        .full_i(fcin_full_i),
-        .data_o(fcin_data_o)
-    );
-
-    double_fifo #(
-        .WORD_SIZE(WORD_SIZE)
-    ) input_fifo (
-        .clk_i,
-        .reset_i,
-
-        .wen_i(fcin_wen_o),
-        .data_i(fcin_data_o),
-        .full_o(fcin_full_i),
-
-        .ren_i(yumi_o),
-        .empty_o(not_valid_i), // this may not work
-        .data_o(data_i)
-    );
-
+    //// GENERATE DUT ////
     conv_layer #(
         .INPUT_LAYER_HEIGHT(INPUT_LAYER_HEIGHT),
         .KERNEL_HEIGHT(KERNEL_HEIGHT),
@@ -194,7 +133,6 @@ module conv_layer_tb ();
     );
 
 
-    
     initial begin
         fcin_valid_i <= 1'b0;
         ready_i <= 1'b0;
@@ -210,15 +148,11 @@ module conv_layer_tb ();
         end
         `endif
         for (int j = 0; j < N_TESTS; j++) begin
-            repeat(2) @(posedge clk_i);
+            // assert start
             start_i <= 1'b1; @(posedge clk_i);
             start_i <= 1'b0; @(posedge clk_i);
-            send_data(test_inputs[j]);
-            for (int i = 0; i < INPUT_LAYER_HEIGHT - KERNEL_HEIGHT + 1; i ++) begin
-                ready_i <= 1'b1;
-                @(posedge valid_o)
-                receive_data(expected_outputs[j][i]);
-            end
+            // send and receive data, with one delay cycle in between
+            for (int k = 0; k < )
         end
         repeat(2) @(posedge clk_i);
         $stop;
