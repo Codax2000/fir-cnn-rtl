@@ -253,7 +253,7 @@ module conv_layer #(
                 valid_o = 1'b0;
             end
             eFULL: begin// this gets tricky, since it depends on handshake_out_en too
-                shift = (valid_o_enable && valid_i && ready_i) || (!valid_o_enable && ready_i);
+                shift = (valid_o_enable && valid_i && ready_i) || (!valid_o_enable && valid_i);
                 valid_o = valid_o_enable && ready_i && valid_i;
                 yumi_o = (valid_o_enable && valid_i && ready_i) || (!valid_o_enable && valid_i);
             end

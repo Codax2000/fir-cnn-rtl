@@ -24,7 +24,7 @@ other inputs:
 
 */
 
-module single_fifo #(
+module single_fifo_no_rw #(
     parameter WORD_SIZE=16
 ) (
     input logic clk_i,
@@ -80,8 +80,7 @@ module single_fifo #(
                     data_o_n = '0;
             eFULL:
                 if (ren_i) begin
-                    else
-                        data_o_n = '0;
+                    data_o_n = '0;
                 end else
                     data_o_n = data_o;
         endcase

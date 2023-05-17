@@ -130,11 +130,9 @@ module conv_layer_tb ();
     endtask
 
     task receive_data(input logic [WORD_SIZE-1:0] expected_value);
-        @(negedge clk_i)
         $display("%t: Receiving data: Expecting %h, Received %h", $realtime, expected_value, data_o);
         assert(expected_value == data_o)
             else $display("%t: Assertion Error: Expected %h, Received %h", $realtime, expected_value, data_o);
-        @(posedge clk_i);
     endtask
 
     //// GENERATE DEVICES ////
@@ -152,7 +150,7 @@ module conv_layer_tb ();
         .data_o(fcin_data_o)
     );
 
-    double_fifo #(
+    single_fifo_no_rw #(
         .WORD_SIZE(WORD_SIZE)
     ) input_fifo (
         .clk_i,
@@ -214,9 +212,11 @@ module conv_layer_tb ();
             start_i <= 1'b1; @(posedge clk_i);
             start_i <= 1'b0; @(posedge clk_i);
             send_data(test_inputs[j]);
+            repeat(4) @(posedge clk_i);
+            ready_i <= 1'b1;    @(posedge clk_i);
+            @(posedge valid_o);
             for (int i = 0; i < INPUT_LAYER_HEIGHT - KERNEL_HEIGHT + 1; i ++) begin
-                ready_i <= 1'b1;
-                @(posedge valid_o)
+                @(posedge valid_o);
                 receive_data(expected_outputs[j][i]);
             end
         end
