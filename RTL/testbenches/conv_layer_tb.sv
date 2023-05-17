@@ -1,91 +1,60 @@
-`timescale 1ns / 1ps
+`timescale 1ns / 10ps
+`ifndef SYNOPSIS
+`define VIVADO
+`endif
 
 module conv_layer_tb ();
 
-    parameter CLOCK_PERIOD = 100;
-    
-    parameter INPUT_LAYER_HEIGHT = 4;
+    localparam WORD_SIZE = 16;
+    localparam N_SIZE = 0;
+    localparam N_TESTS = 2;
+    parameter INPUT_LAYER_HEIGHT = 5;
     parameter KERNEL_HEIGHT = 3;
     parameter KERNEL_WIDTH = 2;
-    parameter WORD_SIZE = 8;
-    parameter INT_BITS = 8;
+    parameter LAYER_NUMBER = 1;
+    parameter N_CONVOLUTIONS = 1;
 
-    logic [INPUT_LAYER_HEIGHT*2-1:0][WORD_SIZE-1:0] data_i;
-    logic [WORD_SIZE-1:0] fifo_data_in, fifo_data_out;
-    logic [INPUT_LAYER_HEIGHT - KERNEL_HEIGHT:0][WORD_SIZE-1:0] data_o;
+    //// INPUT LAYER VALUES ////
+    // helpful handshake to prev layer
+    logic fcin_valid_i, fcin_ready_o;
+    logic [INPUT_LAYER_HEIGHT*KERNEL_WIDTH-1:0][WORD_SIZE-1:0] fcin_data_i;
 
-    logic fifo_full, fifo_empty, wen, ren;
+    // demanding handshake to next layer
+    logic fcin_wen_o, fcin_full_i;
+    logic [WORD_SIZE-1:0] fcin_data_o;
 
-    // signals to control in testbench
-    logic valid_i, start_i, yumi_i;
+    logic not_valid_i;
+
+    //// DUT VALUES ////
+    logic clk_i, reset_i, start_i, conv_ready_o;
     
-    // clock and reset signals
-    logic reset_i, clk_i;
+    // VCS (not Vivado) good stress-test of 1 convolution write port
+    `ifndef VIVADO
+    logic [$clog2(N_CONVOLUTIONS+1)+$clog2(KERNEL_HEIGHT*KERNEL_WIDTH+1)-1:0] mem_addr_i;
+    logic wen_i;
+    logic [WORD_SIZE-1:0] mem_data_i;
+    `endif
 
-    // ready and valid outputs, useful for watching within testbench
-    logic ready_o, valid_o;
-
-    fc_output_layer #(
-        .LAYER_HEIGHT(INPUT_LAYER_HEIGHT*2),
-        .WORD_SIZE(WORD_SIZE)
-    ) test_input_serializer (
-        .clk_i,
-        .reset_i,
+    // demanding input interface
+    logic valid_i, yumi_o;
+    logic signed [WORD_SIZE-1:0] data_i;
     
-        .valid_i,
-        .ready_o,
-        .data_i,
+    // demanding output interface
+    logic valid_o, ready_i;
+    // no packed arrays as IO, or they will get screwed up in synthesis
+    logic [(N_CONVOLUTIONS*WORD_SIZE)-1:0] data_o;
 
-        .wen_o(wen),
-        .full_i(fifo_full),
-        .data_o(fifo_data_in)
-    );
+    assign valid_i = !not_valid_i;
 
-    double_fifo #(
-        .WORD_SIZE(WORD_SIZE)
-    ) middle_fifo (
-        .clk_i,
-        .reset_i,
-
-        .wen_i(wen),
-        .data_i(fifo_data_in),
-        .full_o(fifo_full),
-        
-        .data_o(fifo_data_out),
-        .empty_o(fifo_empty),
-        .ren_i(ren)
-    );
-
-    conv_layer #(
-        .INPUT_LAYER_HEIGHT(INPUT_LAYER_HEIGHT),
-        .KERNEL_HEIGHT(KERNEL_HEIGHT),
-        .KERNEL_WIDTH(KERNEL_WIDTH),
-        .WORD_SIZE(WORD_SIZE),
-        .INT_BITS(INT_BITS),
-        .LAYER_NUMBER(1),
-        .CONVOLUTION_NUMBER(0)
-    ) DUT (
-        .clk_i,
-        .reset_i,
-        
-        // still need start signal
-        .start_i,
-
-        // input interface
-        .valid_i(!fifo_empty),
-        .ready_o(ren),
-        .data_i(fifo_data_out),
-        
-        // helpful output interface
-        .valid_o,
-        .yumi_i,
-        .data_o
-    );
+    //// GENERATE CLOCK ////
+    parameter CLOCK_PERIOD = 40;
     
     initial begin
         clk_i = 1'b1;
         forever # (CLOCK_PERIOD / 2) clk_i = ~clk_i;
     end
+
+    //// TESTING VALUES ////
 
     /** 
     Test Kernel:
@@ -97,62 +66,161 @@ module conv_layer_tb ();
     2 Test cases:
     
     Test Case 1 input:
-        [[1 5]
+        [[1 0]
+         [1 5]
          [3 2]
          [9 5]
          [0 1]]
 
         Expected output:
-        43_5c
+        43_5c_36
 
     Test Case 2 input:
-        [[3 1]
+        [[4 3]
+         [3 1]
          [1 2]
          [f f]
          [5 6]] // try to trigger an overflow
         
-        Expected output: overflow on node 1, fine on node 0
-        7f_6e
-        
-    
-        data_i <= 64'h06_08_0f_0f_02_01_01_03; // data for test case 2
+        Expected output: overflow on node 1 which comes down because of bias, fine on node 0
+        74_6e_34
     */
-    initial begin
-        reset_i <= 1'b1;    @(posedge clk_i);
-        data_i <= 64'h01_00_05_09_02_03_05_01; // data for test case 1
-        start_i <= 1'b0;
-        yumi_i <= 1'b0;
-        valid_i <= 1'b0;
-        reset_i <= 1'b0;    @(posedge clk_i);
-        valid_i <= 1'b1;    @(posedge clk_i);
-        valid_i <= 1'b0;    @(posedge clk_i);
-                            @(negedge fifo_empty);
-                            @(posedge clk_i);
-        start_i <= 1'b1;    @(posedge clk_i);
-        start_i <= 1'b0;    @(posedge clk_i);
-                            @(posedge valid_o);
-        $display("Assert Test Case 1:");
-        assert(data_o == 16'h43_5c)
-            $display("Test Case Passed");
-        else
-            $display("Assertion Error 1: Expected %h, Received %h", 16'h43_5c, data_o);
-        repeat(2)           @(posedge clk_i);
-        data_i <= 64'h06_08_0f_0f_02_01_01_03; // data for test case 2
-        yumi_i <= 1'b1;     @(posedge clk_i);
-        yumi_i <= 1'b0;     @(posedge clk_i);
-        valid_i <= 1'b1;    @(posedge clk_i);
-        valid_i <= 1'b0;    @(posedge clk_i);
-        start_i <= 1'b1;    @(posedge clk_i);
-        start_i <= 1'b0;    @(posedge clk_i);
-                            @(posedge valid_o);
-                            @(posedge clk_i);
-        $display("Assert Test Case 2:");
-        assert(data_o == 16'h7f_6e)
-            $display("Test Case Passed");
-        else
-            $display("Assertion Error 1: Expected %h, Received %h", 16'h7f_6e, data_o);  
-                            @(posedge clk_i);               
 
+    logic [N_TESTS-1:0][INPUT_LAYER_HEIGHT-KERNEL_HEIGHT:0][WORD_SIZE-1:0]   expected_outputs;
+    logic [N_TESTS-1:0][INPUT_LAYER_HEIGHT*KERNEL_WIDTH-1:0][WORD_SIZE-1:0]  test_inputs;
+    logic [KERNEL_HEIGHT*KERNEL_WIDTH:0][WORD_SIZE-1:0]                      kernel_values;
+
+    assign expected_outputs = 96'h0092_006e_0035__0043_005c_0036;
+    assign test_inputs[0] = 160'h0001_0000_0005_0009_0002_0003_0005_0001_0000_0001;
+    assign test_inputs[1] = 160'h0006_0005_000f_000f_0002_0001_0001_0003_0003_0004;
+
+    `ifndef VIVADO
+    initial begin
+        $readmemh("../../../mem/0_1_00.mem", kernel_values);
+    end
+    `endif
+    //// TESTING TASKS ////
+    
+    // write to memory address
+    `ifndef VIVADO
+    task write_mem(input logic [WORD_SIZE-1:0] data,
+                   input logic [$clog2(N_CONVOLUTIONS+1)-1:0] mem_index,
+                   input logic [$clog2(KERNEL_HEIGHT*KERNEL_WIDTH+1)-1:0] mem_addr);
+        $display("%t: Writing %x to %x in memory %x", $realtime, data, mem_addr, mem_index);
+        @(negedge clk_i)
+        mem_addr_i <= {mem_index, mem_addr};
+        wen_i <= 1'b1;
+        mem_data_i <= data;
+        @(posedge clk_i)
+        mem_addr_i <= 'x;
+        wen_i <= 1'b0;
+        mem_data_i <= 'x;
+    endtask
+    `endif
+
+    task send_data(input logic [INPUT_LAYER_HEIGHT*KERNEL_WIDTH-1:0][WORD_SIZE-1:0] data);
+        $display("%t: Sending %x to input layer", $realtime, data);
+        @(negedge clk_i)
+        fcin_valid_i <= 1'b1;
+        fcin_data_i <= data;
+        
+        @(posedge clk_i)
+        fcin_valid_i <= 1'b0;
+        fcin_data_o <= 'x;
+    endtask
+
+    task receive_data(input logic [WORD_SIZE-1:0] expected_value);
+        $display("%t: Receiving data: Expecting %h, Received %h", $realtime, expected_value, data_o);
+        assert(expected_value == data_o)
+            else $display("%t: Assertion Error: Expected %h, Received %h", $realtime, expected_value, data_o);
+    endtask
+
+    //// GENERATE DEVICES ////
+    fc_output_layer #(
+        .LAYER_HEIGHT(INPUT_LAYER_HEIGHT*KERNEL_WIDTH),
+        .WORD_SIZE(WORD_SIZE)
+    ) input_layer (
+        .clk_i,
+        .reset_i,
+        .valid_i(fcin_valid_i),
+        .ready_o(fcin_ready_o),
+        .data_i(fcin_data_i),
+        .wen_o(fcin_wen_o),
+        .full_i(fcin_full_i),
+        .data_o(fcin_data_o)
+    );
+
+    single_fifo_no_rw #(
+        .WORD_SIZE(WORD_SIZE)
+    ) input_fifo (
+        .clk_i,
+        .reset_i,
+
+        .wen_i(fcin_wen_o),
+        .data_i(fcin_data_o),
+        .full_o(fcin_full_i),
+
+        .ren_i(yumi_o),
+        .empty_o(not_valid_i), // this may not work
+        .data_o(data_i)
+    );
+
+    conv_layer #(
+        .INPUT_LAYER_HEIGHT(INPUT_LAYER_HEIGHT),
+        .KERNEL_HEIGHT(KERNEL_HEIGHT),
+        .KERNEL_WIDTH(KERNEL_WIDTH),
+        .WORD_SIZE(WORD_SIZE),
+        .N_SIZE(N_SIZE),
+        .LAYER_NUMBER(LAYER_NUMBER),
+        .N_CONVOLUTIONS(N_CONVOLUTIONS)
+    ) DUT (
+        .clk_i,
+        .reset_i,
+    
+        // still need start signal
+        .start_i,
+
+        // demanding input interface
+        .valid_i,
+        .yumi_o,
+        .data_i,
+    
+        // demanding output interface
+        .valid_o,
+        .ready_i,
+        .data_o
+    );
+
+
+    
+    initial begin
+        fcin_valid_i <= 1'b0;
+        ready_i <= 1'b0;
+        start_i <= 1'b0;
+        reset_i <= 1'b1;    @(posedge clk_i);
+        reset_i <= 1'b0;    @(posedge clk_i);
+        
+        // if running in VCS, need to write kernel values to memory
+        `ifndef VIVADO
+        for (int i = 0; i < KERNEL_HEIGHT*KERNEL_WIDTH+1; i++) begin
+            $display("Writing %h to address %h", kernel_values[i], i);
+            write_mem(kernel_values[i], 1, i);
+        end
+        `endif
+        for (int j = 0; j < N_TESTS; j++) begin
+            repeat(2) @(posedge clk_i);
+            start_i <= 1'b1; @(posedge clk_i);
+            start_i <= 1'b0; @(posedge clk_i);
+            send_data(test_inputs[j]);
+            repeat(4) @(posedge clk_i);
+            ready_i <= 1'b1;    @(posedge clk_i);
+            @(posedge valid_o);
+            for (int i = 0; i < INPUT_LAYER_HEIGHT - KERNEL_HEIGHT + 1; i ++) begin
+                @(posedge valid_o);
+                receive_data(expected_outputs[j][i]);
+            end
+        end
+        repeat(2) @(posedge clk_i);
         $stop;
     end
 

@@ -22,6 +22,9 @@ When using git, please use the following convention to document code changes. Wh
 4. In Vivado, select "File > Project > Write Tcl" and replace the "zyNet.tcl" script in the local directory
 5. Commit your changes and push to your branch
 6. When you are finished with your changes, create a [pull request](https://github.com/Codax2000/fir-cnn-rtl/pulls) to merge your branch back with main
+7. In case the pull request doesn't work (there's a conflict):
+   1. Open the 
+   2. If you don't want to figure it out, contact Alex and make him do it.
 
 ## Vivado Tips and Tricks
 1. Keep the same directory structure as this directory
@@ -41,7 +44,13 @@ zyNet
    | zyNet.tcl // run this file in tcl terminal to recreate project
 ```
 3. For each testbench, create a separate simulation set, just for that testbench, so that we can easily switch back to it if we need
+   1. You may notice that the project script only makes some of the runsets. This is because too many runsets with the number of memory files we have tends to crash Vivado.
+   2. The top-level testbench is currently the `matlab-correctness-tb`.
+   3. To run `conv_layer_tb`, `fc_layer_tb`, or `conv_to_fc_layer_tb`, remove the build memory files from the project and re-add the files directly in the `/mem/` directory. These are the files used for testing. However, since there have been changes since those were implemented, many testcases will likely fail.
 4. Use calls to `assert` instead of inspecting waveforms visually, makes for easier re-testing after some time or after a change
+
+## Python Scripts
+There are several python scripts used for text processing and data analysis. They should all be run from the base directory and work fine from there. However, some of them may not work. This is because they are outdated and needed to be run once or twice, and then never again. The most interesting one is `error_histogram.py`, which produces a histogram of percent errors computed by the CNN. This is a more accurate top-level figure of merit than assertion testing, since rounding and overflow makes precise calculation nearly impossible.
 
 ## Helpful Links
 - YouTube tutorial on [fully-connected neural nets](https://www.youtube.com/watch?v=rw_JITpbh3k&list=PLJePd8QU_LYKZwJnByZ8FHDg5l1rXtcIq)
