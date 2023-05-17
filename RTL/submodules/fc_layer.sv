@@ -10,7 +10,7 @@ layers of differing sizes. Assumes FIFO on both input and output.
 
 module fc_layer #(
     parameter WORD_SIZE=16,
-    parameter INT_BITS=8,
+    parameter N_SIZE=8,
     parameter LAYER_HEIGHT=2,
     parameter PREVIOUS_LAYER_HEIGHT=4,
     parameter LAYER_NUMBER=1 ) (
@@ -22,7 +22,7 @@ module fc_layer #(
     
     // helpful output interface
     output logic valid_o,
-    input logic ready_i,
+    input logic yumi_i,
     output logic [LAYER_HEIGHT-1:0][WORD_SIZE-1:0] data_o,
 
     input logic reset_i,
@@ -50,7 +50,7 @@ module fc_layer #(
                     ns = eBUSY;
             eDONE:
                 // if output handshake happens, then go back to busy
-                if (valid_o && ready_i)
+                if (valid_o && yumi_i)
                     ns = eBUSY;
                 else
                     ns = eDONE;
@@ -98,7 +98,7 @@ module fc_layer #(
         for (i = 0; i < LAYER_HEIGHT; i = i + 1) begin
             fc_neuron #(
                 .WORD_SIZE(WORD_SIZE),
-                .INT_BITS(INT_BITS),
+                .N_SIZE(N_SIZE),
                 .PREVIOUS_LAYER_HEIGHT(PREVIOUS_LAYER_HEIGHT),
                 .LAYER_NUMBER(LAYER_NUMBER),
                 .NEURON_NUMBER(i)
@@ -110,7 +110,7 @@ module fc_layer #(
                 .sum_en,
                 .add_bias(add_bias_delay),
 
-                .reset_i(reset_i || (valid_o && ready_i)),
+                .reset_i(reset_i || (valid_o && yumi_i)),
                 .clk_i,
 
                 .data_o(data_o[i])

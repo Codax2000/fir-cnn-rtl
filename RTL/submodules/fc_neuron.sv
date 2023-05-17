@@ -10,7 +10,7 @@ memory time to read
 
 module fc_neuron #(
     parameter WORD_SIZE=16,
-    parameter INT_BITS=8,
+    parameter N_SIZE=8,
     parameter PREVIOUS_LAYER_HEIGHT=4,
     parameter LAYER_NUMBER=1,
     parameter NEURON_NUMBER=0 ) (
@@ -45,7 +45,7 @@ module fc_neuron #(
 
     logical_unit #(
         .WORD_SIZE(WORD_SIZE),
-        .INT_BITS(INT_BITS)
+        .INT_BITS(WORD_SIZE-N_SIZE)
     ) LU (
         .mem_i(mem_out),
         .data_i,

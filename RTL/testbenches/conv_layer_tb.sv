@@ -26,7 +26,7 @@ module conv_layer_tb ();
     logic not_valid_i;
 
     //// DUT VALUES ////
-    logic clk_i, reset_i, start_i;
+    logic clk_i, reset_i, start_i, conv_ready_o;
     
     // VCS (not Vivado) good stress-test of 1 convolution write port
     `ifndef VIVADO

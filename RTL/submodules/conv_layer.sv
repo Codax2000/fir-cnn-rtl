@@ -21,10 +21,11 @@ parameters:
     LAYER_NUMBER        : layer number in neural net. used for finding the correct memory file for kernel, default 1
     CONVOLUTION_NUMBER  : kernel number. also used for finding the correct memory file, default 0
 
-control inputs:
+control signals:
     clk_i   : 1-bit : clock signal
     reset_i : 1-bit : reset signal
     start_i : 1-bit : signal to start computation
+    conv_ready_o: 1-bit: signal that convolution is ready to begin computation on a new string of input data
 
 demanding input interface:
     valid_i : 1-bit : valid signal for input handshake
@@ -58,7 +59,9 @@ module conv_layer #(
     // top-level signals
     input logic clk_i,
     input logic reset_i,
+    
     input logic start_i,
+    output logic conv_ready_o,
     
     // uncomment for VCS or if Vivado starts working
    `ifndef VIVADO
@@ -146,6 +149,9 @@ module conv_layer #(
     ////   BEGIN SUBSIDIARY CONTROL LOGIC ////
     // control memory addresses, IO logic signals, shift, consumed counter, and output handshake downsampler
 
+    // conv_ready signal: more of a convenience for a user
+    assign conv_ready_o = ps_e == eREADY;
+    
     // next memory address, counter is reset if not in correct state so don't worry about that
     // counter takes 1 extra cycle to allow output handshake to happen
     always_comb begin
@@ -410,5 +416,4 @@ module conv_layer #(
             assign data_o[WORD_SIZE*i+WORD_SIZE-1:i*WORD_SIZE] = alu_data_lo[i][output_addr_r];
         end
     endgenerate
-
 endmodule
