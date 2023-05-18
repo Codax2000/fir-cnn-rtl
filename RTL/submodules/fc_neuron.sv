@@ -1,4 +1,7 @@
 `timescale 1ns / 1ps
+`ifndef SYNOPSIS
+`define VIVADO
+`endif
 /**
 Alex Knowlton
 4/5/2023
@@ -18,25 +21,35 @@ module fc_neuron #(
     input logic signed [WORD_SIZE-1:0] data_i,
 
     // control signals
-    input logic [$clog2(PREVIOUS_LAYER_HEIGHT+1)-1:0] mem_addr_i,
+    input logic [RAM_ADDRESS_BITS-1:0] mem_addr_i,
     input logic sum_en,
     input logic add_bias,
 
     input logic reset_i,
     input logic clk_i,
 
+    `ifndef VIVADO
+    input logic w_en_i,
+    input logic [RAM_ADDRESS_BITS-1:0] mem_data_i,
+    `endif
+
     output logic signed [WORD_SIZE-1:0] data_o
 );
+    localparam RAM_ADDRESS_BITS = $clog2(PREVIOUS_LAYER_HEIGHT+1);
 
     logic signed [WORD_SIZE-1:0] mem_out;
 
     ROM_neuron #(
-        .depth($clog2(PREVIOUS_LAYER_HEIGHT+1)),
+        .depth(RAM_ADDRESS_BITS),
         .width(WORD_SIZE),
         .neuron_type(1),
         .layer_number(LAYER_NUMBER),
         .neuron_number(NEURON_NUMBER)
     ) weight_and_bias_mem (
+        `ifndef VIVADO
+        .data_i(mem_data_i),
+        .wen_i(w_en_i),
+        `endif
         .reset_i,
         .clk_i,
         .addr_i(mem_addr_i),
@@ -46,7 +59,7 @@ module fc_neuron #(
     logical_unit #(
         .WORD_SIZE(WORD_SIZE),
         .INT_BITS(WORD_SIZE-N_SIZE)
-    ) LU (
+    ) ALU (
         .mem_i(mem_out),
         .data_i,
         .data_o,

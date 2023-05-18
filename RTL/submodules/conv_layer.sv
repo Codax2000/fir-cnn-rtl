@@ -20,6 +20,8 @@ parameters:
     N_SIZE              : number of fractional bits, default 12
     LAYER_NUMBER        : layer number in neural net. used for finding the correct memory file for kernel, default 1
     CONVOLUTION_NUMBER  : kernel number. also used for finding the correct memory file, default 0
+    RAM_SELECT_BITS     : number of bits in ram select
+    RAM_ADDRESS_BITS    : number of bits in ram address
 
 control signals:
     clk_i   : 1-bit : clock signal
@@ -39,15 +41,13 @@ demanding output interface
 
 OPTIONAL INPUTS:
 if VIVADO is not defined (using `define VIVADO), then add optional write port for the RAM. Add separate data_i port for RAM:
-    addr_i  : n-bit : RAM address to write to. size is address width of RAM + $clog2(N_CONVOLUTIONS + 1)
+    addr_i  : n-bit : RAM address to write to. size is address width of RAM_SELECT_BITS + RAM_ADDRESS_BITS
     mem_data_i: n-bit: data to write to memory. size is WORD_SIZE
-    wen_i   : 1-bit : write-enable bit
+    w_en_i  : 1-bit : write-enable bit
     
 */
 
 module conv_layer #(
-
-    // parameters match those for testing, make sure to pass the right ones from top level
     parameter INPUT_LAYER_HEIGHT=5,
     parameter KERNEL_HEIGHT=3,
     parameter KERNEL_WIDTH=2,
@@ -63,10 +63,9 @@ module conv_layer #(
     input logic start_i,
     output logic conv_ready_o,
     
-    // uncomment for VCS or if Vivado starts working
    `ifndef VIVADO
-   input logic [$clog2(N_CONVOLUTIONS+1)+$clog2(KERNEL_HEIGHT*KERNEL_WIDTH+1)-1:0] mem_addr_i,
-   input logic wen_i,
+   input logic [RAM_ADDRESS_BITS+RAM_SELECT_BITS-1:0] mem_addr_i,
+   input logic w_en_i,
    input logic [WORD_SIZE-1:0] mem_data_i,
    `endif
 
@@ -82,6 +81,9 @@ module conv_layer #(
     output logic [(N_CONVOLUTIONS*WORD_SIZE)-1:0] data_o
     
     );
+    
+    localparam RAM_SELECT_BITS = (N_CONVOLUTIONS) == 1 ? 1 : $clog2(N_CONVOLUTIONS);
+    localparam RAM_ADDRESS_BITS = $clog2(KERNEL_HEIGHT*KERNEL_WIDTH+1);
     
     ////  START CONTROL LOGIC FSM   ////
     // counter registers for memory addresses and logic signals
@@ -323,6 +325,11 @@ module conv_layer #(
         .data_o(shift_sum_en_lo)
     );
 
+    `ifndef VIVADO
+    logic [2**RAM_SELECT_BITS-1:0] mem_wen_select;
+    assign mem_wen_select = w_en_i << mem_addr_i[RAM_ADDRESS_BITS+RAM_SELECT_BITS-1:RAM_SELECT_BITS];
+    `endif
+
     genvar i, j;
     generate
         for (i = 0; i < N_CONVOLUTIONS; i++) begin
@@ -348,12 +355,7 @@ module conv_layer #(
            `ifdef VIVADO
             assign mem_addr_li = mem_count_n;            
            `else
-           logic wen_li;
-           localparam max_mem_index_lp = $clog2(N_CONVOLUTIONS+1)+$clog2(KERNEL_HEIGHT*KERNEL_WIDTH+1)-1;
-           assign wen_li = wen_i && (mem_addr_i[max_mem_index_lp:max_mem_index_lp-$clog2(N_CONVOLUTIONS+1)] == i + 1);
-            
-           // if using synopsis, we are using a 1RW RAM, so connect addresses differently
-           assign mem_addr_li = wen_i ? mem_addr_i[$clog2(KERNEL_HEIGHT*KERNEL_WIDTH+1)-1:0] : mem_count_n;
+            assign mem_addr_li = mem_wen_select[i] ? mem_addr_i[RAM_ADDRESS_BITS-1:0] : mem_count_n;
            `endif
 
             ROM_neuron #(
