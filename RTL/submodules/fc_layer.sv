@@ -1,4 +1,8 @@
 `timescale 1ns / 1ps
+`ifndef SYNOPSIS
+`define VIVADO
+`endif
+
 /**
 Alex Knowlton
 4/3/2023
@@ -9,6 +13,12 @@ layers of differing sizes. Assumes FIFO on both input and output.
 
 
 module fc_layer #(
+
+     `ifndef VIVADO
+    parameter RAM_ADDRESS_BITS = 1;
+    parameter RAM_SELECT_BITS = 3;
+    `endif
+
     parameter WORD_SIZE=16,
     parameter N_SIZE=8,
     parameter LAYER_HEIGHT=2,
@@ -17,8 +27,8 @@ module fc_layer #(
     
     // demanding input interface
     input logic signed [WORD_SIZE-1:0] data_i,
-    input logic empty_i,
-    output logic ren_o, // also yumi_o, but not using that convention here
+    input logic valid_i,
+    output logic ready_o,
     
     // helpful output interface
     output logic valid_o,
@@ -28,9 +38,11 @@ module fc_layer #(
     input logic reset_i,
     input logic clk_i,
 
-    // input for back-propagation, not currently used
-    input logic [LAYER_HEIGHT-1:0][WORD_SIZE-1:0] weight_i,
-    input logic mem_wen_i
+    `ifndef VIVADO
+    input logic [RAM_ADDRESS_BITS+RAM_SELECT_BITS-1:0] mem_addr_i,
+    input logic w_en_i,
+    input logic [WORD_SIZE-1:0] mem_data_i,
+    `endif
     );
 
     // manage inputs internally and pass them to neurons
@@ -92,11 +104,19 @@ module fc_layer #(
         data_to_neurons <= data_i;
     end
 
+    `ifndef VIVADO
+    logic [2**RAM_SELECT_BITS-1:0] mem_wen_select;
+    assign mem_wen_select = w_en_i << mem_addr_i[RAM_ADDRESS_BITS+RAM_SELECT_BITS-1:RAM_SELECT_BITS];
+    `endif
+
     // generate neurons
     genvar i;
     generate
         for (i = 0; i < LAYER_HEIGHT; i = i + 1) begin
             fc_neuron #(
+                `ifndef VIVADO
+                .RAM_ADDRESS_BITS(RAM_ADDRESS_BITS),
+                `endif
                 .WORD_SIZE(WORD_SIZE),
                 .N_SIZE(N_SIZE),
                 .PREVIOUS_LAYER_HEIGHT(PREVIOUS_LAYER_HEIGHT),
@@ -112,6 +132,11 @@ module fc_layer #(
 
                 .reset_i(reset_i || (valid_o && yumi_i)),
                 .clk_i,
+
+                `ifndef VIVADO
+                .w_en_i(mem_wen_select[i]),
+                .mem_data_i,
+                `endif
 
                 .data_o(data_o[i])
             );

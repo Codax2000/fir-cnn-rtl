@@ -1,4 +1,7 @@
 `timescale 1ns / 1ps
+`ifndef SYNOPSIS
+`define VIVADO
+`endif
 /**
 Alex Knowlton
 4/5/2023
@@ -9,6 +12,9 @@ memory time to read
 */
 
 module fc_neuron #(
+    `ifndef VIVADO
+    parameter RAM_ADDRESS_BITS=3,
+    `endif
     parameter WORD_SIZE=16,
     parameter N_SIZE=8,
     parameter PREVIOUS_LAYER_HEIGHT=4,
@@ -25,6 +31,11 @@ module fc_neuron #(
     input logic reset_i,
     input logic clk_i,
 
+    `ifndef VIVADO
+    input logic w_en_i,
+    input logic [RAM_ADDRESS_BITS-1:0] mem_data_i,
+    `endif
+
     output logic signed [WORD_SIZE-1:0] data_o
 );
 
@@ -37,9 +48,13 @@ module fc_neuron #(
         .layer_number(LAYER_NUMBER),
         .neuron_number(NEURON_NUMBER)
     ) weight_and_bias_mem (
+        `ifndef VIVADO
+        .data_i(mem_data_i),
+        .wen_i(w_en_i),
+        `endif
         .reset_i,
         .clk_i,
-        .addr_i(mem_addr_i),
+        .addr_i(mem_addr_li),
         .data_o(mem_out)
     );
 

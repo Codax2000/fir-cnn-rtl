@@ -96,7 +96,7 @@ module conv_layer_tb ();
 
     `ifndef VIVADO
     initial begin
-        $readmemh("../../../mem/0_1_00.mem", kernel_values);
+        $readmemh("../../../mem/0_5_00.mem", kernel_values);
     end
     `endif
     //// TESTING TASKS ////

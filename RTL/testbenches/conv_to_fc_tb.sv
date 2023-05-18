@@ -84,15 +84,23 @@ module conv_to_fc_tb ();
     logic [N_TESTS-1:0][INPUT_LAYER_HEIGHT-KERNEL_HEIGHT:0][WORD_SIZE-1:0]   expected_outputs;
     logic [N_TESTS-1:0][INPUT_LAYER_HEIGHT*KERNEL_WIDTH-1:0][WORD_SIZE-1:0]  test_inputs;
     logic [KERNEL_HEIGHT*KERNEL_WIDTH:0][WORD_SIZE-1:0]                      kernel_values;
+    logic [HIDDEN_LAYER_HEIGHT-1:0][INPUT_LAYER_HEIGHT-KERNEL_HEIGHT:0][WORD_SIZE-1:0] hidden_layer_values;
+    logic [OUTPUT_LAYER_HEIGHT-1:0][HIDDEN_LAYER_HEIGHT-1:0][WORD_SIZE-1:0]  output_layer_values;
 
     assign expected_outputs = 128'h001b_000c_fff4_0007__0035_fffa_0006_001d;
     assign test_inputs[0] = 160'hfffc_000a_0008_0002_000e_fffa_0002_fffe_fffa_0006;
     assign test_inputs[1] = 160'h0001_0014_0004_fff6_fff2_0007_0002_0001_0000_0005;
 
     `ifndef VIVADO
-    // if using VCS, need to read in the mem file to kernel_values for writing to memory
+    // if using VCS, need to read in the mem files to kernel_values for writing to memory
     initial begin
-        $readmemh("../../../mem/0_2_00.mem", kernel_values);
+        $readmemh("../../../mem/0_6_000.mem", kernel_values);
+        $readmemh("../../../mem/1_7_000.mem", hidden_layer_values[0]);
+        $readmemh("../../../mem/1_7_001.mem", hidden_layer_values[1]);
+        $readmemh("../../../mem/1_8_000.mem", output_layer_values[0]);
+        $readmemh("../../../mem/1_8_001.mem", output_layer_values[1]);
+        $readmemh("../../../mem/1_8_002.mem", output_layer_values[2]);
+        $readmemh("../../../mem/1_8_003.mem", output_layer_values[3]);
     end
     `endif
     //// TESTING TASKS ////
@@ -106,9 +114,6 @@ module conv_to_fc_tb ();
     
     // input layer input handshake
     logic fcin_ready_o, fcin_valid_i;
-    
-    // input layer output handshake
-    logic fcin_valid_o, fcin_yumi_o;
     
     // convolutional layer input handshake (demanding)
     logic conv_layer_yumi_o, conv_layer_valid_i;
@@ -152,5 +157,146 @@ module conv_to_fc_tb ();
         assert(expected_value == data_o)
             else $display("%t: Assertion Error: Expected %h, Received %h", $realtime, expected_value, data_o);
     endtask
+
+    fc_output_layer #(
+        .LAYER_HEIGHT(),
+        .WORD_SIZE()
+    ) input_layer (
+        .clk_i(),
+        .reset_i(),
+
+        // helpful handshake to prev layer
+        .valid_i(),
+        .ready_o(),
+        .data_i(),
+
+        // demanding handshake to next layer
+        .wen_o(),
+        .full_i(),
+        .data_o()
+    );
+
+    // generate modules
+    conv_layer #(
+        `ifndef VIVADO
+        .RAM_ADDRESS_BITS(),
+        .RAM_SELECT_BITS(),
+        `endif
+        .INPUT_LAYER_HEIGHT(),
+        .KERNEL_HEIGHT(),
+        .KERNEL_WIDTH(),
+        .WORD_SIZE(),
+        .N_SIZE(),
+        .LAYER_NUMBER(),
+        .N_CONVOLUTIONS()
+    ) convolution (
+        // top-level signals
+        .clk_i(),
+        .reset_i(),
+
+        .start_i(),
+        .conv_ready_o(),
+
+        `ifndef VIVADO
+        .mem_addr_i(),
+        .w_en_i(),
+        .mem_data_i(),
+        `endif
+
+        // demanding input interface
+        .valid_i(),
+        .yumi_o(),
+        .data_i(),
+
+        // demanding output interface
+        .valid_o(),
+        .ready_i(),
+        // no packed arrays as IO, or they will get screwed up in synthesis
+        .data_o()
+    );
+
+    fc_layer #(
+
+        `ifndef VIVADO
+        .RAM_ADDRESS_BITS(),
+        .RAM_SELECT_BITS(),
+        `endif
+
+        .WORD_SIZE(),
+        .N_SIZE(),
+        .LAYER_HEIGHT(),
+        .PREVIOUS_LAYER_HEIGHT(),
+        .LAYER_NUMBER()
+    ) hidden_layer (
+        // helpful
+        .data_i(),
+        .valid_i(),
+        .ready_o(),
+
+        // helpful output interface
+        .valid_o(),
+        .yumi_i(),
+        .data_o(),
+
+        .reset_i(),
+        .clk_i(),
+
+        `ifndef VIVADO
+        .mem_addr_i(),
+        .w_en_i(),
+        .mem_data_i(),
+        `endif
+    );
+
+    fc_output_layer #(
+        .LAYER_HEIGHT(),
+        .WORD_SIZE()
+    ) hidden_layer_output (
+        .clk_i(),
+        .reset_i(),
+
+        // helpful handshake to prev layer
+        .valid_i(),
+        .ready_o(),
+        .data_i(),
+
+        // demanding handshake to next layer
+        .wen_o(),
+        .full_i(),
+        .data_o()
+    );
+
+    fc_layer #(
+
+        `ifndef VIVADO
+        .RAM_ADDRESS_BITS(),
+        .RAM_SELECT_BITS(),
+        `endif
+
+        .WORD_SIZE(),
+        .N_SIZE(),
+        .LAYER_HEIGHT(),
+        .PREVIOUS_LAYER_HEIGHT(),
+        .LAYER_NUMBER()
+    ) output_layer (
+        // helpful
+        .data_i(),
+        .valid_i(),
+        .ready_o(),
+
+        // helpful output interface
+        .valid_o(),
+        .yumi_i(),
+        .data_o(),
+
+        .reset_i(),
+        .clk_i(),
+
+        `ifndef VIVADO
+        .mem_addr_i(),
+        .w_en_i(),
+        .mem_data_i(),
+        `endif
+    );
 
 endmodule
