@@ -1,4 +1,5 @@
 `timescale 1ns / 1ps
+//`define SYNOPSIS
 `ifndef SYNOPSIS
     `define VIVADO
 `endif
