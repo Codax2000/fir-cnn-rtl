@@ -67,10 +67,11 @@ module logical_unit #(
     // accumulator register
     logic signed [47:0] full_data;
     logic signed [2*WORD_SIZE-1:0] sum_r;
+    localparam signed [WORD_SIZE-1:0] one = 1<<FRAC_BITS;
     dsp_macro_0 dut (
         .CLK(clk_i),
         .A(mem_i),
-        .B(add_bias ? 1<<FRAC_BITS : data_i),
+        .B(add_bias ? one : data_i),
         .SEL,
         
         .P(full_data)

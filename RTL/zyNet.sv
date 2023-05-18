@@ -10,6 +10,7 @@ module zyNet #(
     // small parameters for testing, increase for real scenario
     parameter WORD_SIZE=16,
     parameter INT_BITS=4,
+    parameter N_SIZE=8,
     parameter OUTPUT_SIZE=10,
     
     parameter MEM_WORD_SIZE=21,
@@ -125,9 +126,9 @@ module zyNet #(
                 .KERNEL_HEIGHT(KERNEL_HEIGHT_0),
                 .KERNEL_WIDTH(KERNEL_WIDTH_0),
                 .WORD_SIZE(WORD_SIZE),
-                .INT_BITS(INT_BITS),
+                .N_SIZE(N_SIZE),
                 .LAYER_NUMBER(0),
-                .CONVOLUTION_NUMBER(i)
+                .N_CONVOLUTIONS(NUM_KERNELS)
             ) kernel (
                 .clk_i,
                 .reset_i,
@@ -142,7 +143,7 @@ module zyNet #(
                 
                 // handshake to prev layer
                 .valid_i,
-                .ready_o(ready_outs[i]),
+                .yumi_o(ready_outs[i]),
                 .data_i,
                 
                 // helpful handshake to next layer
@@ -174,7 +175,7 @@ module zyNet #(
             gap_layer #(
                 .INPUT_SIZE(INPUT_LAYER_HEIGHT-KERNEL_HEIGHT_0+1),
                 .WORD_SIZE(WORD_SIZE),
-                .N_SIZE(WORD_SIZE-INT_BITS)
+                .N_SIZE(N_SIZE)
             ) global_average_pooling (
                 // top level control
                 .clk_i,
@@ -234,7 +235,7 @@ module zyNet #(
     
     fc_layer #(
         .WORD_SIZE(WORD_SIZE),
-        .INT_BITS(INT_BITS),
+        .N_SIZE(N_SIZE),
         .LAYER_HEIGHT(FC_LAYER_HEIGHT_0),
         .PREVIOUS_LAYER_HEIGHT(NUM_KERNELS),
         .LAYER_NUMBER(0)
@@ -256,7 +257,7 @@ module zyNet #(
     
         // helpful output interface
         .valid_o(fc0_valid_lo),
-        .ready_i(fc_output2_ready_lo),
+        .yumi_i(fc_output2_ready_lo),
         .data_o(fc0_data_lo),
 
         // input for back-propagation, not currently used
@@ -335,7 +336,7 @@ module zyNet #(
     
     fc_layer #(
         .WORD_SIZE(WORD_SIZE),
-        .INT_BITS(INT_BITS),
+        .N_SIZE(N_SIZE),
         .LAYER_HEIGHT(FC_LAYER_HEIGHT_1),
         .PREVIOUS_LAYER_HEIGHT(FC_LAYER_HEIGHT_0),
         .LAYER_NUMBER(1)
@@ -357,7 +358,7 @@ module zyNet #(
     
         // helpful output interface
         .valid_o,
-        .ready_i(yumi_i),
+        .yumi_i(yumi_i),
         .data_o,
 
         // input for back-propagation, not currently used
