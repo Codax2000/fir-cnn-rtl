@@ -48,7 +48,7 @@ module bn_layer #(
   
   // DERIVED PARAMETERS. No need to touch!
   parameter RAM_SELECT_BITS=2,
-  parameter RAM_ADDRESS_BITS=$max(1,$clog2(INPUT_SIZE))) (
+  parameter RAM_ADDRESS_BITS=(INPUT_SIZE==1) ? 1 : $clog2(INPUT_SIZE)) (
   
   // RAM interface
   `ifdef SYNOPSIS
