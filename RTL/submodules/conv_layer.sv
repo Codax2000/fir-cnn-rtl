@@ -48,12 +48,6 @@ if VIVADO is not defined (using `define VIVADO), then add optional write port fo
 */
 
 module conv_layer #(
-
-    // parameters match those for testing, make sure to pass the right ones from top level
-    `ifndef VIVADO
-    parameter RAM_ADDRESS_BITS = 1;
-    parameter RAM_SELECT_BITS = 3;
-    `endif
     parameter INPUT_LAYER_HEIGHT=5,
     parameter KERNEL_HEIGHT=3,
     parameter KERNEL_WIDTH=2,
@@ -87,6 +81,9 @@ module conv_layer #(
     output logic [(N_CONVOLUTIONS*WORD_SIZE)-1:0] data_o
     
     );
+    
+    localparam RAM_SELECT_BITS = (N_CONVOLUTIONS) == 1 ? 1 : $clog2(N_CONVOLUTIONS);
+    localparam RAM_ADDRESS_BITS = $clog2(KERNEL_HEIGHT*KERNEL_WIDTH+1);
     
     ////  START CONTROL LOGIC FSM   ////
     // counter registers for memory addresses and logic signals

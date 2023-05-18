@@ -12,9 +12,6 @@ memory time to read
 */
 
 module fc_neuron #(
-    `ifndef VIVADO
-    parameter RAM_ADDRESS_BITS=3,
-    `endif
     parameter WORD_SIZE=16,
     parameter N_SIZE=8,
     parameter PREVIOUS_LAYER_HEIGHT=4,
@@ -24,7 +21,7 @@ module fc_neuron #(
     input logic signed [WORD_SIZE-1:0] data_i,
 
     // control signals
-    input logic [$clog2(PREVIOUS_LAYER_HEIGHT+1)-1:0] mem_addr_i,
+    input logic [RAM_ADDRESS_BITS-1:0] mem_addr_i,
     input logic sum_en,
     input logic add_bias,
 
@@ -38,11 +35,12 @@ module fc_neuron #(
 
     output logic signed [WORD_SIZE-1:0] data_o
 );
+    localparam RAM_ADDRESS_BITS = $clog2(PREVIOUS_LAYER_HEIGHT+1);
 
     logic signed [WORD_SIZE-1:0] mem_out;
 
     ROM_neuron #(
-        .depth($clog2(PREVIOUS_LAYER_HEIGHT+1)),
+        .depth(RAM_ADDRESS_BITS),
         .width(WORD_SIZE),
         .neuron_type(1),
         .layer_number(LAYER_NUMBER),
@@ -54,14 +52,14 @@ module fc_neuron #(
         `endif
         .reset_i,
         .clk_i,
-        .addr_i(mem_addr_li),
+        .addr_i(mem_addr_i),
         .data_o(mem_out)
     );
 
     logical_unit #(
         .WORD_SIZE(WORD_SIZE),
         .INT_BITS(WORD_SIZE-N_SIZE)
-    ) LU (
+    ) ALU (
         .mem_i(mem_out),
         .data_i,
         .data_o,
