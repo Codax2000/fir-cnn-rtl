@@ -48,7 +48,7 @@ Test Data 1:
      [-1.5   1.5]]
      
 Test Data 1 Layer Inputs:
-    Convolutional Layer:        48'h0041_fff6_ffed, or [[16.25], [-2.5], [-4.75]]
+    Convolutional Layer:        48'h003d_0037_ffed, or [[15.25], [13.75], [-4.75]]
     Fully-connected Layer 1:    
     Fully-connected Layer 2: 
 
@@ -90,9 +90,9 @@ module conv_to_fc_tb ();
     logic [HIDDEN_LAYER_HEIGHT-1:0][INPUT_LAYER_HEIGHT-KERNEL_HEIGHT:0][WORD_SIZE-1:0] hidden_layer_values;
     logic [OUTPUT_LAYER_HEIGHT-1:0][HIDDEN_LAYER_HEIGHT-1:0][WORD_SIZE-1:0]  output_layer_values;
 
-    assign expected_outputs = 128'h001b_000c_fff4_0007__0035_fffa_0006_001d;
-    assign test_inputs[0] = 160'hfffc_000a_0008_0002_000e_fffa_0002_fffe_fffa_0006;
-    assign test_inputs[1] = 160'h0001_0014_0004_fff6_fff2_0007_0002_0001_0000_0005;
+    assign expected_outputs = 128'h0008_0031_ffd3_ffed__00ce_0037_ffcd_004d;
+    assign test_inputs[0] = 160'h0006_fffa_fffe_0002_fffa_000e_0002_0008_000a_fffc;
+    assign test_inputs[1] = 160'h0005_0000_0001_0002_0007_fff2_fff6_0004_0014_0001;
 
     `ifndef VIVADO
     // if using VCS, need to read in the mem files to kernel_values for writing to memory
@@ -110,7 +110,7 @@ module conv_to_fc_tb ();
     
     //// DEFINE INPUT/OUTPUT VARIABLES ////
     logic [INPUT_LAYER_HEIGHT*KERNEL_WIDTH-1:0][WORD_SIZE-1:0] input_layer_data;
-    logic [WORD_SIZE-1:0] conv_layer_data, hidden_layer_input_data;
+    logic [WORD_SIZE-1:0] input_fifo_data, conv_layer_data, hidden_layer_input_data;
     logic [HIDDEN_LAYER_HEIGHT-1:0][WORD_SIZE-1:0] hidden_layer_output_data;
     logic [WORD_SIZE-1:0] output_layer_input_data;
     logic [OUTPUT_LAYER_HEIGHT-1:0][WORD_SIZE-1:0] output_layer_output_data;
@@ -121,8 +121,13 @@ module conv_to_fc_tb ();
     // input layer input handshake
     logic fcin_ready_o, fcin_valid_i;
     
+    // input layer output handshake
+    logic fcin_valid_o, fcin_yumi_i, not_fcin_yumi_i;
+    assign fcin_yumi_i = !not_fcin_yumi_i;
+
     // convolutional layer input handshake (demanding)
-    logic conv_layer_yumi_o, conv_layer_valid_i;
+    logic conv_layer_yumi_o, conv_layer_valid_i, not_conv_layer_valid_i;
+    assign conv_layer_valid_i = not_conv_layer_valid_i;
     
     // hidden layer input handshake
     logic hidden_layer_valid_i, hidden_layer_ready_o;
@@ -148,12 +153,26 @@ module conv_to_fc_tb ();
         .ready_o(fcin_ready_o),
         .data_i(input_layer_data),
 
-        .yumi_i(conv_layer_yumi_o),
-        .valid_o(conv_layer_valid_i),
-        .data_o(conv_layer_data)
+        .yumi_i(fcin_yumi_i),
+        .valid_o(fcin_valid_o),
+        .data_o(input_fifo_data)
     );
 
-    // generate modules
+    single_fifo_no_rw #(
+        .WORD_SIZE(WORD_SIZE)
+    ) input_fifo (
+        .clk_i,
+        .reset_i,
+
+        .wen_i(fcin_valid_o),
+        .data_i(input_fifo_data),
+        .empty_o(not_fcin_yumi_i),
+
+        .ren_i(conv_layer_yumi_o),
+        .data_o(conv_layer_data),
+        .full_o(not_conv_layer_valid_i)
+    );
+
     conv_layer #(
         .INPUT_LAYER_HEIGHT(INPUT_LAYER_HEIGHT),
         .KERNEL_HEIGHT(KERNEL_HEIGHT),
@@ -263,11 +282,14 @@ module conv_to_fc_tb ();
         // test case 1
         input_layer_data <= test_inputs[0];
         fcin_valid_i <= 1'b1;   @(posedge clk_i);
+        fcin_valid_i <= 1'b0;   @(posedge clk_i);
                                 @(posedge output_layer_valid_o);
                                 @(negedge clk_i);
         $display("%t: Asserting Test Case 1", $realtime);
         assert (output_layer_output_data == expected_outputs[0])
-            else $display("%t: Assertion Error: Expected %h, Received %h", $realtime, expected_outputs[0], output_layer_output_data);
+            $display("%t: Test Case 1 Passed", $realtime);    
+        else
+            $display("%t: Assertion Error: Expected %h, Received %h", $realtime, expected_outputs[0], output_layer_output_data);
         output_layer_yumi_i <= 1'b1; @(posedge clk_i);
         output_layer_yumi_i <= 1'b0; @(posedge clk_i);
         
@@ -276,11 +298,14 @@ module conv_to_fc_tb ();
         start_i <= 1'b0;        @(posedge clk_i);
         input_layer_data <= test_inputs[1];
         fcin_valid_i <= 1'b1;   @(posedge clk_i);
+        fcin_valid_i <= 1'b0;   @(posedge clk_i);
                                 @(posedge output_layer_valid_o);
                                 @(negedge clk_i);
         $display("%t: Asserting Test Case 2", $realtime);
         assert (output_layer_output_data == expected_outputs[1])
-            else $display("%t: Assertion Error: Expected %h, Received %h", $realtime, expected_outputs[1], output_layer_output_data);
+            $display("%t: Test Case 2 Passed", $realtime); 
+        else
+            $display("%t: Assertion Error: Expected %h, Received %h", $realtime, expected_outputs[1], output_layer_output_data);
         output_layer_yumi_i <= 1'b1; @(posedge clk_i);
         output_layer_yumi_i <= 1'b0; @(posedge clk_i);
         
