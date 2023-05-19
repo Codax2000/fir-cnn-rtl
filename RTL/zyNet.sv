@@ -63,7 +63,7 @@ module zyNet #(
     logic signed [NUM_KERNELS*WORD_SIZE-1:0] conv0_data_lo;
     
     // abs_layer_0
-    logic [NUM_KERNELS-1:0] abs0_ready_lo, abs0_valid_lo;
+    logic abs0_ready_lo, abs0_valid_lo;
     logic signed [NUM_KERNELS*WORD_SIZE-1:0] abs0_data_lo;
     
     // gap_layer_0
@@ -152,34 +152,28 @@ module zyNet #(
         
         // demanding handshake to next layer
         .valid_o(conv0_valid_lo),
-        .ready_i(&abs0_ready_lo),
+        .ready_i(abs0_ready_lo),
         .data_o(conv0_data_lo)
     );
 
-
-    genvar i;
-    generate
-        for (i = 0; i < NUM_KERNELS; i = i + 1) begin
-            abs_layer #(
-                .WORD_SIZE(WORD_SIZE)
-            ) absolute_value (
-                // top level control
-                .clk_i,
-                .reset_i,
-            
-                // handshake to prev layer
-                .ready_o(abs0_ready_lo[i]),
-                .valid_i(conv0_valid_lo),
-                .data_r_i(conv0_data_lo[(i+1)*WORD_SIZE-1:i*WORD_SIZE]),
-            
-                // handshake to next layer
-                .valid_o(abs0_valid_lo[i]),
-                .ready_i(gap0_ready_lo),
-                .data_r_o(abs0_data_lo[(i+1)*WORD_SIZE-1:i*WORD_SIZE])
-            );
-
-        end
-    endgenerate
+    abs_layer #(
+        .WORD_SIZE(WORD_SIZE),
+        .NUM_CHANNELS(NUM_KERNELS)
+    ) absolute_value (
+        // top level control
+        .clk_i,
+        .reset_i,
+    
+        // handshake to prev layer
+        .ready_o(abs0_ready_lo),
+        .valid_i(conv0_valid_lo),
+        .data_r_i(conv0_data_lo),
+    
+        // handshake to next layer
+        .valid_o(abs0_valid_lo),
+        .ready_i(gap0_ready_lo),
+        .data_r_o(abs0_data_lo)
+    );
     
     gap_layer #(
         .INPUT_SIZE(INPUT_LAYER_HEIGHT-KERNEL_HEIGHT_0+1),
@@ -193,7 +187,7 @@ module zyNet #(
     
         // handshake to prev layer
         .ready_o(gap0_ready_lo),
-        .valid_i(&abs0_valid_lo),
+        .valid_i(abs0_valid_lo),
         .data_r_i(abs0_data_lo),
     
         // handshake to next layer
