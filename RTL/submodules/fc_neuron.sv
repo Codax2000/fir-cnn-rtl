@@ -21,7 +21,7 @@ module fc_neuron #(
     input logic signed [WORD_SIZE-1:0] data_i,
 
     // control signals
-    input logic [RAM_ADDRESS_BITS-1:0] mem_addr_i,
+    input logic [RAM_ADDRESS_BITS-1:0] w_addr_i,
     input logic sum_en,
     input logic add_bias,
 
@@ -30,7 +30,7 @@ module fc_neuron #(
 
     `ifndef VIVADO
     input logic w_en_i,
-    input logic [RAM_ADDRESS_BITS-1:0] mem_data_i,
+    input logic [RAM_ADDRESS_BITS-1:0] w_data_i,
     `endif
 
     output logic signed [WORD_SIZE-1:0] data_o
@@ -47,12 +47,12 @@ module fc_neuron #(
         .neuron_number(NEURON_NUMBER)
     ) weight_and_bias_mem (
         `ifndef VIVADO
-        .data_i(mem_data_i),
+        .data_i(w_data_i),
         .wen_i(w_en_i),
         `endif
         .reset_i,
         .clk_i,
-        .addr_i(mem_addr_i),
+        .addr_i(w_addr_i),
         .data_o(mem_out)
     );
 

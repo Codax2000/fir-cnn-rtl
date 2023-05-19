@@ -42,7 +42,7 @@ demanding output interface
 OPTIONAL INPUTS:
 if VIVADO is not defined (using `define VIVADO), then add optional write port for the RAM. Add separate data_i port for RAM:
     addr_i  : n-bit : RAM address to write to. size is address width of RAM_SELECT_BITS + RAM_ADDRESS_BITS
-    mem_data_i: n-bit: data to write to memory. size is WORD_SIZE
+    w_data_i: n-bit: data to write to memory. size is WORD_SIZE
     w_en_i  : 1-bit : write-enable bit
     
 */
@@ -64,9 +64,9 @@ module conv_layer #(
     output logic conv_ready_o,
     
    `ifndef VIVADO
-   input logic [RAM_ADDRESS_BITS+RAM_SELECT_BITS-1:0] mem_addr_i,
+   input logic [RAM_ADDRESS_BITS+RAM_SELECT_BITS-1:0] w_addr_i,
    input logic w_en_i,
-   input logic [WORD_SIZE-1:0] mem_data_i,
+   input logic [WORD_SIZE-1:0] w_data_i,
    `endif
 
     // demanding input interface
@@ -327,7 +327,7 @@ module conv_layer #(
 
     `ifndef VIVADO
     logic [2**RAM_SELECT_BITS-1:0] mem_wen_select;
-    assign mem_wen_select = w_en_i << mem_addr_i[RAM_ADDRESS_BITS+RAM_SELECT_BITS-1:RAM_SELECT_BITS];
+    assign mem_wen_select = w_en_i << w_addr_i[RAM_ADDRESS_BITS+RAM_SELECT_BITS-1:RAM_SELECT_BITS];
     `endif
 
     genvar i, j;
@@ -355,7 +355,7 @@ module conv_layer #(
            `ifdef VIVADO
             assign mem_addr_li = mem_count_n;            
            `else
-            assign mem_addr_li = mem_wen_select[i] ? mem_addr_i[RAM_ADDRESS_BITS-1:0] : mem_count_n;
+            assign mem_addr_li = mem_wen_select[i] ? w_addr_i[RAM_ADDRESS_BITS-1:0] : mem_count_n;
            `endif
 
             ROM_neuron #(
@@ -369,7 +369,7 @@ module conv_layer #(
                // compiler-dependent connection, uncomment if using VCS or if Vivado works properly
                `ifndef VIVADO
                .wen_i(wen_li),
-               .data_i(mem_data_i),
+               .data_i(w_data_i),
                `endif
 
                 .addr_i(mem_addr_li),
