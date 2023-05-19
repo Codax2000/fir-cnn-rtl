@@ -63,23 +63,7 @@ module zyNet_matlab_tb ();
         // demanding handshake to next layer
         .wen_o(wen),
         .full_i(full),
-        .data_o(serial_out)
-    );
-
-    double_fifo #(
-        .WORD_SIZE(WORD_SIZE)
-    ) input_fifo (
-        .clk_i,
-        .reset_i,
-        
-        .wen_i(wen),
-        .full_o(full),
-        .data_i(serial_out),
-
-        
-        .ren_i(ren),
-        .data_o(fifo_out),
-        .empty_o(empty)
+        .data_o(serialut)
     );
 
     zyNet #(

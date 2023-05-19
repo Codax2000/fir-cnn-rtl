@@ -26,13 +26,13 @@ Helpful output handshake:
     
 Compiler-dependent write port (works if SYNOPSIS is defined, see top of file):
     w_en_i      : write enable signal
-    mem_data_i  : WORD_SIZE bits. incoming data to write to RAM
-    mem_addr_i  : memory address, made up of RAM select and RAM address bits, like so:
+    w_data_i  : WORD_SIZE bits. incoming data to write to RAM
+    w_addr_i  : memory address, made up of RAM select and RAM address bits, like so:
     
 Memory address:
     Made up of two stages, {ram_select, ram_address}. ram_select is $clog2 of layer height, and is 1
-    if only one ram in the layer. so the address mem_data_i[RAM_ADDRESS_BITS+RAM_SELECT_BITS-1:RAM_ADDRESS_BITS] gives
-    the RAM selection in the layer. mem_data_i[RAM_ADDRESS_BITS-1:0] is the address within the ram, determined by the
+    if only one ram in the layer. so the address w_data_i[RAM_ADDRESS_BITS+RAM_SELECT_BITS-1:RAM_ADDRESS_BITS] gives
+    the RAM selection in the layer. w_data_i[RAM_ADDRESS_BITS-1:0] is the address within the ram, determined by the
     height of the input layer + 1 for the bias.
 */
 
@@ -56,9 +56,9 @@ module fc_layer #(
     output logic [LAYER_HEIGHT*WORD_SIZE-1:0] data_o,
 
     `ifndef VIVADO
-    input logic [RAM_ADDRESS_BITS+RAM_SELECT_BITS-1:0] mem_addr_i,
+    input logic [RAM_ADDRESS_BITS+RAM_SELECT_BITS-1:0] w_addr_i,
     input logic w_en_i,
-    input logic [WORD_SIZE-1:0] mem_data_i,
+    input logic [WORD_SIZE-1:0] w_data_i,
     `endif
 
     input logic reset_i,
@@ -112,7 +112,7 @@ module fc_layer #(
     assign sum_en = (ps_e == eBIAS) || (ps_e == eSHIFT && valid_i);
     
     `ifndef VIVADO
-    assign mem_addr_li = (w_en_i) ? mem_addr_i[RAM_ADDRESS_BITS-1:0] : mem_count_n;
+    assign mem_addr_li = (w_en_i) ? w_addr_i[RAM_ADDRESS_BITS-1:0] : mem_count_n;
     `else
     assign mem_addr_li = mem_count_n;
     `endif
@@ -137,7 +137,7 @@ module fc_layer #(
     // write enable signals
     `ifndef VIVADO
     logic [2**RAM_SELECT_BITS-1:0] mem_wen_select;
-    assign mem_wen_select = w_en_i << mem_addr_i[RAM_ADDRESS_BITS+RAM_SELECT_BITS-1:RAM_SELECT_BITS];
+    assign mem_wen_select = w_en_i << w_addr_i[RAM_ADDRESS_BITS+RAM_SELECT_BITS-1:RAM_SELECT_BITS];
     `endif
     
     // output signals
@@ -160,7 +160,7 @@ module fc_layer #(
                 .data_i(data_i),
 
                 // control signals
-                .mem_addr_i(mem_addr_li),
+                .w_addr_i(mem_addr_li),
                 .sum_en,
                 .add_bias,
 
@@ -169,7 +169,7 @@ module fc_layer #(
 
                 `ifndef VIVADO
                 .w_en_i(mem_wen_select[i]),
-                .mem_data_i(mem_data_i),
+                .w_data_i(w_data_i),
                 `endif
 
                 .data_o(data_o[i*WORD_SIZE+WORD_SIZE-1:i*WORD_SIZE])
