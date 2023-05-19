@@ -9,10 +9,13 @@ Global averaging pooling layer. Computes an average with sequential inputs.
 Interface: Uses a valid-ready handshakes. Is a helpful producer and consumer. The data_r_i is expected to come directly from a register, and data_r_o comes directly from a register.
 Implementation: An internal counter tracks the input number, and is used to initialize value and exit computation loop. The counter automatically resets properly.
 
-parameters:
-  INPUT_SIZE : number of inputs (the output size of the previous layer)
-  WORD_SIZE  : the number of bits of inputs/outputs
-  N_SIZE     : the n parameter for Qm.n fixed point notation
+Parameters:
+  INPUT_SIZE   : per-channel input tensor size
+  WORD_SIZE    : the number of bits of inputs/outputs
+  N_SIZE       : the n parameter for Qm.n fixed point notation
+  NUM_CHANNELS : the number of input channels
+  
+Derived Parameters
   MULTIPLIER : a multiplier representing 1/INPUT_SIZE. Default value is auto-computed in Qm.n format.
 
 input-outputs:
@@ -32,7 +35,10 @@ module gap_layer #(
 
   parameter INPUT_SIZE=1,
   parameter WORD_SIZE=16,
-  parameter N_SIZE=8,
+  parameter N_SIZE=12,
+  parameter NUM_CHANNELS=1,
+  
+  // derived parameter
   parameter signed [WORD_SIZE-1:0] MULTIPLIER=$rtoi((2.0**N_SIZE)/$itor(INPUT_SIZE))) (
 
   // top level control
@@ -42,12 +48,12 @@ module gap_layer #(
   // handshake to prev layer
   output logic ready_o,
   input logic valid_i,
-  input logic signed [WORD_SIZE-1:0] data_r_i,
+  input logic signed [NUM_CHANNELS*WORD_SIZE-1:0] data_r_i,
 
   // handshake to next layer
   output logic valid_o,
   input logic ready_i,
-  output logic signed [WORD_SIZE-1:0] data_r_o);
+  output logic signed [NUM_CHANNELS*WORD_SIZE-1:0] data_r_o);
 
 
 
@@ -106,30 +112,35 @@ module gap_layer #(
       count_n = count_r;
   end
 
-
-  // accumulator register
-  logic signed [2*WORD_SIZE-1:0] sum_r, sum_n, data_mult;
-  always_ff @(posedge clk_i) begin
-    if (en_lo)
-      sum_r <= (count_r == 0) ? data_mult : sum_n;
-    else
-      sum_r <= sum_r;
-  end
-  
-  // accumulation combinational logic
-  assign data_mult = data_r_i*MULTIPLIER;
-  
-  safe_alu #(.WORD_SIZE(2*WORD_SIZE),.N_SIZE(2*N_SIZE),.OPERATION("add")) add1 (
-    .a_i(data_mult),
-    .b_i(sum_r),
-    .data_o(sum_n)
-  );
-  
-  // output logic
-  safe_alu #(.WORD_SIZE(WORD_SIZE),.N_SIZE(N_SIZE),.OPERATION("trunc")) trunc1 (
-    .a_i(sum_r),
-    .b_i(),
-    .data_o(data_r_o)
-  );
+  // accumulators
+  genvar i;
+  generate
+      for (i=0; i<NUM_CHANNELS; i=i+1) begin
+          // accumulator register
+          logic signed [2*WORD_SIZE-1:0] sum_r, sum_n, data_mult;
+          always_ff @(posedge clk_i) begin
+            if (en_lo)
+              sum_r <= (count_r == 0) ? data_mult : sum_n;
+            else
+              sum_r <= sum_r;
+          end
+          
+          // accumulation combinational logic
+          assign data_mult = data_r_i[(i+1)*WORD_SIZE-1:i*WORD_SIZE]*MULTIPLIER;
+          
+          safe_alu #(.WORD_SIZE(2*WORD_SIZE),.N_SIZE(2*N_SIZE),.OPERATION("add")) add1 (
+            .a_i(data_mult),
+            .b_i(sum_r),
+            .data_o(sum_n)
+          );
+          
+          // output logic
+          safe_alu #(.WORD_SIZE(WORD_SIZE),.N_SIZE(N_SIZE),.OPERATION("trunc")) trunc1 (
+            .a_i(sum_r),
+            .b_i(),
+            .data_o(data_r_o[(i+1)*WORD_SIZE-1:i*WORD_SIZE])
+          );
+      end
+  endgenerate
 
 endmodule

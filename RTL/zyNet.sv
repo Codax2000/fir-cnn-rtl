@@ -59,16 +59,15 @@ module zyNet #(
     assign ready_o = !input_fifo_full_lo;
 
     // conv_layer_0
-    logic conv_ready_o;
+    logic conv0_valid_lo, conv0_yumi_lo, conv_ready_o;
     logic signed [NUM_KERNELS*WORD_SIZE-1:0] conv0_data_lo;
-    logic conv0_valid_lo, conv0_yumi_lo;
     
     // abs_layer_0
     logic [NUM_KERNELS-1:0] abs0_ready_lo, abs0_valid_lo;
     logic signed [NUM_KERNELS*WORD_SIZE-1:0] abs0_data_lo;
     
     // gap_layer_0
-    logic [NUM_KERNELS-1:0] gap0_ready_lo, gap0_valid_lo;
+    logic gap0_ready_lo, gap0_valid_lo;
     logic signed [NUM_KERNELS*WORD_SIZE-1:0] gap0_data_lo;
     
     // fc_output_layer_1    
@@ -175,34 +174,33 @@ module zyNet #(
             
                 // handshake to next layer
                 .valid_o(abs0_valid_lo[i]),
-                .ready_i(gap0_ready_lo[i]),
+                .ready_i(gap0_ready_lo),
                 .data_r_o(abs0_data_lo[(i+1)*WORD_SIZE-1:i*WORD_SIZE])
             );
 
-    
-            gap_layer #(
-                .INPUT_SIZE(INPUT_LAYER_HEIGHT-KERNEL_HEIGHT_0+1),
-                .WORD_SIZE(WORD_SIZE),
-                .N_SIZE(N_SIZE)
-            ) global_average_pooling (
-                // top level control
-                .clk_i,
-                .reset_i,
-            
-                // handshake to prev layer
-                .ready_o(gap0_ready_lo[i]),
-                .valid_i(abs0_valid_lo[i]),
-                .data_r_i(abs0_data_lo[(i+1)*WORD_SIZE-1:i*WORD_SIZE]),
-            
-                // handshake to next layer
-                .valid_o(gap0_valid_lo[i]),
-                .ready_i(fc_output1_ready_lo),
-                .data_r_o(gap0_data_lo[(i+1)*WORD_SIZE-1:i*WORD_SIZE])
-            );
-        
         end
     endgenerate
     
+    gap_layer #(
+        .INPUT_SIZE(INPUT_LAYER_HEIGHT-KERNEL_HEIGHT_0+1),
+        .WORD_SIZE(WORD_SIZE),
+        .N_SIZE(N_SIZE),
+        .NUM_CHANNELS(NUM_KERNELS)
+    ) global_average_pooling (
+        // top level control
+        .clk_i,
+        .reset_i,
+    
+        // handshake to prev layer
+        .ready_o(gap0_ready_lo),
+        .valid_i(&abs0_valid_lo),
+        .data_r_i(abs0_data_lo),
+    
+        // handshake to next layer
+        .valid_o(gap0_valid_lo),
+        .ready_i(fc_output1_ready_lo),
+        .data_r_o(gap0_data_lo)
+    );
     
     fc_output_layer #(
         .LAYER_HEIGHT(NUM_KERNELS),
@@ -212,7 +210,7 @@ module zyNet #(
         .reset_i,
         
         // handshake to prev layer
-        .valid_i(&gap0_valid_lo),
+        .valid_i(gap0_valid_lo),
         .ready_o(fc_output1_ready_lo),
         .data_i(gap0_data_lo),
     
