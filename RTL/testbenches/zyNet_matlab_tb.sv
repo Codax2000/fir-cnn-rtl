@@ -1,4 +1,7 @@
 `timescale 1ns / 1ps
+`ifndef SYNOPSIS
+`define VIVADO
+`endif
 /**
 Alex Knowlton
 4/25/2023
@@ -17,17 +20,23 @@ Written .mif files are
 module zyNet_matlab_tb ();
 
     // TODO: Change test parameters as necessary
-    parameter NUM_TESTS = 100;
+    parameter NUM_TESTS = 10;
+    parameter CLOCK_PERIOD = 40; // 40 ns clock, a.k.a. 25 MHz, change if timing changes
 
     // TODO: Set any necessary model parameters here
     parameter INPUT_LAYER_HEIGHT = 256; // 60 samples, 2 '0' elements on either side  256 32
     parameter OUTPUT_LAYER_HEIGHT = 10;
     parameter WORD_SIZE = 16;
-    parameter INT_BITS = 4;
+    parameter N_SIZE=12;
+    parameter OUTPUT_SIZE=10;
     
+    parameter MEM_WORD_SIZE=21;
+    parameter LAYER_SELECT_BITS=2;
+    parameter RAM_SELECT_BITS=8;
+    parameter RAM_ADDRESS_BITS=9;
     
-    parameter CLOCK_PERIOD = 2;
-
+    localparam INT_BITS = WORD_SIZE - N_SIZE;
+    
     // control variables
     logic clk_i, reset_i, start_i;
     
@@ -44,9 +53,9 @@ module zyNet_matlab_tb ();
     logic signed [OUTPUT_LAYER_HEIGHT-1:0][WORD_SIZE-1:0] expected_outputs [NUM_TESTS-1:0];
     logic signed [OUTPUT_LAYER_HEIGHT-1:0][WORD_SIZE-1:0] current_expected_output ;
     
-    // fc output layer and single fifo model the async FIFO that the FPGA will be writing to
-    logic [WORD_SIZE-1:0] serial_out, fifo_out;
-    logic full, empty, wen, ren;
+    // fc output layer for easily sending data to the model
+    logic [WORD_SIZE-1:0] serial_out;
+    logic fcin_valid_i, fcin_ready_o;
 
     fc_output_layer #(
         .LAYER_HEIGHT(INPUT_LAYER_HEIGHT),
@@ -56,29 +65,34 @@ module zyNet_matlab_tb ();
         .reset_i,
     
         // helpful handshake to prev layer
-        .valid_i,
-        .ready_o,
-        .data_i,
+        .valid_i(fcin_valid_i),
+        .ready_o(fcin_ready_o),
+        .data_i(data_i),
 
         // demanding handshake to next layer
-        .wen_o(wen),
-        .full_i(full),
-        .data_o(serialut)
+        .valid_o(valid_i),
+        .yumi_i(ready_o),
+        .data_o(serial_out)
     );
 
     zyNet #(
         .WORD_SIZE(WORD_SIZE),
-        .INT_BITS(INT_BITS),
-        .OUTPUT_SIZE(OUTPUT_LAYER_HEIGHT)
+        .N_SIZE(N_SIZE),
+        .OUTPUT_SIZE(OUTPUT_SIZE),
+    
+        .MEM_WORD_SIZE(MEM_WORD_SIZE),
+        .LAYER_SELECT_BITS(LAYER_SELECT_BITS),
+        .RAM_SELECT_BITS(RAM_SELECT_BITS),
+        .RAM_ADDRESS_BITS(RAM_ADDRESS_BITS)
     ) DUT (
         .clk_i,
         .reset_i,
 
         .start_i,
 
-        .data_i(fifo_out),
-        .ready_o(ren),
-        .valid_i(!empty),
+        .data_i(serial_out),
+        .ready_o,
+        .valid_i,
 
         .data_o,
         .valid_o,
@@ -89,12 +103,7 @@ module zyNet_matlab_tb ();
         clk_i = 1'b1;
         forever # (CLOCK_PERIOD / 2) clk_i = ~clk_i;
     end
-
-//    // read memory files into arrays
-//    initial begin
-//        $readmemh("test_inputs.mif", test_inputs);
-//        $readmemh("test_outputs_expected.mif", expected_outputs);
-//    end
+    
 
     // testbench loop
     int measured_outputs, errors;
@@ -102,8 +111,8 @@ module zyNet_matlab_tb ();
         $readmemh("test_inputs.mif", test_inputs);
         $readmemh("test_outputs_expected.mif", expected_outputs);
         // check these file paths and change them locally, or this will fail
-        measured_outputs = $fopen("C:/Users/eugli/Documents/GitHub/fir-cnn-rtl/mem/test_values/test_outputs_actual.csv", "w");
-        errors = $fopen("C:/Users/eugli/Documents/GitHub/fir-cnn-rtl/mem/test_values/test_outputs_errors.csv", "w");
+        measured_outputs = $fopen("C:/Users/alexk/Documents/Projects/fir-cnn-rtl/mem/test_values/test_outputs_actual.csv", "w");
+        errors = $fopen("C:/Users/alexk/Documents/Projects/fir-cnn-rtl/mem/test_values/test_outputs_errors.csv", "w");
         reset_i <= 1'b1;
         start_i <= 1'b0;
         yumi_i <= 1'b0;     @(posedge clk_i); @(posedge clk_i);
@@ -113,8 +122,8 @@ module zyNet_matlab_tb ();
             $display("Running test %d",i);
             current_expected_output <= expected_outputs[i];
             data_i <= test_inputs[i];   @(posedge clk_i);
-            valid_i <= 1'b1;            @(posedge clk_i);
-            valid_i <= 1'b0;            @(posedge clk_i);
+            fcin_valid_i <= 1'b1;       @(posedge clk_i);
+            fcin_valid_i <= 1'b0;       @(posedge clk_i);
             start_i <= 1'b1;            @(posedge clk_i);
             start_i <= 1'b0;            @(posedge clk_i);
                                         @(posedge valid_o);

@@ -1,6 +1,6 @@
 //`define SYNOPSIS
 `ifndef SYNOPSIS
-    `define VIVADO
+`define VIVADO
 `endif
 
 module zyNet #(
@@ -39,10 +39,7 @@ module zyNet #(
     );
     
     
-    
-    
-    
-// LAYER PARAMETERS AND WIRES
+    // LAYER PARAMETERS AND WIRES
 
     // layer parameters
     localparam INPUT_LAYER_HEIGHT = 128; //128  16
@@ -53,10 +50,18 @@ module zyNet #(
     localparam FC_LAYER_HEIGHT_0 = 256; // 256  8
     localparam FC_LAYER_HEIGHT_1 = 10;
     
+    // input fifo
+    logic input_fifo_empty_lo, input_fifo_ready_lo;
+    logic signed [WORD_SIZE-1:0] input_fifo_data_lo;
+
+    // signal renaming for clarity
+    logic input_fifo_full_lo;
+    assign ready_o = !input_fifo_full_lo;
+
     // conv_layer_0
     logic conv_ready_o;
     logic signed [NUM_KERNELS*WORD_SIZE-1:0] conv0_data_lo;
-    logic [NUM_KERNELS-1:0] conv0_valid_lo;
+    logic conv0_valid_lo, conv0_yumi_lo;
     
     // abs_layer_0
     logic [NUM_KERNELS-1:0] abs0_ready_lo, abs0_valid_lo;
@@ -67,15 +72,15 @@ module zyNet #(
     logic signed [NUM_KERNELS*WORD_SIZE-1:0] gap0_data_lo;
     
     // fc_output_layer_1    
-    logic fc_output1_ready_lo, fc_output1_wen_lo;
+    logic fc_output1_ready_lo, fc_output1_valid_lo;
     logic signed [WORD_SIZE-1:0] fc_output1_data_lo;
     
     // fc_layer_0    
-    logic fc0_ren_lo, fc0_valid_lo;
+    logic fc0_ready_lo, fc0_valid_lo;
     logic signed [FC_LAYER_HEIGHT_0*WORD_SIZE-1:0] fc0_data_lo;
     
     // fc_output_layer_2
-    logic fc_output2_ready_lo, fc_output2_wen_lo;
+    logic fc_output2_ready_lo, fc_output2_valid_lo;
     logic signed [WORD_SIZE-1:0] fc_output2_data_lo;
     
     // bn_layer_0
@@ -86,6 +91,8 @@ module zyNet #(
     logic relu0_ready_lo, relu0_valid_lo;
     logic signed [WORD_SIZE-1:0] relu0_data_lo;
     
+    // fc_layer 1
+    logic fc1_ready_lo;
     
     // MEM WRITE CONTROLLER
     `ifdef SYNOPSIS
@@ -109,13 +116,13 @@ module zyNet #(
         .clk_i,
         .reset_i,
 
-        .wen_i,
+        .wen_i(valid_i),
         .data_i,
-        .empty_o,
+        .full_o(input_fifo_full_lo),
 
-        .ren_i,
-        .data_o,
-        .full_o
+        .ren_i(conv0_yumi_lo),
+        .data_o(input_fifo_data_lo),
+        .empty_o(input_fifo_empty_lo)
     );
 
     conv_layer #(
@@ -140,9 +147,9 @@ module zyNet #(
         `endif
         
         // handshake to prev layer
-        .valid_i(),
-        .yumi_o(),
-        .data_i(),
+        .valid_i(!input_fifo_empty_lo),
+        .yumi_o(conv0_yumi_lo),
+        .data_i(input_fifo_data_lo),
         
         // demanding handshake to next layer
         .valid_o(conv0_valid_lo),
@@ -210,9 +217,9 @@ module zyNet #(
         .data_i(gap0_data_lo),
     
         // handshake to next layer
-        .wen_o(),
-        .full_i(),
-        .data_o()
+        .valid_o(fc_output1_valid_lo),
+        .yumi_i(fc0_ready_lo),
+        .data_o(fc_output1_data_lo)
     );    
     
     fc_layer #(
@@ -233,9 +240,9 @@ module zyNet #(
         `endif
         
         // helpful input interface
-        .data_i(),
-        .valid_i(),
-        .ready_o(),
+        .data_i(fc_output1_data_lo),
+        .valid_i(fc_output1_valid_lo),
+        .ready_o(fc0_ready_lo),
     
         // helpful output interface
         .valid_o(fc0_valid_lo),
@@ -257,9 +264,9 @@ module zyNet #(
         .data_i(fc0_data_lo),
     
         // handshake to next layer
-        .ready_i(),
-        .valid_o(),
-        .data_o()
+        .yumi_i(bn0_ready_lo),
+        .valid_o(fc_output2_valid_lo),
+        .data_o(fc_output2_data_lo)
     );
     
     
@@ -282,9 +289,9 @@ module zyNet #(
         `endif
         
         // handshake to prev layer
-        .ready_o(),
-        .valid_i(),
-        .data_r_i(),
+        .ready_o(bn0_ready_lo),
+        .valid_i(fc_output2_valid_lo),
+        .data_r_i(fc_output2_data_lo),
         
         // handshake to next layer
         .valid_o(bn0_valid_lo),
@@ -306,9 +313,9 @@ module zyNet #(
         .data_r_i(bn0_data_lo),
         
         // handshake to next layer
-        .valid_o(),
-        .ready_i(),
-        .data_r_o()
+        .valid_o(relu0_valid_lo),
+        .ready_i(fc1_ready_lo),
+        .data_r_o(relu0_data_lo)
     );
 
     
@@ -330,9 +337,9 @@ module zyNet #(
         `endif
         
         // helpful input interface
-        .ready_o(),
-        .valid_i(),
-        .data_i(),
+        .ready_o(fc1_ready_lo),
+        .valid_i(relu0_valid_lo),
+        .data_i(relu0_data_lo),
     
         // helpful output interface
         .valid_o,
