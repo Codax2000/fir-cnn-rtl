@@ -1,5 +1,3 @@
-`timescale 1ns / 1ps
-
 //`define SYNOPSIS
 `ifndef SYNOPSIS
     `define VIVADO
@@ -9,8 +7,7 @@ module zyNet #(
 
     // small parameters for testing, increase for real scenario
     parameter WORD_SIZE=16,
-    parameter INT_BITS=4,
-    parameter N_SIZE=8,
+    parameter N_SIZE=12,
     parameter OUTPUT_SIZE=10,
     
     parameter MEM_WORD_SIZE=21,
@@ -55,10 +52,6 @@ module zyNet #(
     localparam FC_LAYER_HEIGHT_0 = 256; // 256  8
     localparam FC_LAYER_HEIGHT_1 = 10;
     
-    
-    //  output ready values to avoid synthesis errors
-    logic [NUM_KERNELS-1:0] ready_outs;
-    assign ready_o = ready_outs[0];
     
     // conv_layer_0
     logic signed [NUM_KERNELS*WORD_SIZE-1:0] conv0_data_lo;
@@ -117,42 +110,41 @@ module zyNet #(
     
     
 // LAYER DATAPATH
+    conv_layer #(
+        .INPUT_LAYER_HEIGHT(INPUT_LAYER_HEIGHT),
+        .KERNEL_HEIGHT(KERNEL_HEIGHT_0),
+        .KERNEL_WIDTH(KERNEL_WIDTH_0),
+        .WORD_SIZE(WORD_SIZE),
+        .N_SIZE(N_SIZE),
+        .LAYER_NUMBER(0),
+        .N_CONVOLUTIONS(NUM_KERNELS)
+    ) kernel (
+        .clk_i,
+        .reset_i,
+        .start_i,
+        
+        // memory interface
+        `ifdef SYNOPSIS
+            .w_en_i(w_en_li[0]),
+            .w_data_i(w_data_i[WORD_SIZE]),
+            .w_addr_i({ram_sel_li[$clog2(NUM_KERNELS)-1:0],ram_addr_li[$clog2(KERNEL_SIZE_0+1)-1:0]}),
+        `endif
+        
+        // handshake to prev layer
+        .valid_i,
+        .yumi_o(ready_o),
+        .data_i,
+        
+        // helpful handshake to next layer
+        .valid_o(conv0_valid_lo),
+        .ready_i(&abs0_ready_lo),
+        .data_o(conv0_data_lo)
+    );
+
 
     genvar i;
     generate
         for (i = 0; i < NUM_KERNELS; i = i + 1) begin
-            conv_layer #(
-                .INPUT_LAYER_HEIGHT(INPUT_LAYER_HEIGHT),
-                .KERNEL_HEIGHT(KERNEL_HEIGHT_0),
-                .KERNEL_WIDTH(KERNEL_WIDTH_0),
-                .WORD_SIZE(WORD_SIZE),
-                .N_SIZE(N_SIZE),
-                .LAYER_NUMBER(0),
-                .N_CONVOLUTIONS(NUM_KERNELS)
-            ) kernel (
-                .clk_i,
-                .reset_i,
-                .start_i,
-                
-                // memory interface
-                `ifdef SYNOPSIS
-                    .w_en_i(w_en_li[0]),
-                    .w_data_i(w_data_i[WORD_SIZE]),
-                    .w_addr_i({ram_sel_li[$clog2(NUM_KERNELS)-1:0],ram_addr_li[$clog2(KERNEL_SIZE_0+1)-1:0]}),
-                `endif
-                
-                // handshake to prev layer
-                .valid_i,
-                .yumi_o(ready_outs[i]),
-                .data_i,
-                
-                // helpful handshake to next layer
-                .valid_o(conv0_valid_lo[i]),
-                .ready_i(abs0_ready_lo[i]),
-                .data_o(conv0_data_lo[(i+1)*WORD_SIZE-1:i*WORD_SIZE])
-            );
-
-
             abs_layer #(
                 .WORD_SIZE(WORD_SIZE)
             ) absolute_value (
@@ -162,7 +154,7 @@ module zyNet #(
             
                 // handshake to prev layer
                 .ready_o(abs0_ready_lo[i]),
-                .valid_i(conv0_valid_lo[i]),
+                .valid_i(conv0_valid_lo),
                 .data_r_i(conv0_data_lo[(i+1)*WORD_SIZE-1:i*WORD_SIZE]),
             
                 // handshake to next layer
@@ -188,7 +180,7 @@ module zyNet #(
             
                 // handshake to next layer
                 .valid_o(gap0_valid_lo[i]),
-                .ready_i(1'b1),
+                .ready_i(fc_output1_ready_lo),
                 .data_r_o(gap0_data_lo[(i+1)*WORD_SIZE-1:i*WORD_SIZE])
             );
         
@@ -289,7 +281,7 @@ module zyNet #(
         .INPUT_SIZE(FC_LAYER_HEIGHT_0),
         .LAYER_NUMBER(0),
         .WORD_SIZE(WORD_SIZE),
-        .N_SIZE(WORD_SIZE-INT_BITS),
+        .N_SIZE(N_SIZE),
         .MEM_WORD_SIZE(MEM_WORD_SIZE)
     ) bn_layer_0 (
         // top level control
