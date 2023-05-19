@@ -11,7 +11,7 @@ module conv_layer_tb ();
     parameter INPUT_LAYER_HEIGHT = 5;
     parameter KERNEL_HEIGHT = 3;
     parameter KERNEL_WIDTH = 2;
-    parameter LAYER_NUMBER = 1;
+    parameter LAYER_NUMBER = 5;
     parameter N_CONVOLUTIONS = 1;
 
     //// INPUT LAYER VALUES ////
