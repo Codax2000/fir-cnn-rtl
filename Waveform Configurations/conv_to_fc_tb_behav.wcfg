@@ -11,535 +11,555 @@
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="2515333fs"></ZoomStartTime>
-      <ZoomEndTime time="4015334fs"></ZoomEndTime>
-      <Cursor1Time time="2747333fs"></Cursor1Time>
+      <ZoomStartTime time="433.000 ns"></ZoomStartTime>
+      <ZoomEndTime time="1,062.001 ns"></ZoomEndTime>
+      <Cursor1Time time="742.000 ns"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
-      <NameColumnWidth column_width="190"></NameColumnWidth>
-      <ValueColumnWidth column_width="88"></ValueColumnWidth>
+      <NameColumnWidth column_width="235"></NameColumnWidth>
+      <ValueColumnWidth column_width="114"></ValueColumnWidth>
    </column_width_setting>
-   <WVObjectSize size="11" />
-   <wvobject fp_name="group201" type="group">
-      <obj_property name="label">Top-level data</obj_property>
+   <WVObjectSize size="14" />
+   <wvobject fp_name="group446" type="group">
+      <obj_property name="label">Input Layer Handshake</obj_property>
       <obj_property name="DisplayName">label</obj_property>
-      <wvobject fp_name="/conv_to_fc_tb/start_i" type="logic">
-         <obj_property name="ElementShortName">start_i</obj_property>
-         <obj_property name="ObjectShortName">start_i</obj_property>
+      <wvobject fp_name="/conv_to_fc_tb/input_layer_data" type="array">
+         <obj_property name="ElementShortName">input_layer_data[9:0][15:0]</obj_property>
+         <obj_property name="ObjectShortName">input_layer_data[9:0][15:0]</obj_property>
       </wvobject>
-      <wvobject fp_name="/conv_to_fc_tb/input_data" type="array">
-         <obj_property name="ElementShortName">input_data[7:0]</obj_property>
-         <obj_property name="ObjectShortName">input_data[7:0]</obj_property>
+      <wvobject fp_name="/conv_to_fc_tb/fcin_ready_o" type="logic">
+         <obj_property name="ElementShortName">fcin_ready_o</obj_property>
+         <obj_property name="ObjectShortName">fcin_ready_o</obj_property>
       </wvobject>
-      <wvobject fp_name="/conv_to_fc_tb/conv_valid" type="logic">
-         <obj_property name="ElementShortName">conv_valid</obj_property>
-         <obj_property name="ObjectShortName">conv_valid</obj_property>
-      </wvobject>
-      <wvobject fp_name="/conv_to_fc_tb/conv_out_ready" type="logic">
-         <obj_property name="ElementShortName">conv_out_ready</obj_property>
-         <obj_property name="ObjectShortName">conv_out_ready</obj_property>
-      </wvobject>
-      <wvobject fp_name="/conv_to_fc_tb/convolution_data" type="array">
-         <obj_property name="ElementShortName">convolution_data[1:0][7:0]</obj_property>
-         <obj_property name="ObjectShortName">convolution_data[1:0][7:0]</obj_property>
-      </wvobject>
-      <wvobject fp_name="/conv_to_fc_tb/conv_fifo_wen" type="logic">
-         <obj_property name="ElementShortName">conv_fifo_wen</obj_property>
-         <obj_property name="ObjectShortName">conv_fifo_wen</obj_property>
-      </wvobject>
-      <wvobject fp_name="/conv_to_fc_tb/conv_fifo_full" type="logic">
-         <obj_property name="ElementShortName">conv_fifo_full</obj_property>
-         <obj_property name="ObjectShortName">conv_fifo_full</obj_property>
-      </wvobject>
-      <wvobject fp_name="/conv_to_fc_tb/conv_fifo_in" type="array">
-         <obj_property name="ElementShortName">conv_fifo_in[7:0]</obj_property>
-         <obj_property name="ObjectShortName">conv_fifo_in[7:0]</obj_property>
-      </wvobject>
-      <wvobject fp_name="/conv_to_fc_tb/hidden_layer_ren" type="logic">
-         <obj_property name="ElementShortName">hidden_layer_ren</obj_property>
-         <obj_property name="ObjectShortName">hidden_layer_ren</obj_property>
-      </wvobject>
-      <wvobject fp_name="/conv_to_fc_tb/hidden_layer_empty" type="logic">
-         <obj_property name="ElementShortName">hidden_layer_empty</obj_property>
-         <obj_property name="ObjectShortName">hidden_layer_empty</obj_property>
-      </wvobject>
-      <wvobject fp_name="/conv_to_fc_tb/hidden_layer_in" type="array">
-         <obj_property name="ElementShortName">hidden_layer_in[7:0]</obj_property>
-         <obj_property name="ObjectShortName">hidden_layer_in[7:0]</obj_property>
-      </wvobject>
-      <wvobject fp_name="/conv_to_fc_tb/hidden_layer_valid" type="logic">
-         <obj_property name="ElementShortName">hidden_layer_valid</obj_property>
-         <obj_property name="ObjectShortName">hidden_layer_valid</obj_property>
-      </wvobject>
-      <wvobject fp_name="/conv_to_fc_tb/hidden_layer_ready" type="logic">
-         <obj_property name="ElementShortName">hidden_layer_ready</obj_property>
-         <obj_property name="ObjectShortName">hidden_layer_ready</obj_property>
-      </wvobject>
-      <wvobject fp_name="/conv_to_fc_tb/hidden_layer_data" type="array">
-         <obj_property name="ElementShortName">hidden_layer_data[1:0][7:0]</obj_property>
-         <obj_property name="ObjectShortName">hidden_layer_data[1:0][7:0]</obj_property>
-      </wvobject>
-      <wvobject fp_name="/conv_to_fc_tb/hidden_fifo_full" type="logic">
-         <obj_property name="ElementShortName">hidden_fifo_full</obj_property>
-         <obj_property name="ObjectShortName">hidden_fifo_full</obj_property>
-      </wvobject>
-      <wvobject fp_name="/conv_to_fc_tb/hidden_fifo_wen" type="logic">
-         <obj_property name="ElementShortName">hidden_fifo_wen</obj_property>
-         <obj_property name="ObjectShortName">hidden_fifo_wen</obj_property>
-      </wvobject>
-      <wvobject fp_name="/conv_to_fc_tb/hidden_fifo_in" type="array">
-         <obj_property name="ElementShortName">hidden_fifo_in[7:0]</obj_property>
-         <obj_property name="ObjectShortName">hidden_fifo_in[7:0]</obj_property>
-      </wvobject>
-      <wvobject fp_name="/conv_to_fc_tb/hidden_fifo_ren" type="logic">
-         <obj_property name="ElementShortName">hidden_fifo_ren</obj_property>
-         <obj_property name="ObjectShortName">hidden_fifo_ren</obj_property>
-      </wvobject>
-      <wvobject fp_name="/conv_to_fc_tb/hidden_fifo_empty" type="logic">
-         <obj_property name="ElementShortName">hidden_fifo_empty</obj_property>
-         <obj_property name="ObjectShortName">hidden_fifo_empty</obj_property>
-      </wvobject>
-      <wvobject fp_name="/conv_to_fc_tb/output_layer_in" type="array">
-         <obj_property name="ElementShortName">output_layer_in[7:0]</obj_property>
-         <obj_property name="ObjectShortName">output_layer_in[7:0]</obj_property>
-      </wvobject>
-      <wvobject fp_name="/conv_to_fc_tb/output_layer_ready" type="logic">
-         <obj_property name="ElementShortName">output_layer_ready</obj_property>
-         <obj_property name="ObjectShortName">output_layer_ready</obj_property>
-      </wvobject>
-      <wvobject fp_name="/conv_to_fc_tb/output_layer_valid" type="logic">
-         <obj_property name="ElementShortName">output_layer_valid</obj_property>
-         <obj_property name="ObjectShortName">output_layer_valid</obj_property>
-      </wvobject>
-      <wvobject fp_name="/conv_to_fc_tb/output_layer_data" type="array">
-         <obj_property name="ElementShortName">output_layer_data[3:0][7:0]</obj_property>
-         <obj_property name="ObjectShortName">output_layer_data[3:0][7:0]</obj_property>
-      </wvobject>
-      <wvobject fp_name="/conv_to_fc_tb/output_fifo_full" type="logic">
-         <obj_property name="ElementShortName">output_fifo_full</obj_property>
-         <obj_property name="ObjectShortName">output_fifo_full</obj_property>
-      </wvobject>
-      <wvobject fp_name="/conv_to_fc_tb/output_fifo_wen" type="logic">
-         <obj_property name="ElementShortName">output_fifo_wen</obj_property>
-         <obj_property name="ObjectShortName">output_fifo_wen</obj_property>
-      </wvobject>
-      <wvobject fp_name="/conv_to_fc_tb/output_fifo_in" type="array">
-         <obj_property name="ElementShortName">output_fifo_in[7:0]</obj_property>
-         <obj_property name="ObjectShortName">output_fifo_in[7:0]</obj_property>
-      </wvobject>
-      <wvobject fp_name="/conv_to_fc_tb/output_fifo_empty" type="logic">
-         <obj_property name="ElementShortName">output_fifo_empty</obj_property>
-         <obj_property name="ObjectShortName">output_fifo_empty</obj_property>
-      </wvobject>
-      <wvobject fp_name="/conv_to_fc_tb/ren_out" type="logic">
-         <obj_property name="ElementShortName">ren_out</obj_property>
-         <obj_property name="ObjectShortName">ren_out</obj_property>
-      </wvobject>
-      <wvobject fp_name="/conv_to_fc_tb/data_out" type="array">
-         <obj_property name="ElementShortName">data_out[7:0]</obj_property>
-         <obj_property name="ObjectShortName">data_out[7:0]</obj_property>
+      <wvobject fp_name="/conv_to_fc_tb/fcin_valid_i" type="logic">
+         <obj_property name="ElementShortName">fcin_valid_i</obj_property>
+         <obj_property name="ObjectShortName">fcin_valid_i</obj_property>
       </wvobject>
    </wvobject>
-   <wvobject fp_name="group189" type="group">
-      <obj_property name="label">Convolutional Layer Signals</obj_property>
+   <wvobject fp_name="group447" type="group">
+      <obj_property name="label">Convolutional Layer Handshake</obj_property>
       <obj_property name="DisplayName">label</obj_property>
-      <wvobject fp_name="/conv_to_fc_tb/convolution/start_i" type="logic">
-         <obj_property name="ElementShortName">start_i</obj_property>
-         <obj_property name="ObjectShortName">start_i</obj_property>
+      <wvobject fp_name="/conv_to_fc_tb/conv_layer_data" type="array">
+         <obj_property name="ElementShortName">conv_layer_data[15:0]</obj_property>
+         <obj_property name="ObjectShortName">conv_layer_data[15:0]</obj_property>
       </wvobject>
-      <wvobject fp_name="/conv_to_fc_tb/convolution/data_i" type="array">
-         <obj_property name="ElementShortName">data_i[7:0]</obj_property>
-         <obj_property name="ObjectShortName">data_i[7:0]</obj_property>
+      <wvobject fp_name="/conv_to_fc_tb/conv_layer_yumi_o" type="logic">
+         <obj_property name="ElementShortName">conv_layer_yumi_o</obj_property>
+         <obj_property name="ObjectShortName">conv_layer_yumi_o</obj_property>
       </wvobject>
-      <wvobject fp_name="/conv_to_fc_tb/convolution/valid_o" type="logic">
-         <obj_property name="ElementShortName">valid_o</obj_property>
-         <obj_property name="ObjectShortName">valid_o</obj_property>
-      </wvobject>
-      <wvobject fp_name="/conv_to_fc_tb/convolution/yumi_i" type="logic">
-         <obj_property name="ElementShortName">yumi_i</obj_property>
-         <obj_property name="ObjectShortName">yumi_i</obj_property>
-      </wvobject>
-      <wvobject fp_name="/conv_to_fc_tb/convolution/data_o" type="array">
-         <obj_property name="ElementShortName">data_o[1:0][7:0]</obj_property>
-         <obj_property name="ObjectShortName">data_o[1:0][7:0]</obj_property>
-      </wvobject>
-      <wvobject fp_name="/conv_to_fc_tb/convolution/ps" type="array">
-         <obj_property name="ElementShortName">ps[1:0]</obj_property>
-         <obj_property name="ObjectShortName">ps[1:0]</obj_property>
-      </wvobject>
-      <wvobject fp_name="/conv_to_fc_tb/convolution/ns" type="array">
-         <obj_property name="ElementShortName">ns[1:0]</obj_property>
-         <obj_property name="ObjectShortName">ns[1:0]</obj_property>
-      </wvobject>
-      <wvobject fp_name="/conv_to_fc_tb/convolution/mem_addr" type="array">
-         <obj_property name="ElementShortName">mem_addr[2:0]</obj_property>
-         <obj_property name="ObjectShortName">mem_addr[2:0]</obj_property>
-      </wvobject>
-      <wvobject fp_name="/conv_to_fc_tb/convolution/add_bias" type="logic">
-         <obj_property name="ElementShortName">add_bias</obj_property>
-         <obj_property name="ObjectShortName">add_bias</obj_property>
-      </wvobject>
-      <wvobject fp_name="/conv_to_fc_tb/convolution/sum_en" type="logic">
-         <obj_property name="ElementShortName">sum_en</obj_property>
-         <obj_property name="ObjectShortName">sum_en</obj_property>
-      </wvobject>
-      <wvobject fp_name="/conv_to_fc_tb/convolution/data_shift_reg" type="array">
-         <obj_property name="ElementShortName">data_shift_reg[5:0][7:0]</obj_property>
-         <obj_property name="ObjectShortName">data_shift_reg[5:0][7:0]</obj_property>
-         <obj_property name="isExpanded"></obj_property>
-      </wvobject>
-      <wvobject fp_name="/conv_to_fc_tb/convolution/mem_out" type="array">
-         <obj_property name="ElementShortName">mem_out[7:0]</obj_property>
-         <obj_property name="ObjectShortName">mem_out[7:0]</obj_property>
-      </wvobject>
-      <wvobject fp_name="group208" type="group">
-         <obj_property name="label">Neuron 0</obj_property>
-         <obj_property name="DisplayName">label</obj_property>
-         <wvobject fp_name="/conv_to_fc_tb/convolution/\genblk1[0].LU /mem_i" type="array">
-            <obj_property name="ElementShortName">mem_i[7:0]</obj_property>
-            <obj_property name="ObjectShortName">mem_i[7:0]</obj_property>
-         </wvobject>
-         <wvobject fp_name="/conv_to_fc_tb/convolution/\genblk1[0].LU /data_i" type="array">
-            <obj_property name="ElementShortName">data_i[7:0]</obj_property>
-            <obj_property name="ObjectShortName">data_i[7:0]</obj_property>
-         </wvobject>
-         <wvobject fp_name="/conv_to_fc_tb/convolution/\genblk1[0].LU /add_bias" type="logic">
-            <obj_property name="ElementShortName">add_bias</obj_property>
-            <obj_property name="ObjectShortName">add_bias</obj_property>
-         </wvobject>
-         <wvobject fp_name="/conv_to_fc_tb/convolution/\genblk1[0].LU /sum_en" type="logic">
-            <obj_property name="ElementShortName">sum_en</obj_property>
-            <obj_property name="ObjectShortName">sum_en</obj_property>
-         </wvobject>
-         <wvobject fp_name="/conv_to_fc_tb/convolution/\genblk1[0].LU /clk_i" type="logic">
-            <obj_property name="ElementShortName">clk_i</obj_property>
-            <obj_property name="ObjectShortName">clk_i</obj_property>
-         </wvobject>
-         <wvobject fp_name="/conv_to_fc_tb/convolution/\genblk1[0].LU /reset_i" type="logic">
-            <obj_property name="ElementShortName">reset_i</obj_property>
-            <obj_property name="ObjectShortName">reset_i</obj_property>
-         </wvobject>
-         <wvobject fp_name="/conv_to_fc_tb/convolution/\genblk1[0].LU /data_o" type="array">
-            <obj_property name="ElementShortName">data_o[7:0]</obj_property>
-            <obj_property name="ObjectShortName">data_o[7:0]</obj_property>
-         </wvobject>
-         <wvobject fp_name="/conv_to_fc_tb/convolution/\genblk1[0].LU /mult_result" type="array">
-            <obj_property name="ElementShortName">mult_result[7:0]</obj_property>
-            <obj_property name="ObjectShortName">mult_result[7:0]</obj_property>
-         </wvobject>
-         <wvobject fp_name="/conv_to_fc_tb/convolution/\genblk1[0].LU /add_in" type="array">
-            <obj_property name="ElementShortName">add_in[7:0]</obj_property>
-            <obj_property name="ObjectShortName">add_in[7:0]</obj_property>
-         </wvobject>
-         <wvobject fp_name="/conv_to_fc_tb/convolution/\genblk1[0].LU /sum_n" type="array">
-            <obj_property name="ElementShortName">sum_n[7:0]</obj_property>
-            <obj_property name="ObjectShortName">sum_n[7:0]</obj_property>
-         </wvobject>
-         <wvobject fp_name="/conv_to_fc_tb/convolution/\genblk1[0].LU /sum_r" type="array">
-            <obj_property name="ElementShortName">sum_r[7:0]</obj_property>
-            <obj_property name="ObjectShortName">sum_r[7:0]</obj_property>
-         </wvobject>
-         <wvobject fp_name="/conv_to_fc_tb/convolution/\genblk1[0].LU /sum_carry_out" type="logic">
-            <obj_property name="ElementShortName">sum_carry_out</obj_property>
-            <obj_property name="ObjectShortName">sum_carry_out</obj_property>
-         </wvobject>
-         <wvobject fp_name="/conv_to_fc_tb/convolution/\genblk1[0].LU /overflow" type="logic">
-            <obj_property name="ElementShortName">overflow</obj_property>
-            <obj_property name="ObjectShortName">overflow</obj_property>
-         </wvobject>
-         <wvobject fp_name="/conv_to_fc_tb/convolution/\genblk1[0].LU /overflow_flag" type="logic">
-            <obj_property name="ElementShortName">overflow_flag</obj_property>
-            <obj_property name="ObjectShortName">overflow_flag</obj_property>
-         </wvobject>
-         <wvobject fp_name="/conv_to_fc_tb/convolution/\genblk1[0].LU /underflow" type="logic">
-            <obj_property name="ElementShortName">underflow</obj_property>
-            <obj_property name="ObjectShortName">underflow</obj_property>
-         </wvobject>
-         <wvobject fp_name="/conv_to_fc_tb/convolution/\genblk1[0].LU /underflow_flag" type="logic">
-            <obj_property name="ElementShortName">underflow_flag</obj_property>
-            <obj_property name="ObjectShortName">underflow_flag</obj_property>
-         </wvobject>
-      </wvobject>
-      <wvobject fp_name="group209" type="group">
-         <obj_property name="label">Neuron 1</obj_property>
-         <obj_property name="DisplayName">label</obj_property>
-         <wvobject fp_name="/conv_to_fc_tb/convolution/\genblk1[1].LU /mem_i" type="array">
-            <obj_property name="ElementShortName">mem_i[7:0]</obj_property>
-            <obj_property name="ObjectShortName">mem_i[7:0]</obj_property>
-         </wvobject>
-         <wvobject fp_name="/conv_to_fc_tb/convolution/\genblk1[1].LU /data_i" type="array">
-            <obj_property name="ElementShortName">data_i[7:0]</obj_property>
-            <obj_property name="ObjectShortName">data_i[7:0]</obj_property>
-         </wvobject>
-         <wvobject fp_name="/conv_to_fc_tb/convolution/\genblk1[1].LU /add_bias" type="logic">
-            <obj_property name="ElementShortName">add_bias</obj_property>
-            <obj_property name="ObjectShortName">add_bias</obj_property>
-         </wvobject>
-         <wvobject fp_name="/conv_to_fc_tb/convolution/\genblk1[1].LU /sum_en" type="logic">
-            <obj_property name="ElementShortName">sum_en</obj_property>
-            <obj_property name="ObjectShortName">sum_en</obj_property>
-         </wvobject>
-         <wvobject fp_name="/conv_to_fc_tb/convolution/\genblk1[1].LU /clk_i" type="logic">
-            <obj_property name="ElementShortName">clk_i</obj_property>
-            <obj_property name="ObjectShortName">clk_i</obj_property>
-         </wvobject>
-         <wvobject fp_name="/conv_to_fc_tb/convolution/\genblk1[1].LU /reset_i" type="logic">
-            <obj_property name="ElementShortName">reset_i</obj_property>
-            <obj_property name="ObjectShortName">reset_i</obj_property>
-         </wvobject>
-         <wvobject fp_name="/conv_to_fc_tb/convolution/\genblk1[1].LU /data_o" type="array">
-            <obj_property name="ElementShortName">data_o[7:0]</obj_property>
-            <obj_property name="ObjectShortName">data_o[7:0]</obj_property>
-         </wvobject>
-         <wvobject fp_name="/conv_to_fc_tb/convolution/\genblk1[1].LU /mult_result" type="array">
-            <obj_property name="ElementShortName">mult_result[7:0]</obj_property>
-            <obj_property name="ObjectShortName">mult_result[7:0]</obj_property>
-         </wvobject>
-         <wvobject fp_name="/conv_to_fc_tb/convolution/\genblk1[1].LU /add_in" type="array">
-            <obj_property name="ElementShortName">add_in[7:0]</obj_property>
-            <obj_property name="ObjectShortName">add_in[7:0]</obj_property>
-         </wvobject>
-         <wvobject fp_name="/conv_to_fc_tb/convolution/\genblk1[1].LU /sum_n" type="array">
-            <obj_property name="ElementShortName">sum_n[7:0]</obj_property>
-            <obj_property name="ObjectShortName">sum_n[7:0]</obj_property>
-         </wvobject>
-         <wvobject fp_name="/conv_to_fc_tb/convolution/\genblk1[1].LU /sum_r" type="array">
-            <obj_property name="ElementShortName">sum_r[7:0]</obj_property>
-            <obj_property name="ObjectShortName">sum_r[7:0]</obj_property>
-         </wvobject>
-         <wvobject fp_name="/conv_to_fc_tb/convolution/\genblk1[1].LU /sum_carry_out" type="logic">
-            <obj_property name="ElementShortName">sum_carry_out</obj_property>
-            <obj_property name="ObjectShortName">sum_carry_out</obj_property>
-         </wvobject>
-         <wvobject fp_name="/conv_to_fc_tb/convolution/\genblk1[1].LU /overflow" type="logic">
-            <obj_property name="ElementShortName">overflow</obj_property>
-            <obj_property name="ObjectShortName">overflow</obj_property>
-         </wvobject>
-         <wvobject fp_name="/conv_to_fc_tb/convolution/\genblk1[1].LU /overflow_flag" type="logic">
-            <obj_property name="ElementShortName">overflow_flag</obj_property>
-            <obj_property name="ObjectShortName">overflow_flag</obj_property>
-         </wvobject>
-         <wvobject fp_name="/conv_to_fc_tb/convolution/\genblk1[1].LU /underflow" type="logic">
-            <obj_property name="ElementShortName">underflow</obj_property>
-            <obj_property name="ObjectShortName">underflow</obj_property>
-         </wvobject>
-         <wvobject fp_name="/conv_to_fc_tb/convolution/\genblk1[1].LU /underflow_flag" type="logic">
-            <obj_property name="ElementShortName">underflow_flag</obj_property>
-            <obj_property name="ObjectShortName">underflow_flag</obj_property>
-         </wvobject>
+      <wvobject fp_name="/conv_to_fc_tb/conv_layer_valid_i" type="logic">
+         <obj_property name="ElementShortName">conv_layer_valid_i</obj_property>
+         <obj_property name="ObjectShortName">conv_layer_valid_i</obj_property>
       </wvobject>
    </wvobject>
-   <wvobject fp_name="group266" type="group">
-      <obj_property name="label">Fully-Connected Layer 1</obj_property>
+   <wvobject fp_name="group448" type="group">
+      <obj_property name="label">Hidden Layer Handshake</obj_property>
       <obj_property name="DisplayName">label</obj_property>
-      <wvobject fp_name="/conv_to_fc_tb/layer_1/data_i" type="array">
-         <obj_property name="ElementShortName">data_i[7:0]</obj_property>
-         <obj_property name="ObjectShortName">data_i[7:0]</obj_property>
+      <obj_property name="isExpanded"></obj_property>
+      <wvobject fp_name="/conv_to_fc_tb/hidden_layer_valid_i" type="logic">
+         <obj_property name="ElementShortName">hidden_layer_valid_i</obj_property>
+         <obj_property name="ObjectShortName">hidden_layer_valid_i</obj_property>
       </wvobject>
-      <wvobject fp_name="/conv_to_fc_tb/layer_1/empty_i" type="logic">
-         <obj_property name="ElementShortName">empty_i</obj_property>
-         <obj_property name="ObjectShortName">empty_i</obj_property>
+      <wvobject fp_name="/conv_to_fc_tb/hidden_layer_ready_o" type="logic">
+         <obj_property name="ElementShortName">hidden_layer_ready_o</obj_property>
+         <obj_property name="ObjectShortName">hidden_layer_ready_o</obj_property>
       </wvobject>
-      <wvobject fp_name="/conv_to_fc_tb/layer_1/ren_o" type="logic">
-         <obj_property name="ElementShortName">ren_o</obj_property>
-         <obj_property name="ObjectShortName">ren_o</obj_property>
-      </wvobject>
-      <wvobject fp_name="/conv_to_fc_tb/layer_1/valid_o" type="logic">
-         <obj_property name="ElementShortName">valid_o</obj_property>
-         <obj_property name="ObjectShortName">valid_o</obj_property>
-      </wvobject>
-      <wvobject fp_name="/conv_to_fc_tb/layer_1/ready_i" type="logic">
-         <obj_property name="ElementShortName">ready_i</obj_property>
-         <obj_property name="ObjectShortName">ready_i</obj_property>
-      </wvobject>
-      <wvobject fp_name="/conv_to_fc_tb/layer_1/data_o" type="array">
-         <obj_property name="ElementShortName">data_o[1:0][7:0]</obj_property>
-         <obj_property name="ObjectShortName">data_o[1:0][7:0]</obj_property>
-      </wvobject>
-      <wvobject fp_name="/conv_to_fc_tb/layer_1/reset_i" type="logic">
-         <obj_property name="ElementShortName">reset_i</obj_property>
-         <obj_property name="ObjectShortName">reset_i</obj_property>
-      </wvobject>
-      <wvobject fp_name="/conv_to_fc_tb/layer_1/clk_i" type="logic">
-         <obj_property name="ElementShortName">clk_i</obj_property>
-         <obj_property name="ObjectShortName">clk_i</obj_property>
-      </wvobject>
-      <wvobject fp_name="/conv_to_fc_tb/layer_1/weight_i" type="array">
-         <obj_property name="ElementShortName">weight_i[1:0][7:0]</obj_property>
-         <obj_property name="ObjectShortName">weight_i[1:0][7:0]</obj_property>
-      </wvobject>
-      <wvobject fp_name="/conv_to_fc_tb/layer_1/mem_wen_i" type="logic">
-         <obj_property name="ElementShortName">mem_wen_i</obj_property>
-         <obj_property name="ObjectShortName">mem_wen_i</obj_property>
-      </wvobject>
-      <wvobject fp_name="/conv_to_fc_tb/layer_1/add_bias" type="logic">
-         <obj_property name="ElementShortName">add_bias</obj_property>
-         <obj_property name="ObjectShortName">add_bias</obj_property>
-      </wvobject>
-      <wvobject fp_name="/conv_to_fc_tb/layer_1/add_bias_delay" type="logic">
-         <obj_property name="ElementShortName">add_bias_delay</obj_property>
-         <obj_property name="ObjectShortName">add_bias_delay</obj_property>
-      </wvobject>
-      <wvobject fp_name="/conv_to_fc_tb/layer_1/sum_en" type="logic">
-         <obj_property name="ElementShortName">sum_en</obj_property>
-         <obj_property name="ObjectShortName">sum_en</obj_property>
-      </wvobject>
-      <wvobject fp_name="/conv_to_fc_tb/layer_1/mem_addr" type="array">
-         <obj_property name="ElementShortName">mem_addr[1:0]</obj_property>
-         <obj_property name="ObjectShortName">mem_addr[1:0]</obj_property>
-      </wvobject>
-      <wvobject fp_name="/conv_to_fc_tb/layer_1/ps" type="other">
-         <obj_property name="ElementShortName">ps</obj_property>
-         <obj_property name="ObjectShortName">ps</obj_property>
-      </wvobject>
-      <wvobject fp_name="/conv_to_fc_tb/layer_1/ns" type="other">
-         <obj_property name="ElementShortName">ns</obj_property>
-         <obj_property name="ObjectShortName">ns</obj_property>
-      </wvobject>
-      <wvobject fp_name="/conv_to_fc_tb/layer_1/en_count" type="logic">
-         <obj_property name="ElementShortName">en_count</obj_property>
-         <obj_property name="ObjectShortName">en_count</obj_property>
-      </wvobject>
-      <wvobject fp_name="/conv_to_fc_tb/layer_1/data_to_neurons" type="array">
-         <obj_property name="ElementShortName">data_to_neurons[7:0]</obj_property>
-         <obj_property name="ObjectShortName">data_to_neurons[7:0]</obj_property>
+      <wvobject fp_name="/conv_to_fc_tb/hidden_layer_input_data" type="array">
+         <obj_property name="ElementShortName">hidden_layer_input_data[15:0]</obj_property>
+         <obj_property name="ObjectShortName">hidden_layer_input_data[15:0]</obj_property>
       </wvobject>
    </wvobject>
-   <wvobject fp_name="group293" type="group">
-      <obj_property name="label">Fully-Connected Layer 2</obj_property>
+   <wvobject fp_name="group449" type="group">
+      <obj_property name="label">Hidden Output Layer Handshake</obj_property>
       <obj_property name="DisplayName">label</obj_property>
-      <wvobject fp_name="group302" type="group">
-         <obj_property name="label">Neuron 4</obj_property>
-         <obj_property name="DisplayName">label</obj_property>
-         <obj_property name="isExpanded"></obj_property>
-         <wvobject fp_name="/conv_to_fc_tb/layer_2/\genblk1[3].neuron /mem_addr_i" type="array">
-            <obj_property name="ElementShortName">mem_addr_i[1:0]</obj_property>
-            <obj_property name="ObjectShortName">mem_addr_i[1:0]</obj_property>
-         </wvobject>
-         <wvobject fp_name="/conv_to_fc_tb/layer_2/\genblk1[3].neuron /data_i" type="array">
-            <obj_property name="ElementShortName">data_i[7:0]</obj_property>
-            <obj_property name="ObjectShortName">data_i[7:0]</obj_property>
-            <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
-         </wvobject>
-         <wvobject fp_name="/conv_to_fc_tb/layer_2/\genblk1[3].neuron /mem_out" type="array">
-            <obj_property name="ElementShortName">mem_out[7:0]</obj_property>
-            <obj_property name="ObjectShortName">mem_out[7:0]</obj_property>
-            <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
-         </wvobject>
-         <wvobject fp_name="/conv_to_fc_tb/layer_2/\genblk1[3].neuron /sum_en" type="logic">
-            <obj_property name="ElementShortName">sum_en</obj_property>
-            <obj_property name="ObjectShortName">sum_en</obj_property>
-         </wvobject>
-         <wvobject fp_name="/conv_to_fc_tb/layer_2/\genblk1[3].neuron /add_bias" type="logic">
-            <obj_property name="ElementShortName">add_bias</obj_property>
-            <obj_property name="ObjectShortName">add_bias</obj_property>
-         </wvobject>
-         <wvobject fp_name="/conv_to_fc_tb/layer_2/\genblk1[3].neuron /reset_i" type="logic">
-            <obj_property name="ElementShortName">reset_i</obj_property>
-            <obj_property name="ObjectShortName">reset_i</obj_property>
-         </wvobject>
-         <wvobject fp_name="/conv_to_fc_tb/layer_2/\genblk1[3].neuron /clk_i" type="logic">
-            <obj_property name="ElementShortName">clk_i</obj_property>
-            <obj_property name="ObjectShortName">clk_i</obj_property>
-         </wvobject>
-         <wvobject fp_name="/conv_to_fc_tb/layer_2/\genblk1[3].neuron /data_o" type="array">
-            <obj_property name="ElementShortName">data_o[7:0]</obj_property>
-            <obj_property name="ObjectShortName">data_o[7:0]</obj_property>
-            <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
-         </wvobject>
+      <wvobject fp_name="/conv_to_fc_tb/hidden_layer_piso_valid_i" type="logic">
+         <obj_property name="ElementShortName">hidden_layer_piso_valid_i</obj_property>
+         <obj_property name="ObjectShortName">hidden_layer_piso_valid_i</obj_property>
+      </wvobject>
+      <wvobject fp_name="/conv_to_fc_tb/hidden_layer_piso_ready_o" type="logic">
+         <obj_property name="ElementShortName">hidden_layer_piso_ready_o</obj_property>
+         <obj_property name="ObjectShortName">hidden_layer_piso_ready_o</obj_property>
+      </wvobject>
+      <wvobject fp_name="/conv_to_fc_tb/hidden_layer_output_data" type="array">
+         <obj_property name="ElementShortName">hidden_layer_output_data[1:0][15:0]</obj_property>
+         <obj_property name="ObjectShortName">hidden_layer_output_data[1:0][15:0]</obj_property>
       </wvobject>
    </wvobject>
-   <wvobject fp_name="group303" type="group">
-      <obj_property name="label">Output FIFO</obj_property>
+   <wvobject fp_name="group450" type="group">
+      <obj_property name="label">Output Layer Handshake</obj_property>
       <obj_property name="DisplayName">label</obj_property>
-      <wvobject fp_name="/conv_to_fc_tb/output_fifo/wen_i" type="logic">
-         <obj_property name="ElementShortName">wen_i</obj_property>
-         <obj_property name="ObjectShortName">wen_i</obj_property>
+      <wvobject fp_name="/conv_to_fc_tb/output_layer_valid_i" type="logic">
+         <obj_property name="ElementShortName">output_layer_valid_i</obj_property>
+         <obj_property name="ObjectShortName">output_layer_valid_i</obj_property>
       </wvobject>
-      <wvobject fp_name="/conv_to_fc_tb/output_fifo/ren_i" type="logic">
-         <obj_property name="ElementShortName">ren_i</obj_property>
-         <obj_property name="ObjectShortName">ren_i</obj_property>
+      <wvobject fp_name="/conv_to_fc_tb/output_layer_ready_o" type="logic">
+         <obj_property name="ElementShortName">output_layer_ready_o</obj_property>
+         <obj_property name="ObjectShortName">output_layer_ready_o</obj_property>
       </wvobject>
-      <wvobject fp_name="/conv_to_fc_tb/output_fifo/data_i" type="array">
-         <obj_property name="ElementShortName">data_i[7:0]</obj_property>
-         <obj_property name="ObjectShortName">data_i[7:0]</obj_property>
+      <wvobject fp_name="/conv_to_fc_tb/output_layer_input_data" type="array">
+         <obj_property name="ElementShortName">output_layer_input_data[15:0]</obj_property>
+         <obj_property name="ObjectShortName">output_layer_input_data[15:0]</obj_property>
       </wvobject>
-      <wvobject fp_name="/conv_to_fc_tb/output_fifo/full_o" type="logic">
-         <obj_property name="ElementShortName">full_o</obj_property>
-         <obj_property name="ObjectShortName">full_o</obj_property>
+   </wvobject>
+   <wvobject fp_name="group451" type="group">
+      <obj_property name="label">Output Handshake</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <wvobject fp_name="/conv_to_fc_tb/output_layer_valid_o" type="logic">
+         <obj_property name="ElementShortName">output_layer_valid_o</obj_property>
+         <obj_property name="ObjectShortName">output_layer_valid_o</obj_property>
       </wvobject>
-      <wvobject fp_name="/conv_to_fc_tb/output_fifo/empty_o" type="logic">
-         <obj_property name="ElementShortName">empty_o</obj_property>
-         <obj_property name="ObjectShortName">empty_o</obj_property>
+      <wvobject fp_name="/conv_to_fc_tb/output_layer_yumi_i" type="logic">
+         <obj_property name="ElementShortName">output_layer_yumi_i</obj_property>
+         <obj_property name="ObjectShortName">output_layer_yumi_i</obj_property>
       </wvobject>
-      <wvobject fp_name="/conv_to_fc_tb/output_fifo/data_o" type="array">
-         <obj_property name="ElementShortName">data_o[7:0]</obj_property>
-         <obj_property name="ObjectShortName">data_o[7:0]</obj_property>
+      <wvobject fp_name="/conv_to_fc_tb/output_layer_output_data" type="array">
+         <obj_property name="ElementShortName">output_layer_output_data[3:0][15:0]</obj_property>
+         <obj_property name="ObjectShortName">output_layer_output_data[3:0][15:0]</obj_property>
       </wvobject>
+   </wvobject>
+   <wvobject fp_name="/conv_to_fc_tb/conv_ready_o" type="logic">
+      <obj_property name="ElementShortName">conv_ready_o</obj_property>
+      <obj_property name="ObjectShortName">conv_ready_o</obj_property>
    </wvobject>
    <wvobject fp_name="/conv_to_fc_tb/start_i" type="logic">
       <obj_property name="ElementShortName">start_i</obj_property>
       <obj_property name="ObjectShortName">start_i</obj_property>
    </wvobject>
-   <wvobject fp_name="/conv_to_fc_tb/input_data" type="array">
-      <obj_property name="ElementShortName">input_data[7:0]</obj_property>
-      <obj_property name="ObjectShortName">input_data[7:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/conv_to_fc_tb/layer_2/data_o" type="array">
-      <obj_property name="ElementShortName">data_o[3:0][7:0]</obj_property>
-      <obj_property name="ObjectShortName">data_o[3:0][7:0]</obj_property>
+   <wvobject fp_name="/conv_to_fc_tb/clk_i" type="logic">
+      <obj_property name="ElementShortName">clk_i</obj_property>
+      <obj_property name="ObjectShortName">clk_i</obj_property>
    </wvobject>
    <wvobject fp_name="/conv_to_fc_tb/reset_i" type="logic">
       <obj_property name="ElementShortName">reset_i</obj_property>
       <obj_property name="ObjectShortName">reset_i</obj_property>
    </wvobject>
-   <wvobject fp_name="/conv_to_fc_tb/clk_i" type="logic">
-      <obj_property name="ElementShortName">clk_i</obj_property>
-      <obj_property name="ObjectShortName">clk_i</obj_property>
+   <wvobject fp_name="group452" type="group">
+      <obj_property name="label">Hidden Layer Signals</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <wvobject fp_name="group456" type="group">
+         <obj_property name="label">Input Handshake</obj_property>
+         <obj_property name="DisplayName">label</obj_property>
+         <obj_property name="isExpanded"></obj_property>
+         <wvobject fp_name="/conv_to_fc_tb/hidden_layer/data_i" type="array">
+            <obj_property name="ElementShortName">data_i[15:0]</obj_property>
+            <obj_property name="ObjectShortName">data_i[15:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/conv_to_fc_tb/hidden_layer/valid_i" type="logic">
+            <obj_property name="ElementShortName">valid_i</obj_property>
+            <obj_property name="ObjectShortName">valid_i</obj_property>
+         </wvobject>
+         <wvobject fp_name="/conv_to_fc_tb/hidden_layer/ready_o" type="logic">
+            <obj_property name="ElementShortName">ready_o</obj_property>
+            <obj_property name="ObjectShortName">ready_o</obj_property>
+         </wvobject>
+      </wvobject>
+      <wvobject fp_name="group460" type="group">
+         <obj_property name="label">Output Handshake</obj_property>
+         <obj_property name="DisplayName">label</obj_property>
+         <wvobject fp_name="/conv_to_fc_tb/hidden_layer/valid_o" type="logic">
+            <obj_property name="ElementShortName">valid_o</obj_property>
+            <obj_property name="ObjectShortName">valid_o</obj_property>
+         </wvobject>
+         <wvobject fp_name="/conv_to_fc_tb/hidden_layer/yumi_i" type="logic">
+            <obj_property name="ElementShortName">yumi_i</obj_property>
+            <obj_property name="ObjectShortName">yumi_i</obj_property>
+         </wvobject>
+         <wvobject fp_name="/conv_to_fc_tb/hidden_layer/data_o" type="array">
+            <obj_property name="ElementShortName">data_o[31:0]</obj_property>
+            <obj_property name="ObjectShortName">data_o[31:0]</obj_property>
+         </wvobject>
+      </wvobject>
+      <wvobject fp_name="/conv_to_fc_tb/hidden_layer/ps_e" type="array">
+         <obj_property name="ElementShortName">ps_e[1:0]</obj_property>
+         <obj_property name="ObjectShortName">ps_e[1:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/conv_to_fc_tb/hidden_layer/ns_e" type="array">
+         <obj_property name="ElementShortName">ns_e[1:0]</obj_property>
+         <obj_property name="ObjectShortName">ns_e[1:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/conv_to_fc_tb/hidden_layer/add_bias" type="logic">
+         <obj_property name="ElementShortName">add_bias</obj_property>
+         <obj_property name="ObjectShortName">add_bias</obj_property>
+      </wvobject>
+      <wvobject fp_name="/conv_to_fc_tb/hidden_layer/sum_en" type="logic">
+         <obj_property name="ElementShortName">sum_en</obj_property>
+         <obj_property name="ObjectShortName">sum_en</obj_property>
+      </wvobject>
+      <wvobject fp_name="/conv_to_fc_tb/hidden_layer/mem_count_r" type="array">
+         <obj_property name="ElementShortName">mem_count_r[1:0]</obj_property>
+         <obj_property name="ObjectShortName">mem_count_r[1:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/conv_to_fc_tb/hidden_layer/mem_count_n" type="array">
+         <obj_property name="ElementShortName">mem_count_n[1:0]</obj_property>
+         <obj_property name="ObjectShortName">mem_count_n[1:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/conv_to_fc_tb/hidden_layer/mem_addr_li" type="array">
+         <obj_property name="ElementShortName">mem_addr_li[1:0]</obj_property>
+         <obj_property name="ObjectShortName">mem_addr_li[1:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="group471" type="group">
+         <obj_property name="label">Neuron 0</obj_property>
+         <obj_property name="DisplayName">label</obj_property>
+         <wvobject fp_name="/conv_to_fc_tb/hidden_layer/\genblk1[0].neuron /data_i" type="array">
+            <obj_property name="ElementShortName">data_i[15:0]</obj_property>
+            <obj_property name="ObjectShortName">data_i[15:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/conv_to_fc_tb/hidden_layer/\genblk1[0].neuron /mem_addr_i" type="array">
+            <obj_property name="ElementShortName">mem_addr_i[1:0]</obj_property>
+            <obj_property name="ObjectShortName">mem_addr_i[1:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/conv_to_fc_tb/hidden_layer/\genblk1[0].neuron /sum_en" type="logic">
+            <obj_property name="ElementShortName">sum_en</obj_property>
+            <obj_property name="ObjectShortName">sum_en</obj_property>
+         </wvobject>
+         <wvobject fp_name="/conv_to_fc_tb/hidden_layer/\genblk1[0].neuron /add_bias" type="logic">
+            <obj_property name="ElementShortName">add_bias</obj_property>
+            <obj_property name="ObjectShortName">add_bias</obj_property>
+         </wvobject>
+         <wvobject fp_name="/conv_to_fc_tb/hidden_layer/\genblk1[0].neuron /reset_i" type="logic">
+            <obj_property name="ElementShortName">reset_i</obj_property>
+            <obj_property name="ObjectShortName">reset_i</obj_property>
+         </wvobject>
+         <wvobject fp_name="/conv_to_fc_tb/hidden_layer/\genblk1[0].neuron /clk_i" type="logic">
+            <obj_property name="ElementShortName">clk_i</obj_property>
+            <obj_property name="ObjectShortName">clk_i</obj_property>
+         </wvobject>
+         <wvobject fp_name="/conv_to_fc_tb/hidden_layer/\genblk1[0].neuron /data_o" type="array">
+            <obj_property name="ElementShortName">data_o[15:0]</obj_property>
+            <obj_property name="ObjectShortName">data_o[15:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/conv_to_fc_tb/hidden_layer/\genblk1[0].neuron /mem_out" type="array">
+            <obj_property name="ElementShortName">mem_out[15:0]</obj_property>
+            <obj_property name="ObjectShortName">mem_out[15:0]</obj_property>
+         </wvobject>
+      </wvobject>
+      <wvobject fp_name="group480" type="group">
+         <obj_property name="label">Neuron 1</obj_property>
+         <obj_property name="DisplayName">label</obj_property>
+         <wvobject fp_name="/conv_to_fc_tb/hidden_layer/\genblk1[1].neuron /data_i" type="array">
+            <obj_property name="ElementShortName">data_i[15:0]</obj_property>
+            <obj_property name="ObjectShortName">data_i[15:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/conv_to_fc_tb/hidden_layer/\genblk1[1].neuron /mem_addr_i" type="array">
+            <obj_property name="ElementShortName">mem_addr_i[1:0]</obj_property>
+            <obj_property name="ObjectShortName">mem_addr_i[1:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/conv_to_fc_tb/hidden_layer/\genblk1[1].neuron /sum_en" type="logic">
+            <obj_property name="ElementShortName">sum_en</obj_property>
+            <obj_property name="ObjectShortName">sum_en</obj_property>
+         </wvobject>
+         <wvobject fp_name="/conv_to_fc_tb/hidden_layer/\genblk1[1].neuron /add_bias" type="logic">
+            <obj_property name="ElementShortName">add_bias</obj_property>
+            <obj_property name="ObjectShortName">add_bias</obj_property>
+         </wvobject>
+         <wvobject fp_name="/conv_to_fc_tb/hidden_layer/\genblk1[1].neuron /reset_i" type="logic">
+            <obj_property name="ElementShortName">reset_i</obj_property>
+            <obj_property name="ObjectShortName">reset_i</obj_property>
+         </wvobject>
+         <wvobject fp_name="/conv_to_fc_tb/hidden_layer/\genblk1[1].neuron /clk_i" type="logic">
+            <obj_property name="ElementShortName">clk_i</obj_property>
+            <obj_property name="ObjectShortName">clk_i</obj_property>
+         </wvobject>
+         <wvobject fp_name="/conv_to_fc_tb/hidden_layer/\genblk1[1].neuron /data_o" type="array">
+            <obj_property name="ElementShortName">data_o[15:0]</obj_property>
+            <obj_property name="ObjectShortName">data_o[15:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/conv_to_fc_tb/hidden_layer/\genblk1[1].neuron /mem_out" type="array">
+            <obj_property name="ElementShortName">mem_out[15:0]</obj_property>
+            <obj_property name="ObjectShortName">mem_out[15:0]</obj_property>
+         </wvobject>
+      </wvobject>
    </wvobject>
-   <wvobject fp_name="group396" type="group">
-      <obj_property name="label">Output Layer Serializer</obj_property>
+   <wvobject fp_name="/conv_to_fc_tb/expected_outputs" type="array">
+      <obj_property name="ElementShortName">expected_outputs[1:0][3:0][15:0]</obj_property>
+      <obj_property name="ObjectShortName">expected_outputs[1:0][3:0][15:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="group66" type="group">
+      <obj_property name="label">Convolutional Layer Signals</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <wvobject fp_name="group77" type="group">
+         <obj_property name="label">ALU 0</obj_property>
+         <obj_property name="DisplayName">label</obj_property>
+         <obj_property name="isExpanded"></obj_property>
+         <wvobject fp_name="/conv_to_fc_tb/convolution/\genblk1[0].first_alu /mem_i" type="array">
+            <obj_property name="ElementShortName">mem_i[15:0]</obj_property>
+            <obj_property name="ObjectShortName">mem_i[15:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/conv_to_fc_tb/convolution/\genblk1[0].first_alu /data_i" type="array">
+            <obj_property name="ElementShortName">data_i[15:0]</obj_property>
+            <obj_property name="ObjectShortName">data_i[15:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/conv_to_fc_tb/convolution/\genblk1[0].first_alu /add_bias" type="logic">
+            <obj_property name="ElementShortName">add_bias</obj_property>
+            <obj_property name="ObjectShortName">add_bias</obj_property>
+         </wvobject>
+         <wvobject fp_name="/conv_to_fc_tb/convolution/\genblk1[0].first_alu /sum_en" type="logic">
+            <obj_property name="ElementShortName">sum_en</obj_property>
+            <obj_property name="ObjectShortName">sum_en</obj_property>
+         </wvobject>
+         <wvobject fp_name="/conv_to_fc_tb/convolution/\genblk1[0].first_alu /clk_i" type="logic">
+            <obj_property name="ElementShortName">clk_i</obj_property>
+            <obj_property name="ObjectShortName">clk_i</obj_property>
+         </wvobject>
+         <wvobject fp_name="/conv_to_fc_tb/convolution/\genblk1[0].first_alu /reset_i" type="logic">
+            <obj_property name="ElementShortName">reset_i</obj_property>
+            <obj_property name="ObjectShortName">reset_i</obj_property>
+         </wvobject>
+         <wvobject fp_name="/conv_to_fc_tb/convolution/\genblk1[0].first_alu /data_o" type="array">
+            <obj_property name="ElementShortName">data_o[15:0]</obj_property>
+            <obj_property name="ObjectShortName">data_o[15:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/conv_to_fc_tb/convolution/\genblk1[0].first_alu /SEL" type="array">
+            <obj_property name="ElementShortName">SEL[1:0]</obj_property>
+            <obj_property name="ObjectShortName">SEL[1:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/conv_to_fc_tb/convolution/\genblk1[0].first_alu /full_data" type="array">
+            <obj_property name="ElementShortName">full_data[47:0]</obj_property>
+            <obj_property name="ObjectShortName">full_data[47:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/conv_to_fc_tb/convolution/\genblk1[0].first_alu /sum_r" type="array">
+            <obj_property name="ElementShortName">sum_r[31:0]</obj_property>
+            <obj_property name="ObjectShortName">sum_r[31:0]</obj_property>
+         </wvobject>
+      </wvobject>
+      <wvobject fp_name="group88" type="group">
+         <obj_property name="label">ALU 1</obj_property>
+         <obj_property name="DisplayName">label</obj_property>
+         <wvobject fp_name="/conv_to_fc_tb/convolution/\genblk1[0].genblk1[0].subsidiary_alu /mem_i" type="array">
+            <obj_property name="ElementShortName">mem_i[15:0]</obj_property>
+            <obj_property name="ObjectShortName">mem_i[15:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/conv_to_fc_tb/convolution/\genblk1[0].genblk1[0].subsidiary_alu /data_i" type="array">
+            <obj_property name="ElementShortName">data_i[15:0]</obj_property>
+            <obj_property name="ObjectShortName">data_i[15:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/conv_to_fc_tb/convolution/\genblk1[0].genblk1[0].subsidiary_alu /add_bias" type="logic">
+            <obj_property name="ElementShortName">add_bias</obj_property>
+            <obj_property name="ObjectShortName">add_bias</obj_property>
+         </wvobject>
+         <wvobject fp_name="/conv_to_fc_tb/convolution/\genblk1[0].genblk1[0].subsidiary_alu /sum_en" type="logic">
+            <obj_property name="ElementShortName">sum_en</obj_property>
+            <obj_property name="ObjectShortName">sum_en</obj_property>
+         </wvobject>
+         <wvobject fp_name="/conv_to_fc_tb/convolution/\genblk1[0].genblk1[0].subsidiary_alu /clk_i" type="logic">
+            <obj_property name="ElementShortName">clk_i</obj_property>
+            <obj_property name="ObjectShortName">clk_i</obj_property>
+         </wvobject>
+         <wvobject fp_name="/conv_to_fc_tb/convolution/\genblk1[0].genblk1[0].subsidiary_alu /reset_i" type="logic">
+            <obj_property name="ElementShortName">reset_i</obj_property>
+            <obj_property name="ObjectShortName">reset_i</obj_property>
+         </wvobject>
+         <wvobject fp_name="/conv_to_fc_tb/convolution/\genblk1[0].genblk1[0].subsidiary_alu /data_o" type="array">
+            <obj_property name="ElementShortName">data_o[15:0]</obj_property>
+            <obj_property name="ObjectShortName">data_o[15:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/conv_to_fc_tb/convolution/\genblk1[0].genblk1[0].subsidiary_alu /SEL" type="array">
+            <obj_property name="ElementShortName">SEL[1:0]</obj_property>
+            <obj_property name="ObjectShortName">SEL[1:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/conv_to_fc_tb/convolution/\genblk1[0].genblk1[0].subsidiary_alu /full_data" type="array">
+            <obj_property name="ElementShortName">full_data[47:0]</obj_property>
+            <obj_property name="ObjectShortName">full_data[47:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/conv_to_fc_tb/convolution/\genblk1[0].genblk1[0].subsidiary_alu /sum_r" type="array">
+            <obj_property name="ElementShortName">sum_r[31:0]</obj_property>
+            <obj_property name="ObjectShortName">sum_r[31:0]</obj_property>
+         </wvobject>
+      </wvobject>
+      <wvobject fp_name="group99" type="group">
+         <obj_property name="label">ALU 2</obj_property>
+         <obj_property name="DisplayName">label</obj_property>
+         <wvobject fp_name="/conv_to_fc_tb/convolution/\genblk1[0].genblk1[1].subsidiary_alu /mem_i" type="array">
+            <obj_property name="ElementShortName">mem_i[15:0]</obj_property>
+            <obj_property name="ObjectShortName">mem_i[15:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/conv_to_fc_tb/convolution/\genblk1[0].genblk1[1].subsidiary_alu /data_i" type="array">
+            <obj_property name="ElementShortName">data_i[15:0]</obj_property>
+            <obj_property name="ObjectShortName">data_i[15:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/conv_to_fc_tb/convolution/\genblk1[0].genblk1[1].subsidiary_alu /add_bias" type="logic">
+            <obj_property name="ElementShortName">add_bias</obj_property>
+            <obj_property name="ObjectShortName">add_bias</obj_property>
+         </wvobject>
+         <wvobject fp_name="/conv_to_fc_tb/convolution/\genblk1[0].genblk1[1].subsidiary_alu /sum_en" type="logic">
+            <obj_property name="ElementShortName">sum_en</obj_property>
+            <obj_property name="ObjectShortName">sum_en</obj_property>
+         </wvobject>
+         <wvobject fp_name="/conv_to_fc_tb/convolution/\genblk1[0].genblk1[1].subsidiary_alu /clk_i" type="logic">
+            <obj_property name="ElementShortName">clk_i</obj_property>
+            <obj_property name="ObjectShortName">clk_i</obj_property>
+         </wvobject>
+         <wvobject fp_name="/conv_to_fc_tb/convolution/\genblk1[0].genblk1[1].subsidiary_alu /reset_i" type="logic">
+            <obj_property name="ElementShortName">reset_i</obj_property>
+            <obj_property name="ObjectShortName">reset_i</obj_property>
+         </wvobject>
+         <wvobject fp_name="/conv_to_fc_tb/convolution/\genblk1[0].genblk1[1].subsidiary_alu /data_o" type="array">
+            <obj_property name="ElementShortName">data_o[15:0]</obj_property>
+            <obj_property name="ObjectShortName">data_o[15:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/conv_to_fc_tb/convolution/\genblk1[0].genblk1[1].subsidiary_alu /SEL" type="array">
+            <obj_property name="ElementShortName">SEL[1:0]</obj_property>
+            <obj_property name="ObjectShortName">SEL[1:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/conv_to_fc_tb/convolution/\genblk1[0].genblk1[1].subsidiary_alu /full_data" type="array">
+            <obj_property name="ElementShortName">full_data[47:0]</obj_property>
+            <obj_property name="ObjectShortName">full_data[47:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/conv_to_fc_tb/convolution/\genblk1[0].genblk1[1].subsidiary_alu /sum_r" type="array">
+            <obj_property name="ElementShortName">sum_r[31:0]</obj_property>
+            <obj_property name="ObjectShortName">sum_r[31:0]</obj_property>
+         </wvobject>
+      </wvobject>
+   </wvobject>
+   <wvobject fp_name="group100" type="group">
+      <obj_property name="label">Output Layer Signals</obj_property>
       <obj_property name="DisplayName">label</obj_property>
       <obj_property name="isExpanded"></obj_property>
-      <wvobject fp_name="/conv_to_fc_tb/output_layer_output/valid_i" type="logic">
-         <obj_property name="ElementShortName">valid_i</obj_property>
-         <obj_property name="ObjectShortName">valid_i</obj_property>
+      <wvobject fp_name="group115" type="group">
+         <obj_property name="label">ALU 0</obj_property>
+         <obj_property name="DisplayName">label</obj_property>
+         <wvobject fp_name="/conv_to_fc_tb/output_layer/\genblk1[0].neuron /data_i" type="array">
+            <obj_property name="ElementShortName">data_i[15:0]</obj_property>
+            <obj_property name="ObjectShortName">data_i[15:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/conv_to_fc_tb/output_layer/\genblk1[0].neuron /mem_addr_i" type="array">
+            <obj_property name="ElementShortName">mem_addr_i[1:0]</obj_property>
+            <obj_property name="ObjectShortName">mem_addr_i[1:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/conv_to_fc_tb/output_layer/\genblk1[0].neuron /sum_en" type="logic">
+            <obj_property name="ElementShortName">sum_en</obj_property>
+            <obj_property name="ObjectShortName">sum_en</obj_property>
+         </wvobject>
+         <wvobject fp_name="/conv_to_fc_tb/output_layer/\genblk1[0].neuron /add_bias" type="logic">
+            <obj_property name="ElementShortName">add_bias</obj_property>
+            <obj_property name="ObjectShortName">add_bias</obj_property>
+         </wvobject>
+         <wvobject fp_name="/conv_to_fc_tb/output_layer/\genblk1[0].neuron /reset_i" type="logic">
+            <obj_property name="ElementShortName">reset_i</obj_property>
+            <obj_property name="ObjectShortName">reset_i</obj_property>
+         </wvobject>
+         <wvobject fp_name="/conv_to_fc_tb/output_layer/\genblk1[0].neuron /clk_i" type="logic">
+            <obj_property name="ElementShortName">clk_i</obj_property>
+            <obj_property name="ObjectShortName">clk_i</obj_property>
+         </wvobject>
+         <wvobject fp_name="/conv_to_fc_tb/output_layer/\genblk1[0].neuron /data_o" type="array">
+            <obj_property name="ElementShortName">data_o[15:0]</obj_property>
+            <obj_property name="ObjectShortName">data_o[15:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/conv_to_fc_tb/output_layer/\genblk1[0].neuron /mem_out" type="array">
+            <obj_property name="ElementShortName">mem_out[15:0]</obj_property>
+            <obj_property name="ObjectShortName">mem_out[15:0]</obj_property>
+         </wvobject>
       </wvobject>
-      <wvobject fp_name="/conv_to_fc_tb/output_layer_output/ready_o" type="logic">
-         <obj_property name="ElementShortName">ready_o</obj_property>
-         <obj_property name="ObjectShortName">ready_o</obj_property>
+      <wvobject fp_name="group124" type="group">
+         <obj_property name="label">ALU 1</obj_property>
+         <obj_property name="DisplayName">label</obj_property>
+         <wvobject fp_name="/conv_to_fc_tb/output_layer/\genblk1[1].neuron /data_i" type="array">
+            <obj_property name="ElementShortName">data_i[15:0]</obj_property>
+            <obj_property name="ObjectShortName">data_i[15:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/conv_to_fc_tb/output_layer/\genblk1[1].neuron /mem_addr_i" type="array">
+            <obj_property name="ElementShortName">mem_addr_i[1:0]</obj_property>
+            <obj_property name="ObjectShortName">mem_addr_i[1:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/conv_to_fc_tb/output_layer/\genblk1[1].neuron /sum_en" type="logic">
+            <obj_property name="ElementShortName">sum_en</obj_property>
+            <obj_property name="ObjectShortName">sum_en</obj_property>
+         </wvobject>
+         <wvobject fp_name="/conv_to_fc_tb/output_layer/\genblk1[1].neuron /add_bias" type="logic">
+            <obj_property name="ElementShortName">add_bias</obj_property>
+            <obj_property name="ObjectShortName">add_bias</obj_property>
+         </wvobject>
+         <wvobject fp_name="/conv_to_fc_tb/output_layer/\genblk1[1].neuron /reset_i" type="logic">
+            <obj_property name="ElementShortName">reset_i</obj_property>
+            <obj_property name="ObjectShortName">reset_i</obj_property>
+         </wvobject>
+         <wvobject fp_name="/conv_to_fc_tb/output_layer/\genblk1[1].neuron /clk_i" type="logic">
+            <obj_property name="ElementShortName">clk_i</obj_property>
+            <obj_property name="ObjectShortName">clk_i</obj_property>
+         </wvobject>
+         <wvobject fp_name="/conv_to_fc_tb/output_layer/\genblk1[1].neuron /data_o" type="array">
+            <obj_property name="ElementShortName">data_o[15:0]</obj_property>
+            <obj_property name="ObjectShortName">data_o[15:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/conv_to_fc_tb/output_layer/\genblk1[1].neuron /mem_out" type="array">
+            <obj_property name="ElementShortName">mem_out[15:0]</obj_property>
+            <obj_property name="ObjectShortName">mem_out[15:0]</obj_property>
+         </wvobject>
       </wvobject>
-      <wvobject fp_name="/conv_to_fc_tb/output_layer_output/data_i" type="array">
-         <obj_property name="ElementShortName">data_i[3:0][7:0]</obj_property>
-         <obj_property name="ObjectShortName">data_i[3:0][7:0]</obj_property>
+      <wvobject fp_name="group133" type="group">
+         <obj_property name="label">ALU 2</obj_property>
+         <obj_property name="DisplayName">label</obj_property>
+         <wvobject fp_name="/conv_to_fc_tb/output_layer/\genblk1[2].neuron /data_i" type="array">
+            <obj_property name="ElementShortName">data_i[15:0]</obj_property>
+            <obj_property name="ObjectShortName">data_i[15:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/conv_to_fc_tb/output_layer/\genblk1[2].neuron /mem_addr_i" type="array">
+            <obj_property name="ElementShortName">mem_addr_i[1:0]</obj_property>
+            <obj_property name="ObjectShortName">mem_addr_i[1:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/conv_to_fc_tb/output_layer/\genblk1[2].neuron /sum_en" type="logic">
+            <obj_property name="ElementShortName">sum_en</obj_property>
+            <obj_property name="ObjectShortName">sum_en</obj_property>
+         </wvobject>
+         <wvobject fp_name="/conv_to_fc_tb/output_layer/\genblk1[2].neuron /add_bias" type="logic">
+            <obj_property name="ElementShortName">add_bias</obj_property>
+            <obj_property name="ObjectShortName">add_bias</obj_property>
+         </wvobject>
+         <wvobject fp_name="/conv_to_fc_tb/output_layer/\genblk1[2].neuron /reset_i" type="logic">
+            <obj_property name="ElementShortName">reset_i</obj_property>
+            <obj_property name="ObjectShortName">reset_i</obj_property>
+         </wvobject>
+         <wvobject fp_name="/conv_to_fc_tb/output_layer/\genblk1[2].neuron /clk_i" type="logic">
+            <obj_property name="ElementShortName">clk_i</obj_property>
+            <obj_property name="ObjectShortName">clk_i</obj_property>
+         </wvobject>
+         <wvobject fp_name="/conv_to_fc_tb/output_layer/\genblk1[2].neuron /data_o" type="array">
+            <obj_property name="ElementShortName">data_o[15:0]</obj_property>
+            <obj_property name="ObjectShortName">data_o[15:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/conv_to_fc_tb/output_layer/\genblk1[2].neuron /mem_out" type="array">
+            <obj_property name="ElementShortName">mem_out[15:0]</obj_property>
+            <obj_property name="ObjectShortName">mem_out[15:0]</obj_property>
+         </wvobject>
       </wvobject>
-      <wvobject fp_name="/conv_to_fc_tb/output_layer_output/wen_o" type="logic">
-         <obj_property name="ElementShortName">wen_o</obj_property>
-         <obj_property name="ObjectShortName">wen_o</obj_property>
-      </wvobject>
-      <wvobject fp_name="/conv_to_fc_tb/output_layer_output/full_i" type="logic">
-         <obj_property name="ElementShortName">full_i</obj_property>
-         <obj_property name="ObjectShortName">full_i</obj_property>
-      </wvobject>
-      <wvobject fp_name="/conv_to_fc_tb/output_layer_output/data_o" type="array">
-         <obj_property name="ElementShortName">data_o[7:0]</obj_property>
-         <obj_property name="ObjectShortName">data_o[7:0]</obj_property>
-      </wvobject>
-      <wvobject fp_name="/conv_to_fc_tb/output_layer_output/output_addr" type="array">
-         <obj_property name="ElementShortName">output_addr[2:0]</obj_property>
-         <obj_property name="ObjectShortName">output_addr[2:0]</obj_property>
-      </wvobject>
-      <wvobject fp_name="/conv_to_fc_tb/output_layer_output/current_data" type="array">
-         <obj_property name="ElementShortName">current_data[3:0][7:0]</obj_property>
-         <obj_property name="ObjectShortName">current_data[3:0][7:0]</obj_property>
-      </wvobject>
-      <wvobject fp_name="/conv_to_fc_tb/output_layer_output/ps" type="other">
-         <obj_property name="ElementShortName">ps</obj_property>
-         <obj_property name="ObjectShortName">ps</obj_property>
-      </wvobject>
-      <wvobject fp_name="/conv_to_fc_tb/output_layer_output/ns" type="other">
-         <obj_property name="ElementShortName">ns</obj_property>
-         <obj_property name="ObjectShortName">ns</obj_property>
+      <wvobject fp_name="group142" type="group">
+         <obj_property name="label">ALU 3</obj_property>
+         <obj_property name="DisplayName">label</obj_property>
+         <obj_property name="isExpanded"></obj_property>
+         <wvobject fp_name="/conv_to_fc_tb/output_layer/\genblk1[3].neuron /data_i" type="array">
+            <obj_property name="ElementShortName">data_i[15:0]</obj_property>
+            <obj_property name="ObjectShortName">data_i[15:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/conv_to_fc_tb/output_layer/\genblk1[3].neuron /mem_addr_i" type="array">
+            <obj_property name="ElementShortName">mem_addr_i[1:0]</obj_property>
+            <obj_property name="ObjectShortName">mem_addr_i[1:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/conv_to_fc_tb/output_layer/\genblk1[3].neuron /sum_en" type="logic">
+            <obj_property name="ElementShortName">sum_en</obj_property>
+            <obj_property name="ObjectShortName">sum_en</obj_property>
+         </wvobject>
+         <wvobject fp_name="/conv_to_fc_tb/output_layer/\genblk1[3].neuron /add_bias" type="logic">
+            <obj_property name="ElementShortName">add_bias</obj_property>
+            <obj_property name="ObjectShortName">add_bias</obj_property>
+         </wvobject>
+         <wvobject fp_name="/conv_to_fc_tb/output_layer/\genblk1[3].neuron /reset_i" type="logic">
+            <obj_property name="ElementShortName">reset_i</obj_property>
+            <obj_property name="ObjectShortName">reset_i</obj_property>
+         </wvobject>
+         <wvobject fp_name="/conv_to_fc_tb/output_layer/\genblk1[3].neuron /clk_i" type="logic">
+            <obj_property name="ElementShortName">clk_i</obj_property>
+            <obj_property name="ObjectShortName">clk_i</obj_property>
+         </wvobject>
+         <wvobject fp_name="/conv_to_fc_tb/output_layer/\genblk1[3].neuron /data_o" type="array">
+            <obj_property name="ElementShortName">data_o[15:0]</obj_property>
+            <obj_property name="ObjectShortName">data_o[15:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/conv_to_fc_tb/output_layer/\genblk1[3].neuron /mem_out" type="array">
+            <obj_property name="ElementShortName">mem_out[15:0]</obj_property>
+            <obj_property name="ObjectShortName">mem_out[15:0]</obj_property>
+         </wvobject>
       </wvobject>
    </wvobject>
 </wave_config>
