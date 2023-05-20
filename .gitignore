@@ -2,5 +2,8 @@
 project_1.cache/
 Vivado/
 zyNet/
+macro_prep/
 Scripts/data/*.html
 Scripts/data/error_data.csv
+freepdk-45nm
+FreePDK45
