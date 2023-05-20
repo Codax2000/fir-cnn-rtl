@@ -2,15 +2,21 @@ type = offset
 defaultOffset = 0.0
 
 #N, 24.16
-cs_n, layer=metal3 +1.4
-we_n, layer=metal3 +1.4
+w_en_i, layer=metal3 +1.4
+w_data_i[20:0], layer=metal3 +4.2
+w_addr_i[18:0], layer=metal3 +4.2
 
 #W, 15.96
-clk, layer=metal4 +1.4
+clk_i, layer=metal4 +1.4
+reset_i, layer=metal4 +1.4
+start_i, layer=metal3 +4.2
+
+#S, 15.96
+data_i[15:0], layer=metal3 +1.4
+valid_i, layer=metal3 +4.2
+ready_0, layer=metal3 +4.2
 
 #E, 15.96
-addr[3:0], layer=metal4, pitch=1.4 +4.2
-w_data[1:0], layer=metal4, pitch=1.4 +1.4
-
-#S, 15.95
-r_data[1:0], layer=metal3, pitch=1.4 +1.4
+valid_o, layer=metal3 +1.4
+yumi_i, layer=metal3 +1.4
+data_o[159:0], layer=metal3 +4.2

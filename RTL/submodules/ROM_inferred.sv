@@ -1,4 +1,7 @@
 `timescale 1ns / 1ps
+`ifndef SYNOPSIS
+`define VIVADO
+`endif
 /**
 Alex Knowlton
 4/12/2023
@@ -9,14 +12,15 @@ Inferred block RAM using Xylinx Vivado. Wraps Vivado macro in drop-in replacemen
 module ROM_inferred #(
    parameter ADDR_WIDTH=3,
    parameter WORD_SIZE=8,
-   parameter MEM_INIT="0_1_0.mif"
+   parameter MEM_INIT="0_1_0.mif",
+   parameter LAYER_NUMBER=1
 ) (
    input logic [ADDR_WIDTH-1:0] addr_i,
    output logic [WORD_SIZE-1:0] data_o,
    input logic clk_i,
    input logic reset_i
 );
-
+   `ifdef VIVADO
    xpm_memory_sprom #(
       .ADDR_WIDTH_A(ADDR_WIDTH),              // DECIMAL
       .MEMORY_INIT_FILE(MEM_INIT),     // String
@@ -46,6 +50,24 @@ module ROM_inferred #(
       .injectdbiterra(1'b0),
       .regcea(1'b1),
       .sleep(1'b0)
-);
+   );
+   `else
+   generate
+      case (LAYER_NUMBER)
+         1: begin
+
+         end
+         2: begin
+
+         end
+         3: begin
+
+         end
+         default: begin// default to convolutional layer, layer 0
+
+         end
+      endcase
+   endgenerate
+   `endif
 
 endmodule

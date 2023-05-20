@@ -45,7 +45,8 @@ module ROM_neuron #(parameter depth=3, width=8, neuron_type=0, layer_number=1, n
 	ROM_inferred #(
         .ADDR_WIDTH(depth),
         .WORD_SIZE(width),
-        .MEM_INIT(init_file)
+        .MEM_INIT(init_file),
+        .LAYER_NUMBER(layer_number)
     ) internal_rom (
         .addr_i,
         .data_o,
