@@ -46,7 +46,7 @@ module zyNet #(
     localparam KERNEL_HEIGHT_0 = 16; //16  4
     localparam KERNEL_WIDTH_0 = 2;
     localparam KERNEL_SIZE_0 = KERNEL_WIDTH_0*KERNEL_HEIGHT_0;
-    localparam NUM_KERNELS = 256; //256  8
+    localparam NUM_KERNELS = 200; //256  8
     localparam FC_LAYER_HEIGHT_0 = 256; // 256  8
     localparam FC_LAYER_HEIGHT_1 = 10;
     
