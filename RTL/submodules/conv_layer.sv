@@ -164,7 +164,9 @@ module conv_layer #(
         .layer_number(LAYER_NUMBER),
         .neuron_number(CONVOLUTION_NUMBER)
     ) weight_mem (
+        `ifdef VIVADO
         .reset_i,
+        `endif
         .clk_i,
         .addr_i(mem_addr),
         .data_o(mem_out)

@@ -37,7 +37,9 @@ module fc_neuron #(
         .layer_number(LAYER_NUMBER),
         .neuron_number(NEURON_NUMBER)
     ) weight_and_bias_mem (
+        `ifdef VIVADO
         .reset_i,
+        `endif
         .clk_i,
         .addr_i(mem_addr_i),
         .data_o(mem_out)

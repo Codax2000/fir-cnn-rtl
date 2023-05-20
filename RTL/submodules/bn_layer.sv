@@ -102,7 +102,9 @@ module bn_layer #(
     .layer_number(LAYER_NUMBER),
     .neuron_number(0)
   ) mean_mem (
+    `ifdef VIVADO`
     .reset_i,
+    `endif
     .clk_i,
     .addr_i(count_n),
     .data_o(mean_lo)
@@ -117,7 +119,9 @@ module bn_layer #(
     .layer_number(LAYER_NUMBER),
     .neuron_number(1)
   ) variance_mem (
+    `ifdef VIVADO
     .reset_i,
+    `endif
     .clk_i,
     .addr_i(count_n),
     .data_o(variance_lo)
@@ -132,7 +136,9 @@ module bn_layer #(
     .layer_number(LAYER_NUMBER),
     .neuron_number(2)
   ) scale_mem (
+    `ifdef VIVADO
     .reset_i,
+    `endif
     .clk_i,
     .addr_i(count_n),
     .data_o(scale_lo)
@@ -147,7 +153,9 @@ module bn_layer #(
     .layer_number(LAYER_NUMBER),
     .neuron_number(3)
   ) offset_mem (
+    `ifdef VIVADO
     .reset_i,
+    `endif
     .clk_i,
     .addr_i(count_n),
     .data_o(offset_lo)

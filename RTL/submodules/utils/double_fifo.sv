@@ -22,7 +22,7 @@ outputs:
 */
 
 module double_fifo #(
-    WORD_SIZE = 16 ) (
+    parameter WORD_SIZE = 16 ) (
     input logic clk_i,
     input logic reset_i,
     input logic wen_i,

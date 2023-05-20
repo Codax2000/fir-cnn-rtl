@@ -14,8 +14,19 @@ parameters:
 */
 
 module ROM_neuron #(parameter depth=3, width=8, neuron_type=0, layer_number=1, neuron_number=0) (
-    input   logic reset_i,
+    `ifdef VIVADO
+    input  logic reset_i,
+    `endif
     input  logic clk_i,
+    
+    /*
+    Uncomment when write mode in layers has been resolved
+    `ifndef VIVADO
+    input logic wen
+    input logic [width-1:0] data_i;
+    `endif
+    */
+
     input  logic [depth-1:0] addr_i,
     output logic [width-1:0] data_o
     );
@@ -31,7 +42,7 @@ module ROM_neuron #(parameter depth=3, width=8, neuron_type=0, layer_number=1, n
 
     // odd logic, but it synthesizes to {"n_n_nnn.mem" where "n" is a parameter as defined above}
     localparam logic [87:0] init_file = {neuron_type_p, 8'h5f, layer_number_p, 8'h5f, neuron_number_hundreds_p, neuron_number_tens_p, neuron_number_ones_p, 32'h2e6d656d};
-
+    `ifdef VIVADO
 	ROM_inferred #(
         .ADDR_WIDTH(depth),
         .WORD_SIZE(width),
@@ -42,5 +53,61 @@ module ROM_neuron #(parameter depth=3, width=8, neuron_type=0, layer_number=1, n
         .clk_i,
         .reset_i
     );
+
+    `else
+    logic wen;
+    logic [width-1:0] data_write;
+    // TODO: Uncomment when write mode resolved with layers
+    // assign data_write = data_i
+    
+    // remove these two lines when write mode resolved
+    assign wen = 1'b0;
+    assign data_write = '0;
+
+    generate
+        case (neuron_type)
+            0: begin
+                sram_16_64_freepdk45 ram (
+                    .clk0(clk_i),
+                    .csb0(1'b0),
+                    .web0(wen),
+                    .addr0(addr_i),
+                    .din0(data_write),
+                    .dout0(data_o)
+                );
+            end
+            1: begin
+                // larger sram for build, smaller for testing synthesis/apr flow
+                `ifdef TESTING
+                sram_16_32_freepdk45 ram (
+                `else
+                sram_16_512_freepdk45 ram (
+                `endif
+                    .clk0(clk_i),
+                    .csb0(1'b0),
+                    .web0(wen),
+                    .addr0(addr_i),
+                    .din0(data_write),
+                    .dout0(data_o)
+                );
+            end
+            2: begin
+                // larger sram for build, smaller for testing synthesis/apr flow
+                `ifdef TESTING
+                sram_21_16_freepdk45 ram (
+                `else
+                sram_21_256_freepdk45 ram (
+                `endif
+                    .clk0(clk_i),
+                    .csb0(1'b0),
+                    .web0(wen),
+                    .addr0(addr_i),
+                    .din0(data_write),
+                    .dout0(data_o)
+                );
+            end
+        endcase
+    endgenerate
+    `endif
     
 endmodule

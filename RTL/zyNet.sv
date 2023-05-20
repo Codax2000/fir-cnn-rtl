@@ -22,13 +22,21 @@ module zyNet #(
     // LAYER PARAMETERS AND WIRES
 
     // conv_layer_0
+    `ifdef TESTING
     localparam INPUT_LAYER_HEIGHT = 128; //128  16
     localparam KERNEL_HEIGHT_0 = 16; //16  4
-    localparam KERNEL_WIDTH_0 = 2;
+    localparam NUM_KERNELS = 16; //256  8
+    localparam LAYER_HEIGHT_2 = 16; // 256  8
+    `else
+    localparam INPUT_LAYER_HEIGHT = 128; //128  16
+    localparam KERNEL_HEIGHT_0 = 16; //16  4
     localparam NUM_KERNELS = 256; //256  8
+    localparam LAYER_HEIGHT_2 = 256; // 256  8
+    `endif
+
+    localparam KERNEL_WIDTH_0 = 2;
     localparam LAYER_HEIGHT_0 = INPUT_LAYER_HEIGHT - KERNEL_HEIGHT_0 + 1;
     localparam LAYER_HEIGHT_1 = NUM_KERNELS;
-    localparam LAYER_HEIGHT_2 = 256; // 256  8
     localparam LAYER_HEIGHT_3 = OUTPUT_SIZE;
     
     //  output ready values to avoid synthesis errors
