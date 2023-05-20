@@ -1,4 +1,4 @@
-set design_name "ram_test"  ;  # Name of the design
+set design_name "zyNet"  ;  # Name of the design
 set design_dir  "synth_files" ;
 
 # CONFIGURATION

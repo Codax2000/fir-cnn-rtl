@@ -32,7 +32,7 @@ module ROM_neuron #(parameter depth=3, width=8, neuron_type=0, layer_number=1, n
     );
 
     localparam ascii_offset = 48;
-	localparam logic [7:0] neuron_type_p = neuron_type + ascii_offset;
+    localparam logic [7:0] neuron_type_p = neuron_type + ascii_offset;
     localparam logic [7:0] layer_number_p = layer_number + ascii_offset;
     localparam logic [7:0] neuron_number_ones_p = (neuron_number % 10) + ascii_offset;
     localparam logic [7:0] neuron_number_tens_p = ((neuron_number / 10) % 10) + ascii_offset;
@@ -48,6 +48,10 @@ module ROM_neuron #(parameter depth=3, width=8, neuron_type=0, layer_number=1, n
         .MEM_INIT(init_file),
         .LAYER_NUMBER(layer_number)
     ) internal_rom (
+        `ifndef VIVADO
+        .data_i,
+        .wen_i
+        `endif
         .addr_i,
         .data_o,
         .clk_i,

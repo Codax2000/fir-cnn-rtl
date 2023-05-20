@@ -31,12 +31,10 @@ set RTL_SOURCE_FILES [list \
    "$PROJECT_DIR/macro_prep/sram_16_64_freepdk45/sram_16_64_freepdk45.v" \
    "$PROJECT_DIR/macro_prep/sram_16_512_freepdk45/sram_16_512_freepdk45.v" \
    "$PROJECT_DIR/macro_prep/sram_21_256_freepdk45/sram_21_256_freepdk45.v" \
-   "$PROJECT_DIR/macro_prep/sram_16_16_freepdk45/sram_16_16_freepdk45.v" \
-   "$PROJECT_DIR/macro_prep/sram_16_32_freepdk45/sram_16_32_freepdk45.v" \
-   "$PROJECT_DIR/macro_prep/sram_21_16_freepdk45/sram_21_16_freepdk45.v" \
+   "$PROJECT_DIR/macro_prep/sram_16_256_freepdk45/sram_16_256_freepdk45.v"
 ]
 
-set RTL_DEFINES "TESTING"
+set RTL_DEFINES "SYNOPSIS"
 
 # Runtime options 
 # ==========================================================================

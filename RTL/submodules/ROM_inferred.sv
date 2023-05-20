@@ -15,10 +15,15 @@ module ROM_inferred #(
    parameter MEM_INIT="0_1_0.mif",
    parameter LAYER_NUMBER=1
 ) (
+   `ifndef VIVADO
+   input logic [WORD_SIZE-1:0] data_i,
+   input logic wen_i,
+   `endif
+   
    input logic [ADDR_WIDTH-1:0] addr_i,
    output logic [WORD_SIZE-1:0] data_o,
-   input logic clk_i,
-   input logic reset_i
+
+   input logic clk_i
 );
    `ifdef VIVADO
    xpm_memory_sprom #(
@@ -52,21 +57,53 @@ module ROM_inferred #(
       .sleep(1'b0)
    );
    `else
+   logic reset_null;
+   assign reset_null = reset_i;
+
    generate
-      case (LAYER_NUMBER)
-         1: begin
-
+      if (WORD_SIZE == 21) begin
+         // 21x256 for bn layer
+         sram_21_256_freepdk45 ram (
+            .clk0(clk_i),
+            .csb0(1'b0),
+            .web0(wen_i),
+            .addr0(addr_i),
+            .din0(data_i),
+            .dout0(data_o)
+         );
+      end else begin
+         if (ADDR_WIDTH == 6) begin
+            // 16x64 RAM for convolution
+            sram_16_64_freepdk45 ram (
+               .clk0(clk_i),
+               .csb0(1'b0),
+               .web0(wen_i),
+               .addr0(addr_i),
+               .din0(data_i),
+               .dout0(data_o)
+            );
+         end else if (ADDR_WIDTH == 8) begin
+            // 16x256 RAM for hidden layer
+            sram_16_256_freepdk45 ram (
+               .clk0(clk_i),
+               .csb0(1'b0),
+               .web0(wen_i),
+               .addr0(addr_i),
+               .din0(data_i),
+               .dout0(data_o)
+            );
+         end else begin
+            // 16x512 RAM for output layer
+            sram_16_512_freepdk45 ram (
+               .clk0(clk_i),
+               .csb0(1'b0),
+               .web0(wen_i),
+               .addr0(addr_i),
+               .din0(data_i),
+               .dout0(data_o)
+            );
          end
-         2: begin
-
-         end
-         3: begin
-
-         end
-         default: begin// default to convolutional layer, layer 0
-
-         end
-      endcase
+      end
    endgenerate
    `endif
 
