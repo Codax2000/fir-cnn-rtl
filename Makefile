@@ -1,0 +1,6 @@
+TOPLEVEL=zyNet
+
+.PHONY
+
+syn:
+	

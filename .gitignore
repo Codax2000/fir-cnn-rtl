@@ -7,3 +7,5 @@ RTL/constraints/synth_hold.rpx
 FreePDK45/
 freepdk-45nm/
 NCSU_TechLib_FreePDK45.layermap
+OpenRAM/
+macro_prep/
