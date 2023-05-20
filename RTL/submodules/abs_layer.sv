@@ -26,8 +26,7 @@ input-outputs:
 */
 module abs_layer #(
 
-  parameter WORD_SIZE=16,
-  parameter NUM_CHANNELS=1) (
+  parameter WORD_SIZE=16) (
 
   // top level control
   input logic clk_i,
@@ -36,12 +35,12 @@ module abs_layer #(
   // handshake to prev layer
   output logic ready_o,
   input logic valid_i,
-  input logic signed [NUM_CHANNELS*WORD_SIZE-1:0] data_r_i,
+  input logic signed [WORD_SIZE-1:0] data_r_i,
 
   // handshake to next layer
   output logic valid_o,
   input logic ready_i,
-  output logic signed [NUM_CHANNELS*WORD_SIZE-1:0] data_r_o);
+  output logic signed [WORD_SIZE-1:0] data_r_o);
 
 
 
@@ -67,26 +66,20 @@ module abs_layer #(
 
 // abs_layer DATAPATH
   
-  // absolute value compute units
-  genvar i;
-  generate
-    for (i=0; i<NUM_CHANNELS; i=i+1) begin
-      // comparator
-      logic [WORD_SIZE-1:0] data_n_o;
-      always_ff @(posedge clk_i) begin
-        if (en_lo)
-           data_r_o[(i+1)*WORD_SIZE-1:i*WORD_SIZE] <= data_r_i[(i+1)*WORD_SIZE-1] ? data_n_o : data_r_i[(i+1)*WORD_SIZE-1:i*WORD_SIZE];
-        else
-           data_r_o[(i+1)*WORD_SIZE-1:i*WORD_SIZE] <= data_r_o[(i+1)*WORD_SIZE-1:i*WORD_SIZE];
-      end
-      
-      // complimentor
-      safe_alu #(.WORD_SIZE(WORD_SIZE),.OPERATION("comp")) comp1 (
-        .a_i(data_r_i[(i+1)*WORD_SIZE-1:i*WORD_SIZE]),
-        .b_i(),
-        .data_o(data_n_o)
-      );
-    end
-  endgenerate
+  // comparator
+  logic [WORD_SIZE-1:0] data_n_o;
+  always_ff @(posedge clk_i) begin
+    if (en_lo)
+	   data_r_o <= data_r_i[WORD_SIZE-1] ? data_n_o : data_r_i;
+	else
+	   data_r_o <= data_r_o;
+  end
+  
+  // complimentor
+  safe_alu #(.WORD_SIZE(WORD_SIZE),.OPERATION("comp")) comp1 (
+    .a_i(data_r_i),
+    .b_i(),
+    .data_o(data_n_o)
+  );
 
 endmodule

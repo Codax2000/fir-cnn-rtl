@@ -2,5 +2,5 @@
 project_1.cache/
 Vivado/
 zyNet/
-Scripts/data/
-RTL/constraints/synth_hold.rpx
+Scripts/data/*.html
+Scripts/data/error_data.csv

@@ -1,5 +1,4 @@
 `timescale 1ns / 1ps
-`define VIVADO
 /**
 Alex Knowlton
 4/7/2023
@@ -22,12 +21,12 @@ inputs:
 outputs:
     data_o  :   data bus. weighted sum of inputs, signed. if overflow occurs either in multiplication or addition,
                 saturates the output to be either all the way high or all the way low
+
 */
-`ifdef VIVADO
 
 module logical_unit #(
     parameter WORD_SIZE=16,
-    parameter INT_BITS=4,
+    parameter INT_BITS=8,
     parameter FRAC_BITS=WORD_SIZE-INT_BITS) (
     
     input logic signed [WORD_SIZE-1:0] mem_i,
@@ -45,70 +44,6 @@ module logical_unit #(
     
     
     
-    
-// CONTROLLER
-    
-    logic [1:0] SEL;
-    always_comb begin
-        if (reset_i)
-            SEL = 2'd3;
-        else if (sum_en) begin
-            SEL = add_bias ? 2'd1 : 2'd0;
-        end else
-            SEL = 2'd2;
-    end
-    
-    
-    
-    
-    
-// DATAPATH
-
-    // accumulator register
-    logic signed [47:0] full_data;
-    logic signed [2*WORD_SIZE-1:0] sum_r;
-    localparam signed [WORD_SIZE-1:0] one = 1<<FRAC_BITS;
-    dsp_macro_0 dut (
-        .CLK(clk_i),
-        .A(mem_i),
-        .B(add_bias ? one : data_i),
-        .SEL,
-        
-        .P(full_data)
-    );
-    assign sum_r = full_data[2*WORD_SIZE-1:0];
-    
-    // output logic
-    safe_alu #(
-        .WORD_SIZE(WORD_SIZE),
-        .N_SIZE(WORD_SIZE-INT_BITS),
-        .OPERATION("trunc")
-    ) truncator (
-        .a_i(sum_r),
-        .b_i(),
-        .data_o(data_o)
-    );
-
-endmodule
-
-`else
-
-module logical_unit #(
-    parameter WORD_SIZE=16,
-    parameter INT_BITS=4,
-    parameter FRAC_BITS=WORD_SIZE-INT_BITS) (
-    
-    input logic signed [WORD_SIZE-1:0] mem_i,
-    input logic signed [WORD_SIZE-1:0] data_i,
-    
-    input logic add_bias,
-    input logic sum_en,
-    
-    input logic clk_i,
-    input logic reset_i,
-
-    output logic signed [WORD_SIZE-1:0] data_o
-    );    
     
 // DATAPATH
 
@@ -146,5 +81,3 @@ module logical_unit #(
     );
 
 endmodule
-
-`endif
