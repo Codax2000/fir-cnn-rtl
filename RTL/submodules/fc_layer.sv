@@ -1,178 +1,119 @@
 `timescale 1ns / 1ps
-`ifndef SYNOPSIS
-`define VIVADO
-`endif
-
 /**
 Alex Knowlton
 4/3/2023
 
-Fully-connected neural net layer. Computes matrix multiply based on memory values stored
-in internal RAMs.
-
-Control signals:
-    clk_i   : input clock
-    reset_i : reset signal
-    
-Helpful input handshake:
-    valid_i : signal that incoming data is valid
-    ready_o : outgoing input acknowledge signal
-    data_i  : WORD_SIZE bits. incoming data from input handshake.
-
-Helpful output handshake:
-    valid_o : signal that outgoing data is valid
-    yumi_o  : signal that outgoing data has been consumed
-    data_o  : outgoing data. packed array of LAYER_HEIGHT*WORD_SIZE bits.
-    
-Compiler-dependent write port (works if SYNOPSIS is defined, see top of file):
-    w_en_i      : write enable signal
-    w_data_i  : WORD_SIZE bits. incoming data to write to RAM
-    w_addr_i  : memory address, made up of RAM select and RAM address bits, like so:
-    
-Memory address:
-    Made up of two stages, {ram_select, ram_address}. ram_select is $clog2 of layer height, and is 1
-    if only one ram in the layer. so the address w_data_i[RAM_ADDRESS_BITS+RAM_SELECT_BITS-1:RAM_ADDRESS_BITS] gives
-    the RAM selection in the layer. w_data_i[RAM_ADDRESS_BITS-1:0] is the address within the ram, determined by the
-    height of the input layer + 1 for the bias.
+Rewritten fully-connected layer for readability and functionality, since this supports
+layers of differing sizes. Assumes FIFO on both input and output.
 */
 
 
 module fc_layer #(
-
     parameter WORD_SIZE=16,
-    parameter N_SIZE=8,
+    parameter INT_BITS=8,
     parameter LAYER_HEIGHT=2,
     parameter PREVIOUS_LAYER_HEIGHT=4,
-    parameter LAYER_NUMBER=7 ) (
-        
+    parameter LAYER_NUMBER=1 ) (
+    
     // demanding input interface
     input logic signed [WORD_SIZE-1:0] data_i,
-    input logic valid_i,
-    output logic ready_o,
+    input logic empty_i,
+    output logic ren_o, // also yumi_o, but not using that convention here
     
     // helpful output interface
     output logic valid_o,
-    input logic yumi_i,
-    output logic [LAYER_HEIGHT*WORD_SIZE-1:0] data_o,
-
-    `ifndef VIVADO
-    input logic [RAM_ADDRESS_BITS+RAM_SELECT_BITS-1:0] w_addr_i,
-    input logic w_en_i,
-    input logic [WORD_SIZE-1:0] w_data_i,
-    `endif
+    input logic ready_i,
+    output logic [LAYER_HEIGHT-1:0][WORD_SIZE-1:0] data_o,
 
     input logic reset_i,
-    input logic clk_i
+    input logic clk_i,
+
+    // input for back-propagation, not currently used
+    input logic [LAYER_HEIGHT-1:0][WORD_SIZE-1:0] weight_i,
+    input logic mem_wen_i
     );
 
-    localparam RAM_ADDRESS_BITS = (LAYER_HEIGHT == 1) ? 1 : $clog2(LAYER_HEIGHT);
-    localparam RAM_SELECT_BITS = $clog2(PREVIOUS_LAYER_HEIGHT + 1);
+    // manage inputs internally and pass them to neurons
+    logic add_bias, add_bias_delay, sum_en; // delay add_bias to give neuron memory time to read
+    logic [$clog2(PREVIOUS_LAYER_HEIGHT+1)-1:0] mem_addr;
 
-    //// BEGIN CONTROL FSM ////
-    enum logic [1:0] {eSHIFT, eBIAS, eDONE} ps_e, ns_e;
+    // FSM for control signals
+    enum logic {eBUSY, eDONE} ps, ns;
 
-    // memory counter values
-    logic [$clog2(PREVIOUS_LAYER_HEIGHT+1)-1:0] mem_count_r, mem_count_n;
-    logic [$clog2(PREVIOUS_LAYER_HEIGHT+1)-1:0] mem_addr_li;
-    
     // next state logic
     always_comb begin
-        case (ps_e)
-            eSHIFT:
-                if ((mem_count_r == PREVIOUS_LAYER_HEIGHT - 1) && valid_i)
-                    ns_e = eBIAS;
+        case (ps)
+            eBUSY:
+                if (add_bias_delay) // computation is done
+                    ns = eDONE;
                 else
-                    ns_e = eSHIFT;
-            eBIAS:
-                ns_e = eDONE;
+                    ns = eBUSY;
             eDONE:
-                if (yumi_i)
-                    ns_e = eSHIFT;
+                // if output handshake happens, then go back to busy
+                if (valid_o && ready_i)
+                    ns = eBUSY;
                 else
-                    ns_e = eDONE;
-            default:
-                ns_e = eSHIFT;
+                    ns = eDONE;
         endcase
     end
 
     // transition logic
     always_ff @(posedge clk_i) begin
         if (reset_i)
-            ps_e <= eSHIFT;
+            ps <= eBUSY;
         else
-            ps_e <= ns_e;
+            ps <= ns;
     end
-    
-    //// END CONTROL FSM ////
-    
-    //// SUBSIDIARY CONTROL SIGNALS ////
-    // manage inputs internally and pass them to neurons
-    logic add_bias, sum_en;
-    assign add_bias = ps_e == eBIAS;
-    assign sum_en = (ps_e == eBIAS) || (ps_e == eSHIFT && valid_i);
-    
-    `ifndef VIVADO
-    assign mem_addr_li = (w_en_i) ? w_addr_i[RAM_ADDRESS_BITS-1:0] : mem_count_n;
-    `else
-    assign mem_addr_li = mem_count_n;
-    `endif
 
-    // next memory counter logic
-    always_comb begin
-        if (mem_count_r == PREVIOUS_LAYER_HEIGHT + 1)
-            mem_count_n = 0;
-        else if (valid_i)
-            mem_count_n = mem_count_r + 1;
-        else
-            mem_count_n = mem_count_r;
-    end
+    // output logic
+    assign ren_o = (ps == eBUSY) && !empty_i;
+    assign valid_o = ps == eDONE;
     
+    // up counter for memory addressing
+    logic en_count;
+    assign en_count = ren_o || add_bias;
+    up_counter_enabled #(
+        .WORD_SIZE($clog2(PREVIOUS_LAYER_HEIGHT+1)),
+        .INPUT_MAX(PREVIOUS_LAYER_HEIGHT)
+    ) mem_addr_counter (
+        .start_i(1'b1), // tentative, but appears not to need a start signal, since it is enabled
+        .clk_i,
+        .reset_i,
+        .en_i(en_count),
+        .data_o(mem_addr)
+    );
+
+    // control signals for neurons
+    logic signed [WORD_SIZE-1:0] data_to_neurons;
+    assign add_bias = mem_addr == PREVIOUS_LAYER_HEIGHT;
     always_ff @(posedge clk_i) begin
-        if (reset_i || ps_e == eDONE)
-            mem_count_r <= '0;
-        else
-            mem_count_r <= mem_count_n;
+        add_bias_delay <= add_bias;
+        sum_en <= en_count; // strange coincidence, but it works
+        data_to_neurons <= data_i;
     end
 
-    // write enable signals
-    `ifndef VIVADO
-    logic [2**RAM_SELECT_BITS-1:0] mem_wen_select;
-    assign mem_wen_select = w_en_i << w_addr_i[RAM_ADDRESS_BITS+RAM_SELECT_BITS-1:RAM_SELECT_BITS];
-    `endif
-    
-    // output signals
-    assign ready_o = ps_e == eSHIFT;
-    assign valid_o = ps_e == eDONE;
-    
-    //// END SUBSIDIARY CONTROL SIGNALS ////
-    
-    //// BEGIN DATAPATH ////
+    // generate neurons
     genvar i;
     generate
         for (i = 0; i < LAYER_HEIGHT; i = i + 1) begin
             fc_neuron #(
                 .WORD_SIZE(WORD_SIZE),
-                .N_SIZE(N_SIZE),
+                .INT_BITS(INT_BITS),
                 .PREVIOUS_LAYER_HEIGHT(PREVIOUS_LAYER_HEIGHT),
                 .LAYER_NUMBER(LAYER_NUMBER),
                 .NEURON_NUMBER(i)
             ) neuron (
-                .data_i(data_i),
+                .data_i(data_to_neurons),
 
                 // control signals
-                .w_addr_i(mem_addr_li),
+                .mem_addr_i(mem_addr),
                 .sum_en,
-                .add_bias,
+                .add_bias(add_bias_delay),
 
-                .reset_i(reset_i || (valid_o && yumi_i)),
+                .reset_i(reset_i || (valid_o && ready_i)),
                 .clk_i,
 
-                `ifndef VIVADO
-                .w_en_i(mem_wen_select[i]),
-                .w_data_i(w_data_i),
-                `endif
-
-                .data_o(data_o[i*WORD_SIZE+WORD_SIZE-1:i*WORD_SIZE])
+                .data_o(data_o[i])
             );
         end
     endgenerate

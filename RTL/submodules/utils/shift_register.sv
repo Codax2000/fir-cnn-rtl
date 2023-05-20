@@ -19,9 +19,7 @@ module shift_register #(
 );
 
     always_ff @(posedge clk_i) begin
-        if (reset_i)
-            data_o <= '0;
-        else if (shift_en_i) begin
+        if (shift_en_i) begin
             data_o[REGISTER_LENGTH-2:0] <= data_o[REGISTER_LENGTH-1:1];
             data_o[REGISTER_LENGTH-1] <= data_i;
         end else

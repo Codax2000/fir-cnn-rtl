@@ -1,7 +1,4 @@
 `timescale 1ns / 1ps
-`ifndef SYNOPSIS
-`define VIVADO
-`endif
 /**
 Alex Knowlton
 4/10/2023
@@ -12,7 +9,7 @@ Testbench for combining convolutional and fully-connected layers, with no activa
 3. handshakes between layers works for arbitrary layer size
 4. all that is needed to build a convolutional neural net is to set layer parameters correctly
    and have the right .mif files in the project
-Using 16-bit fixed-point, 2 fraction bits
+Using 8-bit fixed-point, 6 integer bits
 
 Layer sizes:
     Convolutional: 2 outputs
@@ -25,14 +22,14 @@ Test kernel:
  [-1.5  1]]
 
 Test Biases:
-    Convolutional: x000f (3.75 in decimal)
-    Fully-connected 1: xfffe (-0.5 in decimal)
-    Fully-connected 2: x0002 (0.5 in decimal)
+    Convolutional: xfc (-1 in decimal)
+    Fully-connected 1: xfe (-0.5 in decimal)
+    Fully-connected 2: x02 (0.5 in decimal)
 
 Test Weights (written as matrix. Right side is LSB, bottom is least significant neuron):
     Layer 1:
-        [[ 1.0  1.5  -0.5]
-         [-0.5 -0.5   2  ]] <- example, these are weights 2, 1, and 0, respectively, for neuron 0
+        [[ 1.5  -0.5]
+         [-0.5   2  ]] <- example, these are weights 1 and 0, respectively, for neuron 0
 
     Layer 2:
         [[ 2     1]
@@ -44,181 +41,140 @@ Test Data 1:
     [[-1     2.5]
      [ 2     0.5]
      [ 3.5  -1.5]
-     [ 0.5  -0.5]
-     [-1.5   1.5]]
-     
-Test Data 1 Layer Inputs:
-    Convolutional Layer:        48'h003d_0037_ffed, or [[15.25], [13.75], [-4.75]]
-    Fully-connected Layer 1:    
-    Fully-connected Layer 2: 
+     [ 0.5  -0.5]]
 
-Test Data 2:
+Test Data 2: Trigger an overflow somewhere on the line
     [[ 0.25  5]
      [ 1    -2.5]
      [-3.5   1.75]
-     [ 0.5   0.25]
-     [ 0     1.25]]
+     [ 0.5   0.25]]
 
-Test Data 2 Layer Inputs:
-    Convolutional Layer:        48'hfffc_000c_0001, or [[-0.5], [3], [0.25]]
-    
 Expected Outputs:
 Test Data 1:
-    64'h0035_fffa_0006_001d, or [13.25, -1.5, 1.5, 7.25]
-    
-Test Data 2:
-    64'h001b_000c_fff4_0007, or [[6.75], [3], [-3], [1.75]]
+    00_e3_21_10
+
 */
 
 module conv_to_fc_tb ();
 
-    // model parameters
-    localparam INPUT_LAYER_HEIGHT = 5;
-    localparam KERNEL_WIDTH = 2;
-    localparam KERNEL_HEIGHT = 3;
-    localparam N_SIZE = 2;
-    localparam WORD_SIZE = 16;
-    localparam HIDDEN_LAYER_HEIGHT = 2;
-    localparam OUTPUT_LAYER_HEIGHT = 4;
-    
-    // simulation parameters
-    localparam N_TESTS = 2;
-    
-    logic [N_TESTS-1:0][OUTPUT_LAYER_HEIGHT-1:0][WORD_SIZE-1:0]   expected_outputs;
-    logic [N_TESTS-1:0][INPUT_LAYER_HEIGHT*KERNEL_WIDTH-1:0][WORD_SIZE-1:0]  test_inputs;
-    logic [KERNEL_HEIGHT*KERNEL_WIDTH:0][WORD_SIZE-1:0]                      kernel_values;
-    logic [HIDDEN_LAYER_HEIGHT-1:0][INPUT_LAYER_HEIGHT-KERNEL_HEIGHT:0][WORD_SIZE-1:0] hidden_layer_values;
-    logic [OUTPUT_LAYER_HEIGHT-1:0][HIDDEN_LAYER_HEIGHT-1:0][WORD_SIZE-1:0]  output_layer_values;
+    // parameters for layer sizes
+    parameter WORD_SIZE = 8;
+    parameter INT_BITS = 6;
+    parameter INPUT_LAYER_HEIGHT = 4;
+    parameter KERNEL_HEIGHT = 3;
+    parameter KERNEL_WIDTH = 2;
+    parameter HIDDEN_LAYER_HEIGHT = 2;
+    parameter OUTPUT_LAYER_HEIGHT = 4;
 
-    assign expected_outputs = 128'h0008_0031_ffd3_ffed__00ce_0037_ffcd_004d;
-    assign test_inputs[0] = 160'h0006_fffa_fffe_0002_fffa_000e_0002_0008_000a_fffc;
-    assign test_inputs[1] = 160'h0005_0000_0001_0002_0007_fff2_fff6_0004_0014_0001;
+    logic clk_i, reset_i;
 
-    `ifndef VIVADO
-    // if using VCS, need to read in the mem files to kernel_values for writing to memory
+    // intermediate data buses
+    logic [WORD_SIZE-1:0] input_data;
+    logic [INPUT_LAYER_HEIGHT-KERNEL_HEIGHT:0][WORD_SIZE-1:0] convolution_data;
+    logic [HIDDEN_LAYER_HEIGHT-1:0][WORD_SIZE-1:0] hidden_layer_data;
+    logic [OUTPUT_LAYER_HEIGHT-1:0][WORD_SIZE-1:0] output_layer_data;
+    logic [WORD_SIZE-1:0] conv_fifo_in, hidden_layer_in, hidden_fifo_in, output_layer_in, output_fifo_in;
+    logic [WORD_SIZE-1:0] data_out;
+
+    // handshake signals, controlled by simulation
+    logic start_i, ren_out;
+
+    // handshake signals, controlled by modules
+    logic conv_valid, conv_out_ready;
+    logic conv_fifo_wen, conv_fifo_full;
+    logic hidden_layer_ren, hidden_layer_empty;
+    logic hidden_layer_valid, hidden_layer_ready;
+    logic hidden_fifo_full, hidden_fifo_wen;
+    logic hidden_fifo_ren, hidden_fifo_empty;
+    logic output_layer_ready, output_layer_valid;
+    logic output_fifo_full, output_fifo_wen;
+    logic output_fifo_empty; // watch for this signal to assert 0 is testbench, gives output data
+
+    // generate clock
+    parameter CLOCK_PERIOD = 100;
+
     initial begin
-        $readmemh("../../../mem/test_mem_files/0_6_000.mem", kernel_values);
-        $readmemh("../../../mem/test_mem_files/1_7_000.mem", hidden_layer_values[0]);
-        $readmemh("../../../mem/test_mem_files/1_7_001.mem", hidden_layer_values[1]);
-        $readmemh("../../../mem/test_mem_files/1_8_000.mem", output_layer_values[0]);
-        $readmemh("../../../mem/test_mem_files/1_8_001.mem", output_layer_values[1]);
-        $readmemh("../../../mem/test_mem_files/1_8_002.mem", output_layer_values[2]);
-        $readmemh("../../../mem/test_mem_files/1_8_003.mem", output_layer_values[3]);
+        clk_i = 1'b1;
+        forever # (CLOCK_PERIOD / 2) clk_i = ~clk_i;
     end
-    `endif
-    //// TESTING TASKS ////
-    
-    //// DEFINE INPUT/OUTPUT VARIABLES ////
-    logic [INPUT_LAYER_HEIGHT*KERNEL_WIDTH-1:0][WORD_SIZE-1:0] input_layer_data;
-    logic [WORD_SIZE-1:0] input_fifo_data, conv_layer_data, hidden_layer_input_data;
-    logic [HIDDEN_LAYER_HEIGHT-1:0][WORD_SIZE-1:0] hidden_layer_output_data;
-    logic [WORD_SIZE-1:0] output_layer_input_data;
-    logic [OUTPUT_LAYER_HEIGHT-1:0][WORD_SIZE-1:0] output_layer_output_data;
-    
-    // control signals
-    logic clk_i, reset_i, start_i, conv_ready_o;
-    
-    // input layer input handshake
-    logic fcin_ready_o, fcin_valid_i;
-    
-    // input layer output handshake
-    logic fcin_valid_o, fcin_yumi_i, not_fcin_yumi_i;
-    assign fcin_yumi_i = !not_fcin_yumi_i;
 
-    // convolutional layer input handshake (demanding)
-    logic conv_layer_yumi_o, conv_layer_valid_i, not_conv_layer_valid_i;
-    assign conv_layer_valid_i = not_conv_layer_valid_i;
-    
-    // hidden layer input handshake
-    logic hidden_layer_valid_i, hidden_layer_ready_o;
-    
-    // hidden layer piso layer handshake
-    logic hidden_layer_piso_valid_i, hidden_layer_piso_ready_o;
-    
-    // output layer input handshake
-    logic output_layer_valid_i, output_layer_ready_o;
-    
-    // output layer output handshake
-    logic output_layer_valid_o, output_layer_yumi_i;
-
-    fc_output_layer #(
-        .LAYER_HEIGHT(INPUT_LAYER_HEIGHT*KERNEL_WIDTH),
-        .WORD_SIZE(WORD_SIZE)
-    ) input_layer (
-        .clk_i,
-        .reset_i,
-
-        // helpful handshake to prev layer
-        .valid_i(fcin_valid_i),
-        .ready_o(fcin_ready_o),
-        .data_i(input_layer_data),
-
-        .yumi_i(fcin_yumi_i),
-        .valid_o(fcin_valid_o),
-        .data_o(input_fifo_data)
-    );
-
-    single_fifo_no_rw #(
-        .WORD_SIZE(WORD_SIZE)
-    ) input_fifo (
-        .clk_i,
-        .reset_i,
-
-        .wen_i(fcin_valid_o),
-        .data_i(input_fifo_data),
-        .empty_o(not_fcin_yumi_i),
-
-        .ren_i(conv_layer_yumi_o),
-        .data_o(conv_layer_data),
-        .full_o(not_conv_layer_valid_i)
-    );
-
+    // generate devices under test
     conv_layer #(
         .INPUT_LAYER_HEIGHT(INPUT_LAYER_HEIGHT),
         .KERNEL_HEIGHT(KERNEL_HEIGHT),
-        .KERNEL_WIDTH(KERNEL_WIDTH),
+        .KERNEL_WIDTH(KERNEL_WIDTH), // 2 if using i and q, 1 if using only 1 channel
         .WORD_SIZE(WORD_SIZE),
-        .N_SIZE(N_SIZE),
-        .LAYER_NUMBER(6),
-        .N_CONVOLUTIONS(1)
-    ) convolution (
-        // top-level signals
+        .INT_BITS(INT_BITS),
+        .LAYER_NUMBER(2),
+        .CONVOLUTION_NUMBER(0)
+    ) convolution (    
         .clk_i,
         .reset_i,
-
+    
+        // input interface
         .start_i,
-        .conv_ready_o,
+        .data_i(input_data),
+    
+        // helpful output interface
+        .valid_o(conv_valid),
+        .yumi_i(conv_out_ready),
+        .data_o(convolution_data)
+    );
 
-        // demanding input interface
-        .valid_i(conv_layer_valid_i),
-        .yumi_o(conv_layer_yumi_o),
-        .data_i(conv_layer_data),
+    fc_output_layer #(
+        .LAYER_HEIGHT(INPUT_LAYER_HEIGHT-KERNEL_HEIGHT+1),
+        .WORD_SIZE(WORD_SIZE)
+    ) convolution_output (
+        .clk_i,
+        .reset_i,
+    
+        .valid_i(conv_valid),
+        .ready_o(conv_out_ready),
+        .data_i(convolution_data),
 
-        // demanding output interface
-        .valid_o(hidden_layer_valid_i),
-        .ready_i(hidden_layer_ready_o),
-        .data_o(hidden_layer_input_data)
+        .wen_o(conv_fifo_wen),
+        .full_i(conv_fifo_full),
+        .data_o(conv_fifo_in)
+    );
+
+    single_fifo #(
+        .WORD_SIZE(WORD_SIZE)
+    ) conv_out_fifo (
+        .clk_i,
+        .reset_i,
+        
+        .wen_i(conv_fifo_wen),
+        .ren_i(hidden_layer_ren),
+        .data_i(conv_fifo_in),
+
+        .full_o(conv_fifo_full),
+        .empty_o(hidden_layer_empty),
+        .data_o(hidden_layer_in)
     );
 
     fc_layer #(
         .WORD_SIZE(WORD_SIZE),
-        .N_SIZE(N_SIZE),
+        .INT_BITS(INT_BITS),
         .LAYER_HEIGHT(HIDDEN_LAYER_HEIGHT),
-        .PREVIOUS_LAYER_HEIGHT(INPUT_LAYER_HEIGHT-KERNEL_HEIGHT+1),
-        .LAYER_NUMBER(7)
-    ) hidden_layer (
-        // helpful
-        .data_i(hidden_layer_input_data),
-        .valid_i(hidden_layer_valid_i),
-        .ready_o(hidden_layer_ready_o),
-
+        .PREVIOUS_LAYER_HEIGHT(INPUT_LAYER_HEIGHT - KERNEL_HEIGHT + 1),
+        .LAYER_NUMBER(3)
+    ) layer_1 (
+        // helpful input interface
+        .data_i(hidden_layer_in),
+        .empty_i(hidden_layer_empty),
+        .ren_o(hidden_layer_ren),
+        
         // helpful output interface
-        .valid_o(hidden_layer_piso_valid_i),
-        .yumi_i(hidden_layer_piso_ready_o),
-        .data_o(hidden_layer_output_data),
+        .valid_o(hidden_layer_valid),
+        .ready_i(hidden_layer_ready),
+        .data_o(hidden_layer_data),
 
         .reset_i,
-        .clk_i
+        .clk_i,
+
+        // input for back-propagation, not currently used
+        .weight_i('0),
+        .mem_wen_i(1'b0)
     );
 
     fc_output_layer #(
@@ -227,88 +183,126 @@ module conv_to_fc_tb ();
     ) hidden_layer_output (
         .clk_i,
         .reset_i,
+    
+        .valid_i(hidden_layer_valid),
+        .ready_o(hidden_layer_ready),
+        .data_i(hidden_layer_data),
 
-        // helpful handshake to prev layer
-        .valid_i(hidden_layer_piso_valid_i),
-        .ready_o(hidden_layer_piso_ready_o),
-        .data_i(hidden_layer_output_data),
+        .wen_o(hidden_fifo_wen),
+        .full_i(hidden_fifo_full),
+        .data_o(hidden_fifo_in)
+    );
 
-        // demanding handshake to next layer
-        .valid_o(output_layer_valid_i),
-        .yumi_i(output_layer_ready_o),
-        .data_o(output_layer_input_data)
+    single_fifo #(
+        .WORD_SIZE(WORD_SIZE)
+    ) hidden_out_fifo (
+        .clk_i,
+        .reset_i,
+        
+        .wen_i(hidden_fifo_wen),
+        .ren_i(hidden_fifo_ren),
+        .data_i(hidden_fifo_in),
+
+        .full_o(hidden_fifo_full),
+        .empty_o(hidden_fifo_empty),
+        .data_o(output_layer_in)
     );
 
     fc_layer #(
-
         .WORD_SIZE(WORD_SIZE),
-        .N_SIZE(N_SIZE),
+        .INT_BITS(INT_BITS),
         .LAYER_HEIGHT(OUTPUT_LAYER_HEIGHT),
         .PREVIOUS_LAYER_HEIGHT(HIDDEN_LAYER_HEIGHT),
-        .LAYER_NUMBER(8)
-    ) output_layer (
-        // helpful
-        .data_i(output_layer_input_data),
-        .valid_i(output_layer_valid_i),
-        .ready_o(output_layer_ready_o),
-
+        .LAYER_NUMBER(4)
+    ) layer_2 (
+        // helpful input interface
+        .data_i(output_layer_in),
+        .empty_i(hidden_fifo_empty),
+        .ren_o(hidden_fifo_ren),
+        
         // helpful output interface
-        .valid_o(output_layer_valid_o),
-        .yumi_i(output_layer_yumi_i),
-        .data_o(output_layer_output_data),
+        .valid_o(output_layer_valid),
+        .ready_i(output_layer_ready),
+        .data_o(output_layer_data),
 
         .reset_i,
-        .clk_i
+        .clk_i,
+
+        // input for back-propagation, not currently used
+        .weight_i('0),
+        .mem_wen_i(1'b0)
     );
+
+
+    fc_output_layer #(
+        .LAYER_HEIGHT(OUTPUT_LAYER_HEIGHT),
+        .WORD_SIZE(WORD_SIZE)
+    ) output_layer_output (
+        .clk_i,
+        .reset_i,
     
-    //// GENERATE CLOCK ////
-    parameter CLOCK_PERIOD = 40;
-    
-    initial begin
-        clk_i = 1'b1;
-        forever # (CLOCK_PERIOD / 2) clk_i = ~clk_i;
-    end
-    
-    // RUN TESTBENCH
+        .valid_i(output_layer_valid),
+        .ready_o(output_layer_ready),
+        .data_i(output_layer_data),
+
+        .wen_o(output_fifo_wen),
+        .full_i(output_fifo_full),
+        .data_o(output_fifo_in)
+    );
+
+    single_fifo #(
+        .WORD_SIZE(WORD_SIZE)
+    ) output_fifo (
+        .clk_i,
+        .reset_i,
+        
+        .wen_i(output_fifo_wen),
+        .ren_i(ren_out),
+        .data_i(output_fifo_in),
+
+        .full_o(output_fifo_full),
+        .empty_o(output_fifo_empty),
+        .data_o(data_out)
+    );
+
     initial begin
         start_i <= 1'b0;
-        output_layer_yumi_i <= 1'b0;
-        fcin_valid_i <= 1'b0;
-        reset_i <= 1'b1;        @(posedge clk_i);
-        reset_i <= 1'b0;        @(posedge clk_i);
-        start_i <= 1'b1;        @(posedge clk_i);
-        start_i <= 1'b0;        @(posedge clk_i);
-        
-        // test case 1
-        input_layer_data <= test_inputs[0];
-        fcin_valid_i <= 1'b1;   @(posedge clk_i);
-        fcin_valid_i <= 1'b0;   @(posedge clk_i);
-                                @(posedge output_layer_valid_o);
-                                @(negedge clk_i);
-        $display("%t: Asserting Test Case 1", $realtime);
-        assert (output_layer_output_data == expected_outputs[0])
-            $display("%t: Test Case 1 Passed", $realtime);    
-        else
-            $display("%t: Assertion Error: Expected %h, Received %h", $realtime, expected_outputs[0], output_layer_output_data);
-        output_layer_yumi_i <= 1'b1; @(posedge clk_i);
-        output_layer_yumi_i <= 1'b0; @(posedge clk_i);
-        
-        // test case 2
-        start_i <= 1'b1;        @(posedge clk_i);
-        start_i <= 1'b0;        @(posedge clk_i);
-        input_layer_data <= test_inputs[1];
-        fcin_valid_i <= 1'b1;   @(posedge clk_i);
-        fcin_valid_i <= 1'b0;   @(posedge clk_i);
-                                @(posedge output_layer_valid_o);
-                                @(negedge clk_i);
-        $display("%t: Asserting Test Case 2", $realtime);
-        assert (output_layer_output_data == expected_outputs[1])
-            $display("%t: Test Case 2 Passed", $realtime); 
-        else
-            $display("%t: Assertion Error: Expected %h, Received %h", $realtime, expected_outputs[1], output_layer_output_data);
-        output_layer_yumi_i <= 1'b1; @(posedge clk_i);
-        output_layer_yumi_i <= 1'b0; @(posedge clk_i);
-        
+        ren_out <= 1'b0;
+        input_data <= '0;
+        reset_i <= 1'b1; @(posedge clk_i);
+        reset_i <= 1'b0; @(posedge clk_i);
+        input_data <= 8'hfc; @(posedge clk_i);
+        input_data <= 8'h0a; @(posedge clk_i);
+        input_data <= 8'h08; @(posedge clk_i);
+        input_data <= 8'h02; @(posedge clk_i);
+        input_data <= 8'h0e; @(posedge clk_i);
+        start_i <= 1'b1;    
+        input_data <= 8'h06; @(posedge clk_i);
+        start_i <= 1'b0;
+        input_data <= 8'h02; @(posedge clk_i);
+        input_data <= 8'hfe; @(posedge clk_i);
+        input_data <= '0;    @(posedge clk_i);
+                         @(negedge output_fifo_empty);
+                         @(posedge clk_i);
+        assert (data_out == 8'h10)
+            else $display("Assertion Error 1: Expected %h, Received %h", 8'h10, data_out);
+        ren_out <= 1'b1; @(posedge clk_i);
+        ren_out <= 1'b0; @(posedge clk_i);
+        assert (data_out == 8'h21)
+            else $display("Assertion Error 2: Expected %h, Received %h", 8'h21, data_out);
+        ren_out <= 1'b1; @(posedge clk_i);
+        ren_out <= 1'b0; @(posedge clk_i);
+        assert (data_out == 8'he3)
+            else $display("Assertion Error 3: Expected %h, Received %h", 8'he3, data_out);
+        ren_out <= 1'b1; @(posedge clk_i);
+        ren_out <= 1'b0; @(posedge clk_i);
+        assert (data_out == 8'h00)
+            else $display("Assertion Error 4: Expected %h, Received %h", 8'h0, data_out);
+        ren_out <= 1'b1; @(posedge clk_i);
+        ren_out <= 1'b0; @(posedge clk_i);
+        assert (output_fifo_empty)
+            else $display("Assertion Error 5: Output FIFO Should be Empty");
+        repeat(2)        @(posedge clk_i);
         $stop;
     end
 

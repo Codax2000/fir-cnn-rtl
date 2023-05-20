@@ -1,8 +1,4 @@
 `timescale 1ns / 1ps
-//`define SYNOPSIS
-`ifndef SYNOPSIS
-    `define VIVADO
-`endif
 
 /**
 Eugene Liu
@@ -10,20 +6,16 @@ Eugene Liu
 
 Batch normalization layer. Sequentially applies normalization to inputs.
 
-Interface: Uses valid-ready handshakes. Is a helpful producer and consumer. The data_r_i is expected to come directly from a register, and data_r_o comes directly from a register.
+Interface: Uses a valid-ready handshakes. Is a helpful producer and consumer. The data_r_i is expected to come directly from a register, and data_r_o comes directly from a register.
 Implementation: An internal counter tracks which mean/variance/scale/offset is applied to which data_r_i, and the counter automatically resets properly.
 
-Parameters:
+parameters:
   INPUT_SIZE    : number of inputs (the output size of the previous layer)
   LAYER_NUMBER  : the layer number (for automatic .mem file naming)
   WORD_SIZE     : the number of bits of inputs/outputs
   N_SIZE        : the n parameter for Qm.n fixed point notation
   MEM_WORD_SIZE : the number of bits for mem. Variances and means don't have L1/L2 regularization and may need 
                   additional integer bits. Mem should be in Qm.n format or Q(MEM_WORD_SIZE-N_SIZE).(N_SIZE)
-
-Derived Parameters:
-  RAM_SELECT_BITS  : number of bits to select which of the 4 RAMs (0=mean, 1=var, 2=scale, 3=offset) to write to
-  RAM_ADDRESS_BITS : number of bits needed to represent every RAM address
 
 input-outputs:
   clk_i    : input clock
@@ -44,18 +36,7 @@ module bn_layer #(
   parameter LAYER_NUMBER=1,
   parameter WORD_SIZE=16,
   parameter N_SIZE=12,
-  parameter MEM_WORD_SIZE=21,
-  
-  // DERIVED PARAMETERS. No need to touch!
-  parameter RAM_SELECT_BITS=2,
-  parameter RAM_ADDRESS_BITS=(INPUT_SIZE==1) ? 1 : $clog2(INPUT_SIZE)) (
-  
-  // RAM interface
-  `ifdef SYNOPSIS
-      input logic w_en_i,
-      input logic [MEM_WORD_SIZE-1:0] w_data_i,
-      input logic [RAM_SELECT_BITS+RAM_ADDRESS_BITS-1:0] w_addr_i,
-  `endif
+  parameter MEM_WORD_SIZE=21) (
 
   // top level control
   input logic clk_i,
@@ -88,11 +69,6 @@ module bn_layer #(
 
     .valid_o,
     .ready_i);
-  
-  `ifdef SYNOPSIS
-    logic [3:0] w_en_li;
-    assign w_en_li = (w_en_i << w_addr_i[RAM_ADDRESS_BITS +: RAM_SELECT_BITS]);
-  `endif
 
 
 
@@ -101,7 +77,7 @@ module bn_layer #(
 // BN_LAYER DATAPATH
 
   // up counter with enable
-  logic [RAM_ADDRESS_BITS-1:0] count_r, count_n, addr_li;
+  logic [$clog2(INPUT_SIZE)-1:0] count_r,count_n;
   always_ff @(posedge clk_i)
     count_r <= count_n;
 
@@ -116,17 +92,11 @@ module bn_layer #(
     end else
       count_n = count_r;
   end
-  
-  `ifdef VIVADO
-    assign addr_li = count_n;
-  `else
-    assign addr_li = w_en_i ? w_addr_i : count_n;
-  `endif
 
   // mean rom
   logic signed [MEM_WORD_SIZE-1:0] mean_lo;
   ROM_neuron #(
-    .depth(RAM_ADDRESS_BITS),
+    .depth($clog2(INPUT_SIZE)),
     .width(MEM_WORD_SIZE),
     .neuron_type(2),
     .layer_number(LAYER_NUMBER),
@@ -134,20 +104,14 @@ module bn_layer #(
   ) mean_mem (
     .reset_i,
     .clk_i,
-    
-    `ifdef SYNOPSIS
-        .wen_i(w_en_li[0]),
-        .data_i(w_data_i),
-    `endif
-    
-    .addr_i(addr_li),
+    .addr_i(count_n),
     .data_o(mean_lo)
   );
 
   // variance rom
   logic signed [MEM_WORD_SIZE-1:0] variance_lo;
   ROM_neuron #(
-    .depth(RAM_ADDRESS_BITS),
+    .depth($clog2(INPUT_SIZE)),
     .width(MEM_WORD_SIZE),
     .neuron_type(2),
     .layer_number(LAYER_NUMBER),
@@ -155,20 +119,14 @@ module bn_layer #(
   ) variance_mem (
     .reset_i,
     .clk_i,
-    
-    `ifdef SYNOPSIS
-        .wen_i(w_en_li[1]),
-        .data_i(w_data_i),
-    `endif
-    
-    .addr_i(addr_li),
+    .addr_i(count_n),
     .data_o(variance_lo)
   );
 
   // scale rom
   logic signed [MEM_WORD_SIZE-1:0] scale_lo;
   ROM_neuron #(
-    .depth(RAM_ADDRESS_BITS),
+    .depth($clog2(INPUT_SIZE)),
     .width(MEM_WORD_SIZE),
     .neuron_type(2),
     .layer_number(LAYER_NUMBER),
@@ -176,20 +134,14 @@ module bn_layer #(
   ) scale_mem (
     .reset_i,
     .clk_i,
-    
-    `ifdef SYNOPSIS
-        .wen_i(w_en_li[2]),
-        .data_i(w_data_i),
-    `endif
-    
-    .addr_i(addr_li),
+    .addr_i(count_n),
     .data_o(scale_lo)
   );
 
   // offset rom
   logic signed [MEM_WORD_SIZE-1:0] offset_lo;
   ROM_neuron #(
-    .depth(RAM_ADDRESS_BITS),
+    .depth($clog2(INPUT_SIZE)),
     .width(MEM_WORD_SIZE),
     .neuron_type(2),
     .layer_number(LAYER_NUMBER),
@@ -197,13 +149,7 @@ module bn_layer #(
   ) offset_mem (
     .reset_i,
     .clk_i,
-    
-    `ifdef SYNOPSIS
-        .wen_i(w_en_li[3]),
-        .data_i(w_data_i),
-    `endif
-    
-    .addr_i(addr_li),
+    .addr_i(count_n),
     .data_o(offset_lo)
   );
 
