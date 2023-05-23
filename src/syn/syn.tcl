@@ -85,5 +85,5 @@ echo "[string toupper inform:] Time elapsed: [format %02d \
                     [clock format [expr ($end_time - $start_time)] \
                     -format %Hh%Mm%Ss -gmt true]"
 
-
+quit
 

@@ -22,7 +22,7 @@ module ROM_inferred #(
    
    input logic [ADDR_WIDTH-1:0] addr_i,
    output logic [WORD_SIZE-1:0] data_o,
-
+   input logic reset_i,
    input logic clk_i
 );
    `ifdef VIVADO

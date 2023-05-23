@@ -46,7 +46,7 @@ module zyNet #(
     localparam KERNEL_HEIGHT_0 = 16; //16  4
     localparam KERNEL_WIDTH_0 = 2;
     localparam KERNEL_SIZE_0 = KERNEL_WIDTH_0*KERNEL_HEIGHT_0;
-    localparam NUM_KERNELS = 256; //256  8
+    localparam NUM_KERNELS = 200; //256  8
     localparam FC_LAYER_HEIGHT_0 = 256; // 256  8
     localparam FC_LAYER_HEIGHT_1 = 10;
     
@@ -95,8 +95,8 @@ module zyNet #(
     
     // MEM WRITE CONTROLLER
     `ifdef SYNOPSIS
-    logic [LAYER_SELECT_BITS-1:0] w_en_li;
-    assign w_en_li = (w_en_i << w_addr_i[RAM_SELECT_BITS+RAM_ADDRESS_BITS +: LAYER_SELECT_BITS]);
+    logic [2**LAYER_SELECT_BITS-1:0] w_en_li;
+    assign w_en_li = (w_en_i << w_addr_i[RAM_SELECT_BITS+RAM_ADDRESS_BITS+LAYER_SELECT_BITS-1:LAYER_SELECT_BITS]);
         
     logic [RAM_SELECT_BITS-1:0] ram_sel_li;
     assign ram_sel_li = w_addr_i[RAM_ADDRESS_BITS +: RAM_SELECT_BITS];
@@ -141,7 +141,7 @@ module zyNet #(
         // memory interface
         `ifdef SYNOPSIS
         .w_en_i(w_en_li[0]),
-        .w_data_i(w_data_i[WORD_SIZE]),
+        .w_data_i(w_data_i[WORD_SIZE-1:0]),
         .w_addr_i({ram_sel_li[$clog2(NUM_KERNELS)-1:0],ram_addr_li[$clog2(KERNEL_SIZE_0+1)-1:0]}),
         `endif
         

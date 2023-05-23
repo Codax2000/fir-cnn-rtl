@@ -50,7 +50,7 @@ module ROM_neuron #(parameter depth=3, width=8, neuron_type=0, layer_number=1, n
     ) internal_rom (
         `ifndef VIVADO
         .data_i,
-        .wen_i
+        .wen_i,
         `endif
         .addr_i,
         .data_o,

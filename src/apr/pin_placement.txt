@@ -1,22 +1,22 @@
 type = offset
 defaultOffset = 0.0
 
-#N, 24.16
+#S, 2416
 w_en_i, layer=metal3 +1.4
-w_data_i[20:0], layer=metal3 +4.2
-w_addr_i[18:0], layer=metal3 +4.2
+w_data_i[20:0], layer=metal3, pitch=1.4 +4.2
+w_addr_i[18:0], layer=metal3, pitch=1.4 +4.2
 
-#W, 15.96
+#W, 159.6
 clk_i, layer=metal4 +1.4
 reset_i, layer=metal4 +1.4
 start_i, layer=metal3 +4.2
 
-#S, 15.96
-data_i[15:0], layer=metal3 +1.4
+#S, 159.6
+data_i[15:0], layer=metal3, pitch=1.4 +4.2
 valid_i, layer=metal3 +4.2
-ready_0, layer=metal3 +4.2
+ready_o, layer=metal3 +4.2
 
-#E, 15.96
-valid_o, layer=metal3 +1.4
-yumi_i, layer=metal3 +1.4
-data_o[159:0], layer=metal3 +4.2
+#N, 159.6
+valid_o, layer=metal3 +4.2
+yumi_i, layer=metal3 +4.2
+data_o[159:0], layer=metal3, pitch=7 +4.2

@@ -45,8 +45,8 @@ if {[file isfile pin_placement.tcl]} {
 
 #### SET FLOORPLAN VARIABLES ######
 set CELL_HEIGHT 1.4
-set CORE_WIDTH_IN_CELL_HEIGHTS  50
-set CORE_HEIGHT_IN_CELL_HEIGHTS 35
+set CORE_WIDTH_IN_CELL_HEIGHTS  2670
+set CORE_HEIGHT_IN_CELL_HEIGHTS 2670
 set POWER_RING_CHANNEL_WIDTH [expr 10*$CELL_HEIGHT]
 
 set CORE_WIDTH  [expr $CORE_WIDTH_IN_CELL_HEIGHTS * $CELL_HEIGHT]
@@ -73,48 +73,4 @@ add_row \
    -bottom_offset $CELL_HEIGHT
    #-flip_first_row \
 
-# begin for loop here
-set NUM_CONVOLUTIONAL_RAMS 256
-set NUM_BN_RAMS 4
-set NUM_HIDDEN_LAYER_RAMS 256
-set NUM_OUTPUT_RAMS 10
-
-# for loop 1: Convolutional RAMs
-for {set i 0} {$i < $NUM_CONVOLUTIONAL_RAMS} {incr i} {
-
-   # TODO: Update with name from synthesized toplevel module
-   set RAM_CURRENT "genblk_insert_name_here"
-
-   # Get height and width of RAM
-   set RAM_CURRENT_HEIGHT [get_attribute $RAM_CURRENT height]
-   set RAM_CURRENT_WIDTH  [get_attribute $RAM_CURRENT width] 
-
-   # Set Origin of RAM
-   set RAM_SEPARATION [expr 10*$CELL_HEIGHT]
-
-   set RAM_CURRENT_LLX [expr [expr 14*$CELL_HEIGHT] + [expr $i*$RAM_SEPARATION]]
-   set RAM_CURRENT_LLY [expr 14*$CELL_HEIGHT]
-   # Derive URX and URY corner for placement blockage. "Width" and "Height" are along wrong axes because we rotated the RAM.
-   set RAM_CURRENT_URX [expr $RAM_CURRENT_LLX + $RAM_CURRENT_HEIGHT]
-   set RAM_CURRENT_URY [expr $RAM_CURRENT_LLY + $RAM_CURRENT_WIDTH]
-
-   set GUARD_SPACING [expr 2*$CELL_HEIGHT]
-
-   set_attribute $RAM_CURRENT orientation "E"
-
-   set_cell_location \
-      -coordinates [list [expr $RAM_CURRENT_LLX ] [expr $RAM_CURRENT_LLY]] \
-      -fixed \
-      $RAM_CURRENT
-
-   # Create blockage for filler-cell placement. 
-   create_placement_blockage \
-      -bbox [list [expr $RAM_CURRENT_LLX - $GUARD_SPACING] [expr $RAM_CURRENT_LLY - $GUARD_SPACING] \
-                  [expr $RAM_CURRENT_URX + $GUARD_SPACING] [expr $RAM_CURRENT_URY + $GUARD_SPACING]] \
-      -type hard
-
-   # Connect RAM power to power grid
-   connect_net VDD [get_pins -all $RAM_CURRENT/vdd]
-   connect_net VSS [get_pins -all $RAM_CURRENT/gnd]
-}
-
+source ../../src/apr/set_ram_locs.tcl

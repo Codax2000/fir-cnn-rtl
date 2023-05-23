@@ -54,7 +54,10 @@ module conv_layer #(
     parameter WORD_SIZE=16,
     parameter N_SIZE=0,
     parameter LAYER_NUMBER=1,
-    parameter N_CONVOLUTIONS=1) (
+    parameter N_CONVOLUTIONS=1,
+    parameter RAM_SELECT_BITS = (N_CONVOLUTIONS) == 1 ? 1 : $clog2(N_CONVOLUTIONS),
+    parameter RAM_ADDRESS_BITS = $clog2(KERNEL_HEIGHT*KERNEL_WIDTH+1)
+    ) (
     
     // top-level signals
     input logic clk_i,
@@ -82,8 +85,7 @@ module conv_layer #(
     
     );
     
-    localparam RAM_SELECT_BITS = (N_CONVOLUTIONS) == 1 ? 1 : $clog2(N_CONVOLUTIONS);
-    localparam RAM_ADDRESS_BITS = $clog2(KERNEL_HEIGHT*KERNEL_WIDTH+1);
+    
     
     ////  START CONTROL LOGIC FSM   ////
     // counter registers for memory addresses and logic signals
@@ -355,6 +357,8 @@ module conv_layer #(
            `ifdef VIVADO
             assign mem_addr_li = mem_count_n;            
            `else
+           logic [2**RAM_SELECT_BITS-1:0] w_en_li;
+           assign w_en_li = (w_en_i << (w_addr_i[RAM_SELECT_BITS+RAM_ADDRESS_BITS-1:RAM_ADDRESS_BITS]));
             assign mem_addr_li = mem_wen_select[i] ? w_addr_i[RAM_ADDRESS_BITS-1:0] : mem_count_n;
            `endif
 
@@ -368,7 +372,7 @@ module conv_layer #(
                 
                // compiler-dependent connection, uncomment if using VCS or if Vivado works properly
                `ifndef VIVADO
-               .wen_i(wen_li),
+               .wen_i(w_en_li[i]),
                .data_i(w_data_i),
                `endif
 

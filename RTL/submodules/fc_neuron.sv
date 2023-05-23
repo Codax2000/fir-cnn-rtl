@@ -16,6 +16,7 @@ module fc_neuron #(
     parameter N_SIZE=8,
     parameter PREVIOUS_LAYER_HEIGHT=4,
     parameter LAYER_NUMBER=1,
+    parameter RAM_ADDRESS_BITS = $clog2(PREVIOUS_LAYER_HEIGHT+1),
     parameter NEURON_NUMBER=0 ) (
 
     input logic signed [WORD_SIZE-1:0] data_i,
@@ -30,12 +31,11 @@ module fc_neuron #(
 
     `ifndef VIVADO
     input logic w_en_i,
-    input logic [RAM_ADDRESS_BITS-1:0] w_data_i,
+    input logic [WORD_SIZE-1:0] w_data_i,
     `endif
 
     output logic signed [WORD_SIZE-1:0] data_o
 );
-    localparam RAM_ADDRESS_BITS = $clog2(PREVIOUS_LAYER_HEIGHT+1);
 
     logic signed [WORD_SIZE-1:0] mem_out;
 

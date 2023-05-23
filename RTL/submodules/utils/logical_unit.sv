@@ -1,5 +1,7 @@
 `timescale 1ns / 1ps
+`ifndef SYNOPSIS
 `define VIVADO
+`endif
 /**
 Alex Knowlton
 4/7/2023

@@ -39,7 +39,7 @@ module gap_layer #(
   parameter NUM_CHANNELS=1,
   
   // derived parameter
-  parameter signed [WORD_SIZE-1:0] MULTIPLIER=$rtoi((2.0**N_SIZE)/$itor(INPUT_SIZE))) (
+  parameter signed [WORD_SIZE-1:0] MULTIPLIER=36) (
 
   // top level control
   input logic clk_i,

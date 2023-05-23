@@ -1,18 +1,24 @@
 # FAST Lab ZyNet
 SystemVerilog for implementing MATLAB neural net onto Xilinx RFSoC.
 
-#### Xichen Li Ahmed Arefaat, Elpida Karepepera, Eugene Liu, Alex Knowlton
+#### Eugene Liu, Alex Knowlton
 
 ## Setting things up in Vivado
 To set this project up in Vivado:
 1. Open Vivado to the front page
-2. Make sure that the ZCU104 evaluation board is installed in your devices
-   1. To check, go to "Help > Add Design Tools or Devices" and make sure to install the "SoC > Zynq UltraScale+ MPSoCs" folder, in addition to the RFSoCs folder
-   2. This is to make sure that this project is compatible across all devices, even though it is not the board that we are eventually going to use.
+2. Make sure that the RFSoC evaluation board is installed in your devices
 3. In the Tcl console, use the `cd` command to change to the folder where this repo is stored
 4. In Vivado, under "Tools", select "Run Tcl Script"
 5. Run the "zyNet.tcl" script
 6. To confirm that the script ran properly, click "Simulation", then "Run behavioral simulation", and the testbench for the convolutional layer should pop up.
+7. To run syntesis or implementation, click the appropriate tab on the left. You will have to run this before running post-synthesis testing.
+
+## Running Synopsis
+1. In the top-level directory, make sure you are using `tcsh`.
+2. Source the `setenv.csh`, `setup_cadence.csh`, and `openram_source_me.csh` files to set environment variables.
+3. To run synthesis, type `make syn` in the command line (estimated time: 4 hours)
+4. To run APR, type `make apr` (this will likely take several days, so be patient). Make sure you have run synthesis before running APR.
+5. To run APR to the floorplanning stage, type `make apr-to-floorplan` and give ICC about 20 minutes to open floorplanning view.
 
 ## Using Version Control
 When using git, please use the following convention to document code changes. When you are working on something,

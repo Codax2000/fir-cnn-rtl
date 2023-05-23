@@ -22,7 +22,8 @@ set RTL_SOURCE_FILES [list \
    "$BASE/submodules/gap_layer.sv" \
    "$BASE/submodules/relu_layer.sv" \
    "$BASE/submodules/ROM_neuron.sv" \
-   "$BASE/submodules/utils/double_fifo.sv" \
+   "$BASE/submodules/ROM_inferred.sv" \
+   "$BASE/submodules/utils/single_fifo.sv" \
    "$BASE/submodules/utils/logical_unit.sv" \
    "$BASE/submodules/utils/safe_alu.sv" \
    "$BASE/submodules/utils/shift_register.sv" \
@@ -71,7 +72,7 @@ if {$PROCESS == "45GP"} {
 
    # Reference libraries 
    set MW_REFERENCE_LIBS "$ADK_PATH/stdcells.mwlib"
-   set MW_ADDITIONAL_REFERENCE_LIBS "./sram_16_64_freepdk45 ./sram_16_512_freepdk45 ./sram_21_256_freepdk45 ./sram_16_16_freepdk45 ./sram_21_16_freepdk45 ./sram_16_32_freepdk45"
+   set MW_ADDITIONAL_REFERENCE_LIBS "./sram_16_64_freepdk45 ./sram_16_512_freepdk45 ./sram_21_256_freepdk45 ./sram_16_256_freepdk45"
    set SYNOPSYS_SYNTHETIC_LIB "dw_foundation.sldb"
 
    set SYMBOL_LIB "stdcells-wc.db"
@@ -79,9 +80,7 @@ if {$PROCESS == "45GP"} {
       "sram_16_64_freepdk45_TT_1p0V_25C.db" \
       "sram_16_512_freepdk45_TT_1p0V_25C.db" \
       "sram_21_256_freepdk45_TT_1p0V_25C.db" \
-      "sram_16_16_freepdk45_TT_1p0V_25C.db" \
-      "sram_16_32_freepdk45_TT_1p0V_25C.db" \
-      "sram_21_16_freepdk45_TT_1p0V_25C.db" 
+      "sram_16_256_freepdk45_TT_1p0V_25C.db" 
    ]
 
    # BC - 1.25 V

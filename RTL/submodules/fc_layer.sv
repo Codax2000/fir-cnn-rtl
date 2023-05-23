@@ -43,6 +43,8 @@ module fc_layer #(
     parameter N_SIZE=8,
     parameter LAYER_HEIGHT=2,
     parameter PREVIOUS_LAYER_HEIGHT=4,
+    parameter RAM_ADDRESS_BITS = (LAYER_HEIGHT == 1) ? 1 : $clog2(LAYER_HEIGHT),
+    parameter RAM_SELECT_BITS = $clog2(PREVIOUS_LAYER_HEIGHT + 1),
     parameter LAYER_NUMBER=7 ) (
         
     // demanding input interface
@@ -65,8 +67,7 @@ module fc_layer #(
     input logic clk_i
     );
 
-    localparam RAM_ADDRESS_BITS = (LAYER_HEIGHT == 1) ? 1 : $clog2(LAYER_HEIGHT);
-    localparam RAM_SELECT_BITS = $clog2(PREVIOUS_LAYER_HEIGHT + 1);
+    
 
     //// BEGIN CONTROL FSM ////
     enum logic [1:0] {eSHIFT, eBIAS, eDONE} ps_e, ns_e;

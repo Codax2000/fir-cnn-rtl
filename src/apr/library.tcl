@@ -36,7 +36,7 @@ if {[file isdirectory $DESIGN_MW_LIB_NAME]} {
 }
 
 if {[llength $MW_ADDITIONAL_REFERENCE_LIBS] > 0} {
-  set ref_libs [list $MW_REFERENCE_LIBS $MW_ADDITIONAL_REFERENCE_LIBS] 
+  set ref_libs [join [list $MW_REFERENCE_LIBS [join $MW_ADDITIONAL_REFERENCE_LIBS]]] 
 } else {
   set ref_libs [list $MW_REFERENCE_LIBS] 
 }
