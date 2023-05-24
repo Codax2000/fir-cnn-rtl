@@ -19,7 +19,6 @@ module tester_tb ();
     parameter NUM_TESTS = 100;
     parameter INPUT_LAYER_HEIGHT = 256;
     parameter WORD_SIZE = 16;
-    
     parameter CLOCK_PERIOD = 2;
 
     // control variables
@@ -71,21 +70,19 @@ module tester_tb ();
     initial begin
         $readmemh("test_inputs.mif", test_inputs);
 
-        reset_i <= 1'b1;
- start_i <= 1'b0;
- yumi_i <= 1'b0; valid_i <= 1'b1; @(posedge clk_i); @(posedge clk_i);
+        reset_i <= 1'b1; start_i <= 1'b0; yumi_i <= 1'b0; valid_i <= 1'b1; @(posedge clk_i); @(posedge clk_i);
         reset_i <= 1'b0;    @(posedge clk_i);
         start_i <= 1'b1;    @(posedge clk_i);
         start_i <= 1'b0;
 
         for (int i = 0; i < NUM_TESTS; i++) begin
-            $display("Running test %d",i);
- @(posedge valid_o)
+            $display("Running test %d",i); @(posedge valid_o)
             $display("Expected: %h", test_inputs[i]);
             $display("Actual:   %h", data_o);
             
             if (test_inputs[i] != data_o)
                 $stop;
+            
             $display("MATCH!");
             
             yumi_i <= 1'b1;     @(posedge clk_i);
@@ -93,6 +90,7 @@ module tester_tb ();
 
         end
         
+        repeat(10) @(posedge clk_i);
         $display("ALL GOOD!!!");
         $stop;
     end
