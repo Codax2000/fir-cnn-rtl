@@ -4,28 +4,31 @@
 Eugene Liu
 5/23/2023
 
-Synthesizable module for testing another module given inputs and expected outputs.
+Synthesizable module for testing another module given inputs as a .mif file
 
 Interface: Uses a valid-ready handshakes. Is a helpful producer and consumer. The data_r_i is expected to come directly from a register, and data_r_o comes directly from a register.
-Implementation: FSM
+Implementation: A counter sweeps through all 
 
 Parameters:
-    WORD_SIZE : the bit width of words
+    WORD_SIZE       : the bit width of words
+    NUM_WORDS       : the number of words per mem address
+    NUM_TESTS       : the number of tests or mem addresses
+    TEST_INPUT_FILE : the name of the test data .mif file
 
 Input-outputs:
-    clk_i    : input clock
-    reset_i  : reset signal. Resets counter, controller, and data_r_o
-    start_i  : start signal to start testing all test cases
+    clk_i   : input clock
+    reset_i : reset signal. Resets counter, controller, and data_r_o
+    start_i : start signal to start testing all test cases
     
-    ready_o  : handshake to the output of the dut. Indicates this module is ready to recieve
-    valid_i  : handshake to the output of the dut. Indicates the dut has valid data
-    data_i   : the input data coming from the output of the dut
+    ready_o : handshake to the output of the dut. Indicates this module is ready to recieve
+    yumi_i  : handshake to the output of the dut. Indicates the dut has valid data
+    data_i  : the input data coming from the output of the dut
     
-    valid_o  : handshake to the input of the dut. Indicates this module has valid data
-    ready_i  : handshake to the input of the dut. Indicates the dut is ready to receive
-    data_o   : the output data sent to the input of the dut
+    valid_o : handshake to the input of the dut. Indicates this module has valid data
+    ready_i : handshake to the input of the dut. Indicates the dut is ready to receive
+    data_o  : the output data sent to the input of the dut
 */
-module single_fifo_ctrl #(
+module tester #(
     
     parameter WORD_SIZE=16,
     parameter NUM_WORDS=1,
@@ -37,14 +40,14 @@ module single_fifo_ctrl #(
     input logic reset_i,
     output logic start_i,
     
-    // helpful handshake to output of dut
+    // helpful input handshake
     output logic ready_o,
     input logic valid_i,
     input logic signed [NUM_WORDS*WORD_SIZE-1:0] data_i,
     
-    // helpful handshake to input of dut
+    // helpful output handshake
     output logic valid_o,
-    input logic ready_i,
+    input logic yumi_i,
     output logic signed [NUM_WORDS*WORD_SIZE-1:0] data_o);
     
     
@@ -71,7 +74,7 @@ module single_fifo_ctrl #(
     always_comb begin
         case (state_r)
             eSTART: state_n = start_i ? eSEND : eSTART;
-            eSEND: state_n = ready_i ? eRECEIVE : eSEND;
+            eSEND: state_n = yumi_i ? eRECEIVE : eSEND;
             eRECEIVE: begin
                 if (valid_i)
                     state_n = is_last_test ? eSTART : eSEND;
@@ -110,10 +113,10 @@ module single_fifo_ctrl #(
     end
     
     // test data ROM
-    logic [NUM_TESTS*NUM_WORDS*WORD_SIZE-1:0] input_mem;
-    initial readmemh(TEST_INPUT_FILE, input_mem);
+    logic [NUM_WORDS*WORD_SIZE-1:0] input_mem [NUM_TESTS-1:0];
+    initial $readmemh(TEST_INPUT_FILE, input_mem);
     
     always_ff @(posedge clk_i)
-        data_o = input_mem[test_count_n*NUM_WORDS*WORD_SIZE +: NUM_WORDS*WORD_SIZE];
+        data_o = input_mem[test_count_n];
     
 endmodule
