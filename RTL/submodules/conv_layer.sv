@@ -86,6 +86,7 @@ module conv_layer #(
     localparam RAM_ADDRESS_BITS = $clog2(KERNEL_HEIGHT*KERNEL_WIDTH+1);
     
     ////  START CONTROL LOGIC FSM   ////
+        
     // counter registers for memory addresses and logic signals
     // define registers here because used in FSM, define behavior later
     localparam INPUT_SIZE = KERNEL_WIDTH * INPUT_LAYER_HEIGHT;
@@ -343,7 +344,7 @@ module conv_layer #(
                 .data_i(mem_data_lo),
                 .shift_en_i(shift),
                 .clk_i,
-                .reset_i,
+                .reset_i(reset_i),
                 .data_o(shift_data_lo)
             );
 
@@ -374,7 +375,7 @@ module conv_layer #(
 
                 .addr_i(mem_addr_li),
                 .data_o(mem_data_lo),
-                .reset_i,
+                .reset_i(reset_i),
                 .clk_i
             );
 

@@ -19,7 +19,8 @@ module zyNet #(
     input logic clk_i,
     input logic reset_i,
     input logic start_i,
-    
+    output logic conv_ready_o,
+
     // RAM write ports
     `ifdef SYNOPSIS
     input logic w_en_i,
@@ -46,12 +47,12 @@ module zyNet #(
     localparam KERNEL_HEIGHT_0 = 16; //16  4
     localparam KERNEL_WIDTH_0 = 2;
     localparam KERNEL_SIZE_0 = KERNEL_WIDTH_0*KERNEL_HEIGHT_0;
-    localparam NUM_KERNELS = 200; //256  8
+    localparam NUM_KERNELS = 200; //200  8
     localparam FC_LAYER_HEIGHT_0 = 256; // 256  8
     localparam FC_LAYER_HEIGHT_1 = 10;
     
     // input fifo
-    logic input_fifo_empty_lo, input_fifo_ready_lo;
+    logic input_fifo_empty_lo;
     logic signed [WORD_SIZE-1:0] input_fifo_data_lo;
 
     // signal renaming for clarity
@@ -59,8 +60,9 @@ module zyNet #(
     assign ready_o = !input_fifo_full_lo;
 
     // conv_layer_0
-    logic conv0_valid_lo, conv0_yumi_lo, conv_ready_o;
+    logic conv0_valid_lo, conv0_yumi_lo, conv_ready_lo;
     logic signed [NUM_KERNELS*WORD_SIZE-1:0] conv0_data_lo;
+    assign conv_ready_o = conv_ready_lo && !reset_i;
     
     // abs_layer_0
     logic abs0_ready_lo, abs0_valid_lo;
@@ -105,7 +107,6 @@ module zyNet #(
     assign ram_addr_li = w_addr_i[RAM_ADDRESS_BITS-1:0];
     `endif
 
-    
     // LAYER DATAPATH
 
     // add single FIFO to make input interface helpful
@@ -113,7 +114,7 @@ module zyNet #(
         .WORD_SIZE(WORD_SIZE)
     ) input_fifo (
         .clk_i,
-        .reset_i,
+        .reset_i(reset_i),
 
         .wen_i(valid_i),
         .data_i,
@@ -134,9 +135,9 @@ module zyNet #(
         .N_CONVOLUTIONS(NUM_KERNELS)
     ) kernel (
         .clk_i,
-        .reset_i,
+        .reset_i(reset_i),
         .start_i,
-        .conv_ready_o,
+        .conv_ready_o(conv_ready_lo),
         
         // memory interface
         `ifdef SYNOPSIS
@@ -162,7 +163,7 @@ module zyNet #(
     ) absolute_value (
         // top level control
         .clk_i,
-        .reset_i,
+        .reset_i(reset_i),
     
         // handshake to prev layer
         .ready_o(abs0_ready_lo),
@@ -183,7 +184,7 @@ module zyNet #(
     ) global_average_pooling (
         // top level control
         .clk_i,
-        .reset_i,
+        .reset_i(reset_i),
     
         // handshake to prev layer
         .ready_o(gap0_ready_lo),
@@ -201,7 +202,7 @@ module zyNet #(
         .WORD_SIZE(WORD_SIZE)
     ) fc_output_layer_1 (
         .clk_i,
-        .reset_i,
+        .reset_i(reset_i),
         
         // handshake to prev layer
         .valid_i(gap0_valid_lo),
@@ -221,7 +222,7 @@ module zyNet #(
         .PREVIOUS_LAYER_HEIGHT(NUM_KERNELS),
         .LAYER_NUMBER(0)
     ) hidden_layer (
-        .reset_i,
+        .reset_i(reset_i),
         .clk_i,
         
         // memory interface
@@ -248,7 +249,7 @@ module zyNet #(
         .WORD_SIZE(WORD_SIZE)
     ) fc_output_layer_2 (
         .clk_i,
-        .reset_i,
+        .reset_i(reset_i),
         
         // handshake to prev layer
         .valid_i(fc0_valid_lo),
@@ -271,7 +272,7 @@ module zyNet #(
     ) bn_layer_0 (
         // top level control
         .clk_i,
-        .reset_i,
+        .reset_i(reset_i),
         
         // memory interface
         `ifdef SYNOPSIS
@@ -297,7 +298,7 @@ module zyNet #(
     ) hidden_layer_relu (
         // top level control
         .clk_i,
-        .reset_i,
+        .reset_i(reset_i),
         
         // handshake to prev layer
         .ready_o(relu0_ready_lo),
@@ -318,7 +319,7 @@ module zyNet #(
         .PREVIOUS_LAYER_HEIGHT(FC_LAYER_HEIGHT_0),
         .LAYER_NUMBER(1)
     ) fc_layer_1 (
-        .reset_i,
+        .reset_i(reset_i),
         .clk_i,
         
         // memory interface

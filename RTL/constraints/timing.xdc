@@ -7,10 +7,10 @@ set_output_delay -clock [get_clocks clk] -max 20.000 [get_ports -filter { NAME =
 set_output_delay -clock [get_clocks clk] -min 0.000  [get_ports -filter { NAME =~  "*data*" && DIRECTION == "OUT" }]
 
 set_input_delay -clock [get_clocks clk] -max 20.000 [get_ports {reset_i start_i}]
-set_input_delay -clock [get_clocks clk] -min  0.000 [get_ports {reset_i start_i}]
+set_input_delay -clock [get_clocks clk] -min  2.000 [get_ports {reset_i start_i}]
 
 set_input_delay -clock [get_clocks clk] -min  0.000 [get_ports {yumi_i valid_i}]
 set_input_delay -clock [get_clocks clk] -max 20.000 [get_ports {yumi_i valid_i}]
 
-set_output_delay -clock [get_clocks clk] -max 20.000 [get_ports {valid_o ready_o}]
-set_output_delay -clock [get_clocks clk] -min 0.000  [get_ports {valid_o ready_o}]
+set_output_delay -clock [get_clocks clk] -max 20.000 [get_ports {valid_o ready_o conv_ready_o}]
+set_output_delay -clock [get_clocks clk] -min  3.000 [get_ports {valid_o ready_o conv_ready_o}]
