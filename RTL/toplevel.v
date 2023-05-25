@@ -139,7 +139,12 @@ module toplevel #(
     ila_0 ila_debug (
         .clk(clk_lo),
         .probe0(cnn_data_lo),
-        .trig_in(conv_start_li || begin_i)
+        .probe1(fcin_data_lo),
+        .probe2(cnn_valid_lo && test_ready_lo),
+        .probe3(conv_start_li || begin_i),
+        .probe4(cnn_ready_lo && fcin_valid_lo),
+        .probe5(start_i),
+        .probe6(conv_ready_lo)
     );
     
 endmodule
