@@ -69,6 +69,7 @@ module fc_layer #(
     localparam RAM_SELECT_BITS = $clog2(PREVIOUS_LAYER_HEIGHT + 1);
 
     //// BEGIN CONTROL FSM ////
+
     enum logic [1:0] {eSHIFT, eBIAS, eDONE} ps_e, ns_e;
 
     // memory counter values

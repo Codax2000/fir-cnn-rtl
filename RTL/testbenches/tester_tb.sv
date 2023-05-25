@@ -20,12 +20,13 @@ module tester_tb ();
     parameter INPUT_LAYER_HEIGHT = 256;
     parameter WORD_SIZE = 16;
     parameter CLOCK_PERIOD = 2;
+    parameter OUTPUT_SIZE = 10;
 
     // control variables
     logic clk_i, reset_i, start_i;
     
     // input handshake
-    logic [INPUT_LAYER_HEIGHT-1:0][WORD_SIZE-1:0] data_i;
+    logic [OUTPUT_SIZE-1:0][WORD_SIZE-1:0] data_i;
     logic valid_i, ready_o;
 
     // output handshake
@@ -47,7 +48,7 @@ module tester_tb ();
         // top level control
         .clk_i,
         .reset_i,
-        .start_i,
+        .start_i(start_i),
         
         // helpful input handshake
         .ready_o,
@@ -84,7 +85,7 @@ module tester_tb ();
                 $stop;
             
             $display("MATCH!");
-            
+                repeat(6) @(posedge clk_i);
             yumi_i <= 1'b1;     @(posedge clk_i);
             yumi_i <= 1'b0;
 

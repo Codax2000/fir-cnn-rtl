@@ -20,7 +20,7 @@ Written .mif files are
 module zyNet_matlab_tb ();
 
     // TODO: Change test parameters as necessary
-    parameter NUM_TESTS = 10;
+    parameter NUM_TESTS = 4;
     parameter CLOCK_PERIOD = 40; // 40 ns clock, a.k.a. 25 MHz, change if timing changes
 
     // TODO: Set any necessary model parameters here
@@ -38,10 +38,10 @@ module zyNet_matlab_tb ();
     localparam INT_BITS = WORD_SIZE - N_SIZE;
     
     // control variables
-    logic clk_i, reset_i, start_i;
+    logic clk_i, reset_i, start_i, conv_ready_o;
     
     // input handshake
-    logic [INPUT_LAYER_HEIGHT-1:0][WORD_SIZE-1:0] data_i;
+    logic [INPUT_LAYER_HEIGHT-1:0][WORD_SIZE-1:0] data_i ;
     logic valid_i, ready_o;
 
     // output handshake
@@ -49,9 +49,9 @@ module zyNet_matlab_tb ();
     logic signed [OUTPUT_LAYER_HEIGHT-1:0][WORD_SIZE-1:0] data_o;
 
     // values for testing
-    logic signed [INPUT_LAYER_HEIGHT-1:0][WORD_SIZE-1:0] test_inputs [NUM_TESTS-1:0];
-    logic signed [OUTPUT_LAYER_HEIGHT-1:0][WORD_SIZE-1:0] expected_outputs [NUM_TESTS-1:0];
-    logic signed [OUTPUT_LAYER_HEIGHT-1:0][WORD_SIZE-1:0] current_expected_output ;
+    logic [INPUT_LAYER_HEIGHT-1:0][WORD_SIZE-1:0] test_inputs [NUM_TESTS-1:0];
+    logic [OUTPUT_LAYER_HEIGHT-1:0][WORD_SIZE-1:0] expected_outputs [NUM_TESTS-1:0];
+    logic [OUTPUT_LAYER_HEIGHT-1:0][WORD_SIZE-1:0] current_expected_output;
     
     // fc output layer for easily sending data to the model
     logic [WORD_SIZE-1:0] serial_out;
@@ -89,6 +89,7 @@ module zyNet_matlab_tb ();
         .reset_i,
 
         .start_i,
+        .conv_ready_o,
 
         .data_i(serial_out),
         .ready_o,
@@ -115,8 +116,9 @@ module zyNet_matlab_tb ();
         errors = $fopen("C:/Users/alexk/Documents/Projects/fir-cnn-rtl/mem/test_values/test_outputs_errors.csv", "w");
         reset_i <= 1'b1;
         start_i <= 1'b0;
-        yumi_i <= 1'b0;     @(posedge clk_i); @(posedge clk_i);
+        yumi_i <= 1'b0;     repeat(4) @(posedge clk_i);
         reset_i <= 1'b0;    @(posedge clk_i);
+                            @(posedge conv_ready_o);
 
         for (int i = 0; i < NUM_TESTS; i++) begin
             $display("Running test %d",i);

@@ -32,18 +32,19 @@ module tester #(
     
     parameter WORD_SIZE=16,
     parameter NUM_WORDS=1,
+    parameter OUTPUT_SIZE=10,
     parameter NUM_TESTS=1,
     parameter TEST_INPUT_FILE="asd.mif") (
     
     // top level control
     input logic clk_i,
     input logic reset_i,
-    output logic start_i,
+    input logic start_i,
     
     // helpful input handshake
     output logic ready_o,
     input logic valid_i,
-    input logic signed [NUM_WORDS*WORD_SIZE-1:0] data_i,
+    input logic signed [OUTPUT_SIZE*WORD_SIZE-1:0] data_i,
     
     // helpful output handshake
     output logic valid_o,
@@ -107,7 +108,7 @@ module tester #(
         if (reset_i)
             test_count_n = 0;
         else if (count_en)
-            test_count_n = is_last_test ? 0 : test_count_n+1;
+            test_count_n = is_last_test ? 0 : test_count_r+1;
         else
             test_count_n = test_count_r;
     end

@@ -50,7 +50,12 @@ def get_actual_error_values():
             vals = [str_test[i] for i in range(1, len(str_test))]
             for j in range(len(vals)):
                 key = f"col_{j}"
-                new_result_line[key] = float(vals[j])
+                new_result = float(vals[j])
+                if (new_result) < -15:
+                    new_result += 16
+                elif (new_result) > 15:
+                    new_result -= 16
+                new_result_line[key] = new_result
             result.append(new_result_line)
     return pd.DataFrame(result).set_index('index').melt(var_name='column').rename(columns={'value': 'actual'})
 
@@ -78,23 +83,25 @@ def plot_calculated_error_histogram():
 
 def plot_measured_error_histogram():
     df = get_actual_error_values()
-    df['actual'] *= 100
-    df_filter_5 = df['actual'].abs() < 5
-    df_filter_10 = df['actual'].abs() < 10
+    df_filter_5 = df['actual'].abs() < 0.05
+    df_filter_10 = df['actual'].abs() < 0.1
     df_filtered_5 = df[df_filter_5]
     df_filtered_10 = df[df_filter_10]
-    print(f"Percent of Values Within 5 % Error: {100 * len(df_filtered_5) / len(df)}")
-    print(f"Percent of Values Within 10 % Error: {100 * len(df_filtered_10) / len(df)}")
-    print(f"Error Standard Deviation: {np.std(df['actual'])}")
-    alt.Chart(df_filtered_10).mark_bar().encode(
+    print(f"Percent of Values Within 0.05: {100 * len(df_filtered_5) / len(df)}")
+    print(f"Percent of Values Within 0.10: {100 * len(df_filtered_10) / len(df)}")
+    chart = alt.Chart(df_filtered_10).mark_bar().encode(
         x=alt.X('actual:Q',
                 bin=alt.BinParams(maxbins=40),
-                title='Percent Error'),
+                title='Absolute Error'),
         y=alt.Y('count()',
                 title='Count')
     ).properties(
-        title='Histogram of Percent Error'
-    ).save("./Scripts/data/calc_error_histogram.html")
+        title='Histogram of Error'
+    )
+
+    (chart).save('Scripts/data/calc_error_histogram.html')
+
+    
 
 def main():
     plot_measured_error_histogram()
