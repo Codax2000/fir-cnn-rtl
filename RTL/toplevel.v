@@ -25,7 +25,9 @@ module toplevel #(
     ) (
     input wire clk_i,
     input wire reset_i,
-    input wire begin_i
+    input wire begin_i,
+    output wire reset_o,
+    output wire start_o
     );
     
     localparam INPUT_LAYER_HEIGHT = 128;
@@ -68,6 +70,8 @@ module toplevel #(
     wire conv_start_li;
     
     assign data_o = cnn_data_lo;
+    assign reset_o = reset_i;
+    assign start_o = begin_i;
     
     assign conv_start_li = test_ready_lo && cnn_valid_lo;
     
@@ -137,14 +141,17 @@ module toplevel #(
     
     
     ila_0 ila_debug (
-        .clk(clk_lo),
+        .clk(clk_i),
         .probe0(cnn_data_lo),
         .probe1(fcin_data_lo),
         .probe2(cnn_valid_lo && test_ready_lo),
         .probe3(conv_start_li || begin_i),
         .probe4(cnn_ready_lo && fcin_valid_lo),
         .probe5(start_i),
-        .probe6(conv_ready_lo)
+        .probe6(conv_ready_lo),
+        .probe7(reset_i),
+        .probe8(reset_lo),
+        .probe9(clk_lo)
     );
     
 endmodule
