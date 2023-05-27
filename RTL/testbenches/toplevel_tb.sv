@@ -24,6 +24,7 @@ module toplevel_tb();
 
     logic clk_i, reset_i;
     logic start_sim;
+    logic ready_o, start_o;
     
     logic clk_lower, reset_lower;
     
@@ -62,9 +63,8 @@ module toplevel_tb();
                          @(negedge reset_lower);
                repeat(4) @(posedge clk_lower);
         start_sim <= 1'b1; @(posedge clk_lower);
-        start_sim <= 1'b0; @(posedge clk_lower);
         for (int i = 0; i < NUM_TESTS; i++) begin
-            @(posedge DUT.cnn.start_i);
+            @(posedge DUT.cnn.valid_o);
             @(negedge clk_lower)
             $display("%t: Output: %h", $realtime, DUT.cnn_data_lo);
             assert(DUT.cnn_data_lo == expected_outputs[i])
@@ -72,6 +72,8 @@ module toplevel_tb();
             else
                 $display("%t: Test Case %h Failed. Expected %h, Received %h", $realtime, i, expected_outputs[i], DUT.cnn_data_lo);
             repeat(3) @(posedge clk_lower);
+            start_sim <= 1'b0; repeat(10) @(posedge clk_lower);
+            start_sim <= 1'b1; @(posedge clk_lower);
         end
         $stop;
     end

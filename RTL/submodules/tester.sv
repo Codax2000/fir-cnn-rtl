@@ -58,7 +58,7 @@ module tester #(
 // SINGLE_FIFO CONTROLLER
 
     // controller states
-    typedef enum logic [1:0] {eSTART=2'b00, eSEND=2'b01, eRECEIVE=2'b10} state_e;
+    typedef enum logic [1:0] {eSTART=2'b00, eSEND=2'b01, eRECEIVE=2'b10, eSEND_BAR} state_e;
     state_e state_n, state_r;
     
     // state register
@@ -76,12 +76,8 @@ module tester #(
         case (state_r)
             eSTART: state_n = start_i ? eSEND : eSTART;
             eSEND: state_n = yumi_i ? eRECEIVE : eSEND;
-            eRECEIVE: begin
-                if (valid_i)
-                    state_n = is_last_test ? eSTART : eSEND;
-                else
-                    state_n = eRECEIVE;
-                end
+            eRECEIVE: state_n = valid_i ? eSEND_BAR : eRECEIVE;
+            eSEND_BAR: state_n = start_i ? eSEND_BAR : eSEND;
             default: state_n = eSTART;
         endcase
     end
