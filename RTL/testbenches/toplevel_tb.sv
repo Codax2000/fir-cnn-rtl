@@ -62,7 +62,7 @@ module toplevel_tb();
         start_sim <= 1'b0; @(posedge clk_lower);
                          @(negedge reset_lower);
                repeat(4) @(posedge clk_lower);
-        start_sim <= 1'b1; @(posedge clk_lower);
+        start_sim <= 1'b1; repeat(20) @(posedge clk_lower);
         for (int i = 0; i < NUM_TESTS; i++) begin
             @(posedge DUT.cnn.valid_o);
             @(negedge clk_lower)
@@ -72,8 +72,8 @@ module toplevel_tb();
             else
                 $display("%t: Test Case %h Failed. Expected %h, Received %h", $realtime, i, expected_outputs[i], DUT.cnn_data_lo);
             repeat(3) @(posedge clk_lower);
-            start_sim <= 1'b0; repeat(10) @(posedge clk_lower);
-            start_sim <= 1'b1; @(posedge clk_lower);
+            start_sim <= 1'b0; repeat(20) @(posedge clk_lower);
+            start_sim <= 1'b1; repeat(20) @(posedge clk_lower);
         end
         $stop;
     end
