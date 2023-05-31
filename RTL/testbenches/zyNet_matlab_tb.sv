@@ -20,7 +20,7 @@ Written .mif files are
 module zyNet_matlab_tb ();
 
     // TODO: Change test parameters as necessary
-    parameter NUM_TESTS = 4;
+    parameter NUM_TESTS = 10;
     parameter CLOCK_PERIOD = 40; // 40 ns clock, a.k.a. 25 MHz, change if timing changes
 
     // TODO: Set any necessary model parameters here
@@ -118,7 +118,6 @@ module zyNet_matlab_tb ();
         start_i <= 1'b0;
         yumi_i <= 1'b0;     repeat(4) @(posedge clk_i);
         reset_i <= 1'b0;    @(posedge clk_i);
-                            @(posedge conv_ready_o);
 
         for (int i = 0; i < NUM_TESTS; i++) begin
             $display("Running test %d",i);

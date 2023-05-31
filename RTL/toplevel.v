@@ -67,14 +67,19 @@ module toplevel #(
     
     // extra signals
     wire conv_ready_lo;
-    wire conv_start_li;
+    wire start_lo;
     
-    assign data_o = cnn_data_lo;
     assign reset_o = reset_i;
     assign start_o = begin_i;
     
-    assign conv_start_li = test_ready_lo && cnn_valid_lo;
-    
+    // input synchronizer for start signal
+    synchronizer sync_start (
+        .reset_i(reset_lo),
+        .clk_i(clk_lo),
+        .data_i(begin_i),
+        .data_o(start_lo)
+    );
+
     // test input generator
     tester #(
         .WORD_SIZE(16),
@@ -83,7 +88,7 @@ module toplevel #(
         .NUM_TESTS(NUM_TESTS),
         .TEST_INPUT_FILE("test_inputs.mif")
     ) test_inputs (
-        .start_i(begin_i),
+        .start_i(start_lo),
         .clk_i(clk_lo),
         .reset_i(reset_lo),
         
@@ -97,7 +102,6 @@ module toplevel #(
         .yumi_i(fcin_ready_lo),
         .data_o(test_data_lo)        
     );
-    
     
     fc_output_layer #(
         .LAYER_HEIGHT(INPUT_LAYER_HEIGHT*2),
@@ -117,13 +121,13 @@ module toplevel #(
         .data_o(fcin_data_lo)
     );
     
+    // DUT
     zyNet cnn (
-    
         // top level signals
         .clk_i(clk_lo),
         .reset_i(reset_lo),
         
-        .start_i(conv_start_li || begin_i),
+        .start_i(start_lo), // TODO: Check in simulation. Should start but not accept data until tester module sends it
         .conv_ready_o(conv_ready_lo),
         
         // helpful handshake in
@@ -138,20 +142,18 @@ module toplevel #(
     );
     
     //// DEBUG CORE
-    
-    
     ila_0 ila_debug (
         .clk(clk_i),
         .probe0(cnn_data_lo),
         .probe1(fcin_data_lo),
-        .probe2(cnn_valid_lo && test_ready_lo),
-        .probe3(conv_start_li || begin_i),
-        .probe4(cnn_ready_lo && fcin_valid_lo),
-        .probe5(start_i),
-        .probe6(conv_ready_lo),
-        .probe7(reset_i),
-        .probe8(reset_lo),
-        .probe9(clk_lo)
+        .probe2(reset_i),
+        .probe3(reset_lo),
+        .probe4(start_i),
+        .probe5(start_lo),
+        .probe6(clk_lo),
+        .probe7(cnn_valid_lo), // handshake out signal, use this for probing
+        .probe8(test_ready_lo),
+        .probe9(conv_ready_lo)
     );
     
 endmodule

@@ -23,7 +23,7 @@
 module toplevel_tb();
 
     logic clk_i, reset_i;
-    logic start_sim;
+    logic start_i;
     logic ready_o, start_o;
     
     logic clk_lower, reset_lower;
@@ -33,7 +33,7 @@ module toplevel_tb();
     toplevel DUT (
         .clk_i,
         .reset_i,
-        .begin_i(start_sim)
+        .begin_i(start_i)
     );
     
     assign clk_lower = DUT.clk_gen.clk_out1;
@@ -43,7 +43,7 @@ module toplevel_tb();
     
      
     // test values
-    logic [159:0] expected_outputs [3:0];
+    logic [159:0] expected_outputs [NUM_TESTS-1:0];
     initial $readmemh("test_outputs_measured.mif", expected_outputs);
     
     
@@ -59,10 +59,10 @@ module toplevel_tb();
     end
     
     initial begin
-        start_sim <= 1'b0; @(posedge clk_lower);
+        start_i <= 1'b0; @(posedge clk_lower);
                          @(negedge reset_lower);
                repeat(4) @(posedge clk_lower);
-        start_sim <= 1'b1; @(posedge clk_lower);
+        start_i <= 1'b1; repeat(20) @(posedge clk_lower);
         for (int i = 0; i < NUM_TESTS; i++) begin
             @(posedge DUT.cnn.valid_o);
             @(negedge clk_lower)
@@ -72,8 +72,8 @@ module toplevel_tb();
             else
                 $display("%t: Test Case %h Failed. Expected %h, Received %h", $realtime, i, expected_outputs[i], DUT.cnn_data_lo);
             repeat(3) @(posedge clk_lower);
-            start_sim <= 1'b0; repeat(10) @(posedge clk_lower);
-            start_sim <= 1'b1; @(posedge clk_lower);
+            start_i <= 1'b0; repeat(20) @(posedge clk_lower);
+            start_i <= 1'b1; repeat(20) @(posedge clk_lower);
         end
         $stop;
     end
