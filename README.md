@@ -10,8 +10,9 @@ SystemVerilog for implementing MATLAB neural net onto Xilinx RFSoC.
 4. Re-synthesize the out-of-context IPs so that testbenches will run.
 5. To ensure that things are set up, run the `conv_to_fc_tb` simulation and make sure all test cases pass (they should show in tcl console).
 6. If you want, run the other testbenches to ensure things are working.
-7. Before running the `sim_1` testbench (the toplevel), make sure you run `python ./Scripts/python/actual_outputs_to_mif.py` in the toplevel to make sure your memory file for 'expected' outputs in the toplevel is up to date.
-8. If you want to run other testbenches, check the `zyNet/zyNet.srcs/unused_testbenches` folder for other testbenches you can run.
+7. Before running the `zyNet_matlab_tb` testbench to compare the toplevel to matlab, change lines 115 and 116 in `zyNet_matlab_tb.sv` to match your directory. Otherwise, the testbench and python script will not run properly.
+8. Before running the `sim_1` testbench (the toplevel), make sure you run `python ./Scripts/python/actual_outputs_to_mif.py` in the toplevel to make sure your memory file for 'expected' outputs in the toplevel is up to date.
+9. If you want to run other testbenches, check the `zyNet/zyNet.srcs/unused_testbenches` folder for other testbenches you can run.
 
 ## Running Synopsis Synthesis and APR
 1. Switch to the `70-need-synopsis-flow` branch. Note that the hierarchy is different. This is because the structure was updated for Synopsis, and it is no longer cleanly compatible with Vivado. **DO NOT** merge this branch with main.
@@ -28,6 +29,41 @@ Here is a table of `make` commands:
 | `make clean` | _should_ clean out both synthesis and apr directories |
 
 Be aware that synthesis has taken about 4 hours in the past. APR takes close to a week.
+
+## Using Version Control with `git`
+1. First, make sure you can clone the repository.
+   1. Ensure you are added as a contributor to the repository.
+   2. Set up an SSH key to work with GitHub (if you've never done this before, see the [UW CSE 154 Setup Guide](https://courses.cs.washington.edu/courses/cse154/23sp/resources/assets/vscode-git-tutorial/windows/index.html#settingupgitlabkey) for a great tutorial)
+2. Raise a new issue on the [GitHub issues page](https://github.com/Codax2000/fir-cnn-rtl/issues). Add any screenshots or relevant problems to the description.
+   1. Add yourself as an assignee
+   2. Create a new branch associated with that issue.
+3. In your local terminal, make sure you are on the `main` branch and switch to the new branch with the following commands (for example, if your branch name is 18-new-module):
+   ```
+   git pull
+   git checkout 18-new-module
+   ```
+   Git should show that you are tracking the remote branch associated with your new issue.
+4. If you have folders that you would _not_ like to track with `git`, add it to the `.gitignore` file. See the current version for examples.
+5. To commit to the remote repository, run the following commands:
+    ```
+    git add .
+    git commit -m "INSERT YOUR OWN COMMIT MESSAGE"
+    git push
+    ```
+6. Other useful `git` commands
+    | Command | Result |
+    | :--- | :--- |
+    | `git branch --all` | See a list of your current branch and all branches on your PC |
+    | `git stash` | Stash changes so you can move them to a different branch |
+    | `git stash pop` | Bring stashed changes off the stash and into the current branch |
+    | `git branch -d 'BRANCH_NAME' | Delete the branch (use this only for local branches, **DO NOT** delete main) |
+7. Pull Requests
+   - To bring changes in a branch to main, create a new pull request on the [GitHub Pull Request Page](https://github.com/Codax2000/fir-cnn-rtl/pulls)
+   - Set `base` to the branch you would like to push changes to and `compare` to your current working branch.
+   - Create the pull request, add any documentation necessary showing that the linked issue has been resolved.
+   - If there are no conflicts and you have let everybody else know about your changes, merge the pull request.
+   - If there are conflicts, it's recommended to resolve them either in GitHub online editor on GitHub desktop.
+
 
 ## Python Scripts
 There are several python scripts used for text processing and data analysis. Most of them are legacies and were run once. They should be run using an environment that has `pandas` installed, and run in the top-level directory of this repo. There are only two that still apply:
