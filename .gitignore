@@ -1,6 +1,8 @@
-# ignore cache
-project_1.cache/
-Vivado/
-zyNet/
 Scripts/data/
 RTL/constraints/synth_hold.rpx
+zyNet/zyNet.cache
+zyNet/zyNet.gen
+zyNet/zyNet.hw
+zyNet/zyNet.ip_user_files
+zyNet/zyNet.runs
+zyNet/zyNet.sim
