@@ -18,15 +18,15 @@ SystemVerilog for implementing MATLAB neural net onto Xilinx RFSoC.
 1. Switch to the `70-need-synopsis-flow` branch. Note that the hierarchy is different. This is because the structure was updated for Synopsis, and it is no longer cleanly compatible with Vivado. **DO NOT** merge this branch with main.
 2. You can now run commands for synthesis and APR from the toplevel directory with `make`. The RTL is very similar (some compatibility modifications).
 Here is a table of `make` commands:
-| Command | Result |
-| :--- | :--- |
-| `make syn` | run synthesis in DC compiler |
-| `make apr` | run apr in IC compiler |
-| `make syn-link` | run synthesis up to linking |
-| `make apr-to-floorplan` | run APR up to floorplanning script |
-| `make clean-syn` | clean out the synthesis directory |
-| `make clean-apr` | clean out the apr directory |
-| `make clean` | _should_ clean out both synthesis and apr directories |
+   | Command | Result |
+   | :--- | :--- |
+   | `make syn` | run synthesis in DC compiler |
+   | `make apr` | run apr in IC compiler |
+   | `make syn-link` | run synthesis up to linking |
+   | `make apr-to-floorplan` | run APR up to floorplanning script |
+   | `make clean-syn` | clean out the synthesis directory |
+   | `make clean-apr` | clean out the apr directory |
+   | `make clean` | _should_ clean out both synthesis and apr directories |
 
 Be aware that synthesis has taken about 4 hours in the past. APR takes close to a week.
 
@@ -56,7 +56,7 @@ Be aware that synthesis has taken about 4 hours in the past. APR takes close to 
     | `git branch --all` | See a list of your current branch and all branches on your PC |
     | `git stash` | Stash changes so you can move them to a different branch |
     | `git stash pop` | Bring stashed changes off the stash and into the current branch |
-    | `git branch -d 'BRANCH_NAME' | Delete the branch (use this only for local branches, **DO NOT** delete main) |
+    | `git branch -d 'BRANCH_NAME'` | Delete the branch (use this only for local branches, **DO NOT** delete main) |
 7. Pull Requests
    - To bring changes in a branch to main, create a new pull request on the [GitHub Pull Request Page](https://github.com/Codax2000/fir-cnn-rtl/pulls)
    - Set `base` to the branch you would like to push changes to and `compare` to your current working branch.
