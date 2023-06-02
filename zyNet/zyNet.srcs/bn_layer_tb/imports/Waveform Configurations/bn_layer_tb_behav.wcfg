@@ -12,11 +12,11 @@
    </db_ref_list>
    <zoom_setting>
       <ZoomStartTime time="0.000 ns"></ZoomStartTime>
-      <ZoomEndTime time="768.126 ns"></ZoomEndTime>
+      <ZoomEndTime time="890.301 ns"></ZoomEndTime>
       <Cursor1Time time="64.883 ns"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
-      <NameColumnWidth column_width="145"></NameColumnWidth>
+      <NameColumnWidth column_width="141"></NameColumnWidth>
       <ValueColumnWidth column_width="58"></ValueColumnWidth>
    </column_width_setting>
    <WVObjectSize size="7" />
@@ -115,6 +115,14 @@
          <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
          <obj_property name="radix_fractionWidth">12</obj_property>
          <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/bn_layer_tb/DUT/en_lo" type="logic">
+         <obj_property name="ElementShortName">en_lo</obj_property>
+         <obj_property name="ObjectShortName">en_lo</obj_property>
+      </wvobject>
+      <wvobject fp_name="/bn_layer_tb/DUT/data_r_o" type="array">
+         <obj_property name="ElementShortName">data_r_o[15:0]</obj_property>
+         <obj_property name="ObjectShortName">data_r_o[15:0]</obj_property>
       </wvobject>
       <wvobject fp_name="/bn_layer_tb/DUT/count_n" type="array">
          <obj_property name="ElementShortName">count_n[7:0]</obj_property>
