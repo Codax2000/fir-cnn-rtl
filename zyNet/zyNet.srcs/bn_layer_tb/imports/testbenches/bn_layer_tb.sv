@@ -65,7 +65,7 @@ module bn_layer_tb ();
     bn_layer #(.INPUT_SIZE(INPUT_SIZE),
                .WORD_SIZE(WORD_SIZE),
                .N_SIZE(N_SIZE),
-               .LAYER_NUMBER(LAYER_NUM),
+               .LAYER_NUMBER(0),
                .MEM_WORD_SIZE(21)
     ) DUT (        
         // top level control
