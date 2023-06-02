@@ -61,7 +61,7 @@ These elements extend the basic syntax by adding additional features. Not all Ma
 ### Table
 
 | Syntax | Column 1 | Column 2 |
-| :--- | --- | ---: |
+| :--- | :---: | ---: |
 | left-aligned | center-aligned | right-aligned |
 | Header | Text 1 | Text 2 |
 
