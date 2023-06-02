@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wave_config>
+   <wave_state>
+   </wave_state>
+   <db_ref_list>
+      <db_ref path="zyNet_matlab_tb_behav.wdb" id="1">
+         <top_modules>
+            <top_module name="glbl" />
+            <top_module name="zyNet_matlab_tb" />
+         </top_modules>
+      </db_ref>
+   </db_ref_list>
+   <zoom_setting>
+      <ZoomStartTime time="80.363333 us"></ZoomStartTime>
+      <ZoomEndTime time="476.503334 us"></ZoomEndTime>
+      <Cursor1Time time="410.480000 us"></Cursor1Time>
+   </zoom_setting>
+   <column_width_setting>
+      <NameColumnWidth column_width="235"></NameColumnWidth>
+      <ValueColumnWidth column_width="102"></ValueColumnWidth>
+   </column_width_setting>
+   <WVObjectSize size="9" />
+   <wvobject fp_name="/zyNet_matlab_tb/clk_i" type="logic">
+      <obj_property name="ElementShortName">clk_i</obj_property>
+      <obj_property name="ObjectShortName">clk_i</obj_property>
+   </wvobject>
+   <wvobject fp_name="/zyNet_matlab_tb/reset_i" type="logic">
+      <obj_property name="ElementShortName">reset_i</obj_property>
+      <obj_property name="ObjectShortName">reset_i</obj_property>
+   </wvobject>
+   <wvobject fp_name="/zyNet_matlab_tb/start_i" type="logic">
+      <obj_property name="ElementShortName">start_i</obj_property>
+      <obj_property name="ObjectShortName">start_i</obj_property>
+   </wvobject>
+   <wvobject fp_name="/zyNet_matlab_tb/conv_ready_o" type="logic">
+      <obj_property name="ElementShortName">conv_ready_o</obj_property>
+      <obj_property name="ObjectShortName">conv_ready_o</obj_property>
+   </wvobject>
+   <wvobject fp_name="group33" type="group">
+      <obj_property name="label">Input Serializer Handshake</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <wvobject fp_name="/zyNet_matlab_tb/data_i" type="array">
+         <obj_property name="ElementShortName">data_i[255:0][15:0]</obj_property>
+         <obj_property name="ObjectShortName">data_i[255:0][15:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/zyNet_matlab_tb/fcin_valid_i" type="logic">
+         <obj_property name="ElementShortName">fcin_valid_i</obj_property>
+         <obj_property name="ObjectShortName">fcin_valid_i</obj_property>
+      </wvobject>
+      <wvobject fp_name="/zyNet_matlab_tb/fcin_ready_o" type="logic">
+         <obj_property name="ElementShortName">fcin_ready_o</obj_property>
+         <obj_property name="ObjectShortName">fcin_ready_o</obj_property>
+      </wvobject>
+   </wvobject>
+   <wvobject fp_name="group37" type="group">
+      <obj_property name="label">DUT Input Handshake</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="isExpanded"></obj_property>
+      <wvobject fp_name="/zyNet_matlab_tb/valid_i" type="logic">
+         <obj_property name="ElementShortName">valid_i</obj_property>
+         <obj_property name="ObjectShortName">valid_i</obj_property>
+      </wvobject>
+      <wvobject fp_name="/zyNet_matlab_tb/ready_o" type="logic">
+         <obj_property name="ElementShortName">ready_o</obj_property>
+         <obj_property name="ObjectShortName">ready_o</obj_property>
+      </wvobject>
+      <wvobject fp_name="/zyNet_matlab_tb/serial_out" type="array">
+         <obj_property name="ElementShortName">serial_out[15:0]</obj_property>
+         <obj_property name="ObjectShortName">serial_out[15:0]</obj_property>
+      </wvobject>
+   </wvobject>
+   <wvobject fp_name="group41" type="group">
+      <obj_property name="label">DUT Output Handshake</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="isExpanded"></obj_property>
+      <wvobject fp_name="/zyNet_matlab_tb/valid_o" type="logic">
+         <obj_property name="ElementShortName">valid_o</obj_property>
+         <obj_property name="ObjectShortName">valid_o</obj_property>
+      </wvobject>
+      <wvobject fp_name="/zyNet_matlab_tb/yumi_i" type="logic">
+         <obj_property name="ElementShortName">yumi_i</obj_property>
+         <obj_property name="ObjectShortName">yumi_i</obj_property>
+      </wvobject>
+      <wvobject fp_name="/zyNet_matlab_tb/data_o" type="array">
+         <obj_property name="ElementShortName">data_o[9:0][15:0]</obj_property>
+         <obj_property name="ObjectShortName">data_o[9:0][15:0]</obj_property>
+      </wvobject>
+   </wvobject>
+   <wvobject fp_name="group298" type="group">
+      <obj_property name="label">Convolutional Layer Input</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <wvobject fp_name="/zyNet_matlab_tb/DUT/kernel/valid_i" type="logic">
+         <obj_property name="ElementShortName">valid_i</obj_property>
+         <obj_property name="ObjectShortName">valid_i</obj_property>
+      </wvobject>
+      <wvobject fp_name="/zyNet_matlab_tb/DUT/kernel/yumi_o" type="logic">
+         <obj_property name="ElementShortName">yumi_o</obj_property>
+         <obj_property name="ObjectShortName">yumi_o</obj_property>
+      </wvobject>
+      <wvobject fp_name="/zyNet_matlab_tb/DUT/kernel/data_i" type="array">
+         <obj_property name="ElementShortName">data_i[15:0]</obj_property>
+         <obj_property name="ObjectShortName">data_i[15:0]</obj_property>
+      </wvobject>
+   </wvobject>
+   <wvobject fp_name="group305" type="group">
+      <obj_property name="label">Convolutional Layer Output</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <wvobject fp_name="/zyNet_matlab_tb/DUT/kernel/valid_o" type="logic">
+         <obj_property name="ElementShortName">valid_o</obj_property>
+         <obj_property name="ObjectShortName">valid_o</obj_property>
+      </wvobject>
+      <wvobject fp_name="/zyNet_matlab_tb/DUT/kernel/ready_i" type="logic">
+         <obj_property name="ElementShortName">ready_i</obj_property>
+         <obj_property name="ObjectShortName">ready_i</obj_property>
+      </wvobject>
+      <wvobject fp_name="/zyNet_matlab_tb/DUT/kernel/data_o" type="array">
+         <obj_property name="ElementShortName">data_o[3199:0]</obj_property>
+         <obj_property name="ObjectShortName">data_o[3199:0]</obj_property>
+      </wvobject>
+   </wvobject>
+</wave_config>
