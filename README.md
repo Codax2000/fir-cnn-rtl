@@ -18,14 +18,14 @@ SystemVerilog for implementing MATLAB neural net onto Xilinx RFSoC.
 2. You can now run commands for synthesis and APR from the toplevel directory with `make`. The RTL is very similar (some compatibility modifications).
 Here is a table of `make` commands:
 | Command | Result |
-| !--- | !--- |
-|`make syn` | run synthesis in DC compiler |
-|`make apr` | run apr in IC compiler |
-|`make syn-link` | run synthesis up to linking |
-|`make apr-to-floorplan` | run APR up to floorplanning script |
-|`make clean-syn` | clean out the synthesis directory |
-|`make clean-apr` | clean out the apr directory |
-|`make clean` | _should_ clean out both synthesis and apr directories |
+| :--- | :--- |
+| `make syn` | run synthesis in DC compiler |
+| `make apr` | run apr in IC compiler |
+| `make syn-link` | run synthesis up to linking |
+| `make apr-to-floorplan` | run APR up to floorplanning script |
+| `make clean-syn` | clean out the synthesis directory |
+| `make clean-apr` | clean out the apr directory |
+| `make clean` | _should_ clean out both synthesis and apr directories |
 
 Be aware that synthesis has taken about 4 hours in the past. APR takes close to a week.
 
